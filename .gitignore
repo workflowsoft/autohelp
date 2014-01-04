@@ -1,0 +1,10 @@
+.idea/*
+.idea\*
+*.log
+*.htaccess
+/config/main.php
+\config\main.php
+\protected\controllers\SiteController.php
+/protected/controllers/SiteController.php
+assets
+runtime
