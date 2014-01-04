@@ -21,8 +21,8 @@ CREATE TABLE `order` (
   `card_id`          VARCHAR(64),
   `action_tag_id`    INT(10) UNSIGNED    NOT NULL,
   `activated`        TINYINT(1) UNSIGNED NOT NULL DEFAULT 0,
-  `timestamp`        DATETIME            NOT NULL,
-
+  `start_date`       DATETIME,
+  `end_date`         DATETIME,
 
   PRIMARY KEY (`order_id`),
   UNIQUE KEY `vin` (`vin`),
@@ -40,24 +40,38 @@ CREATE TABLE `action_tag` (
   `title`         VARCHAR(128)     NOT NULL,
   `description`   VARCHAR(256),
   PRIMARY KEY (`action_tag_id`),
-  UNIQUE KEY `title` (`title`),
-  UNIQUE KEY `description` (`description`)
+  UNIQUE KEY `title` (`title`)
 )
   ENGINE =InnoDB
   DEFAULT CHARSET =utf8;
 
 
 CREATE TABLE `services` (
-  `service_id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `title`         VARCHAR(128)     NOT NULL,
-  `description`   VARCHAR(256),
+  `service_id`  INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `title`       VARCHAR(128)     NOT NULL,
+  `description` VARCHAR(256),
   PRIMARY KEY (`action_tag_id`),
-  UNIQUE KEY `title` (`title`),
-  UNIQUE KEY `description` (`description`)
+  UNIQUE KEY `title` (`title`)
 )
   ENGINE =InnoDB
   DEFAULT CHARSET =utf8;
 
 
+CREATE TABLE `partner` (
+  `partner_id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `name` VARCHAR (128),
+  `address`VARCHAR(256),
+
+  PRIMARY KEY (`partner_id`),
+  UNIQUE KEY (`name`)
+)
+  ENGINE = InnoDB
+  DEFAULT CHARSET = utf8;
+
+/* mtm */
+/*CREATE TABLE `partner_service` (
+
+)
+*/
 
 /*TODO add realtime services*/
