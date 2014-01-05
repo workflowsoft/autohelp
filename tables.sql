@@ -43,6 +43,7 @@ CREATE TABLE `order` (
   `id`              INT(10) UNSIGNED    NOT NULL AUTO_INCREMENT,
   `email`                 VARCHAR(256), #email или phone должны быть обязательно, лучше оба
   `phone`                 VARCHAR(16),
+  `description`           VARCHAR(256),
   `first_name`            VARCHAR(64),
   `middle_name`           VARCHAR(64),
   `last_name`             VARCHAR(64),
@@ -146,7 +147,8 @@ CREATE TABLE `role` (
   `title`       VARCHAR(128),
   `description` VARCHAR(256),
 
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  UNIQUE KEY (`title`)
 )
 ENGINE = InnoDB
 DEFAULT CHARSET = utf8;
