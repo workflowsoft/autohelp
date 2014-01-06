@@ -6,41 +6,41 @@ CREATE SCHEMA `autohelp`
 USE autohelp;
 
 CREATE TABLE `card_series` (
-  `id` INT(10) UNSIGNED 	      		  	  NOT NULL AUTO_INCREMENT,
-  `starting_number`  	INT(10) 	          NOT NULL,
-  `ending_number`    	INT(10)   		 	  NOT NULL,
-  `series_type`      	ENUM ('A', 'B', 'C')  NOT NULL,
-  `distributing_point`	VARCHAR(128)		  		  ,
-  `comment`        		VARCHAR(256),
-  `count`				INT(10)				  NOT NULL,
+  `id`                 INT(10) UNSIGNED     NOT NULL AUTO_INCREMENT,
+  `starting_number`    INT(10)              NOT NULL,
+  `ending_number`      INT(10)              NOT NULL,
+  `series_type`        ENUM ('A', 'B', 'C') NOT NULL,
+  `distributing_point` VARCHAR(128),
+  `comment`            VARCHAR(256),
+  `count`              INT(10)              NOT NULL,
   PRIMARY KEY (`id`)
 )
-ENGINE = InnoDB
-DEFAULT CHARSET = utf8;
+  ENGINE = InnoDB
+  DEFAULT CHARSET = utf8;
 
 CREATE TABLE `card` (
-  `id`				INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `number`			VARCHAR(128)     NOT NULL,
-  `series_id`   	INT(10) UNSIGNED NOT NULL,
+  `id`        INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `number`    VARCHAR(128)     NOT NULL,
+  `series_id` INT(10) UNSIGNED NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `number` (`number`),
   FOREIGN KEY (`series_id`) REFERENCES `card_series` (`id`)
 )
-ENGINE =InnoDB
-DEFAULT CHARSET =utf8;
+  ENGINE =InnoDB
+  DEFAULT CHARSET =utf8;
 
 CREATE TABLE `action_tag` (
-  `id`				INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `title`			VARCHAR(128)     NOT NULL,
-  `description`   	VARCHAR(256),
+  `id`          INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `title`       VARCHAR(128)     NOT NULL,
+  `description` VARCHAR(256),
   PRIMARY KEY (`id`),
   UNIQUE KEY `title` (`title`)
 )
-ENGINE =InnoDB
-DEFAULT CHARSET =utf8;
+  ENGINE =InnoDB
+  DEFAULT CHARSET =utf8;
 
 CREATE TABLE `order` (
-  `id`              INT(10) UNSIGNED    NOT NULL AUTO_INCREMENT,
+  `id`                    INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
   `email`                 VARCHAR(256), #email или phone должны быть обязательно, лучше оба
   `phone`                 VARCHAR(16),
   `description`           VARCHAR(256),
@@ -56,125 +56,156 @@ CREATE TABLE `order` (
   `card_id`               INT(10) UNSIGNED,
   `activation_start`      DATETIME,
   `activation_end`        DATETIME,
-   
-   PRIMARY KEY (`id`),
-   UNIQUE KEY `vin` (`vin`),
-   UNIQUE KEY `grn` (`grn`),
-   FOREIGN KEY (`card_id`) REFERENCES `card` (`id`)
+
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `vin` (`vin`),
+  UNIQUE KEY `grn` (`grn`),
+  FOREIGN KEY (`card_id`) REFERENCES `card` (`id`)
 )
-ENGINE =InnoDB
-DEFAULT CHARSET =utf8;
+  ENGINE =InnoDB
+  DEFAULT CHARSET =utf8;
 
 CREATE TABLE `order2action_tag` (
-  `id` INT(10) 		UNSIGNED NOT NULL AUTO_INCREMENT,
-  `order_id`        INT(10) UNSIGNED NOT NULL,
-  `action_tag_id`   INT(10) UNSIGNED NOT NULL,
-  `ation_time`		DATETIME,
+  `id`            INT(10)    UNSIGNED NOT NULL AUTO_INCREMENT,
+  `order_id`      INT(10) UNSIGNED    NOT NULL,
+  `action_tag_id` INT(10) UNSIGNED    NOT NULL,
+  `ation_time`    DATETIME,
 
   PRIMARY KEY (`id`),
   FOREIGN KEY (`order_id`) REFERENCES `order` (`id`),
   FOREIGN KEY (`action_tag_id`) REFERENCES `action_tag` (`id`)
 )
-ENGINE = InnoDB
-DEFAULT CHARSET = utf8;
+  ENGINE = InnoDB
+  DEFAULT CHARSET = utf8;
 
 CREATE TABLE `service` (
-  `id`  INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `id`          INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
   `title`       VARCHAR(128)     NOT NULL,
   `description` VARCHAR(256),
   PRIMARY KEY (`id`),
   UNIQUE KEY `title` (`title`)
 )
-ENGINE =InnoDB
-DEFAULT CHARSET =utf8;
+  ENGINE =InnoDB
+  DEFAULT CHARSET =utf8;
 
 
 CREATE TABLE `partner` (
-  `id` 		    INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `title`        VARCHAR(128),
-  `address`     VARCHAR(256),
-  `phone`       VARCHAR(128),
-  `email`       VARCHAR(128),
-  `skype`       VARCHAR(128),
-  `icq`	        VARCHAR(128),
-  `mra`	        VARCHAR(128),
+  `id`      INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `title`   VARCHAR(128),
+  `address` VARCHAR(256),
+  `phone`   VARCHAR(128),
+  `email`   VARCHAR(128),
+  `skype`   VARCHAR(128),
+  `icq`     VARCHAR(128),
+  `mra`     VARCHAR(128),
   PRIMARY KEY (`id`),
   UNIQUE KEY (`title`)
 )
-ENGINE = InnoDB
-DEFAULT CHARSET = utf8;
+  ENGINE = InnoDB
+  DEFAULT CHARSET = utf8;
 
 
 CREATE TABLE `partner2service` (
-  `id` 			INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `partner_id`  INT(10) UNSIGNED NOT NULL,
-  `service_id`  INT(10) UNSIGNED NOT NULL,
+  `id`         INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `partner_id` INT(10) UNSIGNED NOT NULL,
+  `service_id` INT(10) UNSIGNED NOT NULL,
 
   PRIMARY KEY (`id`),
   FOREIGN KEY (`partner_id`) REFERENCES `partner` (`id`),
   FOREIGN KEY (`service_id`) REFERENCES `service` (`id`)
 )
-ENGINE = InnoDB
-DEFAULT CHARSET = utf8;
+  ENGINE = InnoDB
+  DEFAULT CHARSET = utf8;
 
 CREATE TABLE `user` (
-  `id`     		INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `id`          INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
   `fist_name`   VARCHAR(64),
   `middle_name` VARCHAR(64),
   `last_name`   VARCHAR(64),
 
   PRIMARY KEY (`id`)
 )
-ENGINE = InnoDB
-DEFAULT CHARSET = utf8;
+  ENGINE = InnoDB
+  DEFAULT CHARSET = utf8;
 
 CREATE TABLE `ticket` (
-  `id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `status`     ENUM ('draft', 'new', 'assiging', 'assigned', 'in_progress', 'done', 'rejected'),
-  `comment`    VARCHAR(256),
-  `user_id`    INT(10) UNSIGNED,
-  `last_status_change`  DATETIME,
+  `id`                 INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `status`             ENUM ('draft', 'new', 'assiging', 'assigned', 'in_progress', 'done', 'rejected'),
+  `comment`            VARCHAR(256),
+  `user_id`            INT(10) UNSIGNED,
+  `last_status_change` DATETIME,
 
   PRIMARY KEY (`id`),
   FOREIGN KEY (`user_id`) REFERENCES `user` (`id`)
 )
-ENGINE = InnoDB
-DEFAULT CHARSET = utf8;
+  ENGINE = InnoDB
+  DEFAULT CHARSET = utf8;
 
 
 CREATE TABLE `role` (
-  `id`    	  	INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `id`          INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
   `title`       VARCHAR(128),
   `description` VARCHAR(256),
 
   PRIMARY KEY (`id`),
   UNIQUE KEY (`title`)
 )
-ENGINE = InnoDB
-DEFAULT CHARSET = utf8;
+  ENGINE = InnoDB
+  DEFAULT CHARSET = utf8;
 
 
 CREATE TABLE `user2role` (
-  `id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `user_id`      INT(10) UNSIGNED NOT NULL,
-  `role_id`      INT(10) UNSIGNED NOT NULL,
+  `id`      INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `user_id` INT(10) UNSIGNED NOT NULL,
+  `role_id` INT(10) UNSIGNED NOT NULL,
 
   PRIMARY KEY (`id`),
   FOREIGN KEY (`user_id`) REFERENCES `user` (`id`),
   FOREIGN KEY (`role_id`) REFERENCES `role` (`id`)
 )
-ENGINE = InnoDB
-DEFAULT CHARSET = utf8;
+  ENGINE = InnoDB
+  DEFAULT CHARSET = utf8;
 
 
 CREATE TABLE `partner2ticket` (
-  `id`		 			INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `ticket_id`			INT(10) UNSIGNED NOT NULL,
-  `partner2service_id`	INT(10) UNSIGNED NOT NULL,
+  `id`                 INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `ticket_id`          INT(10) UNSIGNED NOT NULL,
+  `partner2service_id` INT(10) UNSIGNED NOT NULL,
 
   PRIMARY KEY (`id`),
   FOREIGN KEY (`ticket_id`) REFERENCES `ticket` (`id`),
   FOREIGN KEY (`partner2service_id`) REFERENCES `partner2service` (`id`)
 )
-ENGINE = InnoDB
-DEFAULT CHARSET = utf8;
+  ENGINE = InnoDB
+  DEFAULT CHARSET = utf8;
+
+
+/*****************/
+ALTER TABLE `order` ADD `delivery_coords` POINT;
+ALTER TABLE `order` ADD `delivery_street` VARCHAR(256);
+
+
+CREATE TABLE `service_group` (
+  `id`    INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `title` VARCHAR(128)     NOT NULL,
+
+  PRIMARY KEY (`id`),
+  UNIQUE KEY (`title`)
+)
+  ENGINE = InnoDB
+  DEFAULT CHARSET = utf8;
+
+
+CREATE TABLE `service2group` (
+  `id`         INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `group_id`   INT(10) UNSIGNED NOT NULL,
+  `service_id` INT(10) UNSIGNED NOT NULL,
+
+  PRIMARY KEY (`id`),
+  FOREIGN KEY (`group_id`) REFERENCES `service_group` (`id`),
+  FOREIGN KEY (`service_id`) REFERENCES `service` (`id`)
+)
+  ENGINE = InnoDB
+  DEFAULT CHARSET = utf8;
+
+
