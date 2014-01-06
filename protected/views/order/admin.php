@@ -76,7 +76,7 @@ $('.search-form form').submit(function(){
 
 <?php $this->widget('bootstrap.widgets.TbGridView',array(
 	'id'=>'order-grid',
-	'dataProvider'=>$model->search(),
+	'dataProvider'=> $data_provider,
 	'filter'=>$model,
 	'columns'=>array(
 		'id',

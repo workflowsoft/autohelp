@@ -145,14 +145,11 @@ class OrderController extends Controller
 	{
 		$model=new Order('search');
 		$model->unsetAttributes();  // clear any default values
-//        $condition = 'activation_start=0';
-//        $model = Order::model()->findAll($condition);
-//        $model->findAll($condition);
 		if(isset($_GET['Order']))
 			$model->attributes=$_GET['Order'];
 
 		$this->render('admin',array(
-			'model'=>$model,
+			'model'=>$model->search(),
 		));
 	}
 
@@ -163,17 +160,14 @@ class OrderController extends Controller
     {
         $model=new Order('search');
         $model->unsetAttributes();  // clear any default values
-        $model->search();
-        $condition = 'activation_start=0';
 
-        $model = Order::model()->findAll($condition);
-        $model->scenario = 'search';
-//        $model->findAll($condition);
-//        if(isset($_GET['Order']))
-//            $model->attributes=$_GET['Order'];
+//        $condition = 'activation_start=0';
+
+//        $model = Order::model()->findAll($condition);
 
         $this->render('admin',array(
             'model'=>$model,
+            'data_provider' => $model->searchNotActivated()//new CArrayDataProvider($model, array('id'=>'id'))
         ));
 
     }

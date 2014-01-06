@@ -11,4 +11,4 @@ $this->pageTitle=Yii::app()->name;
 
 <?php $this->endWidget(); ?>
 
-<?php var_dump($model); ?>
+<?php var_dump($model->search()); ?>
