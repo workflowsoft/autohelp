@@ -66,6 +66,8 @@ return array(
 		// uncomment the following to use a MySQL database
         'db'=>array(
             'connectionString' => 'mysql:host=localhost;dbname=autohelp',
+//            'enableProfiling' => true,
+//            'enableParamLogging' => true,
             'emulatePrepare' => true,
             'username' => 'root',
             'password' => 'mysql12345',
@@ -83,11 +85,11 @@ return array(
 					'levels'=>'error, warning',
 				),
 				// uncomment the following to show log messages on web pages
-				/*
+
 				array(
 					'class'=>'CWebLogRoute',
 				),
-				*/
+
 			),
 		),
 	),

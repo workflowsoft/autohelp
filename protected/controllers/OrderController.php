@@ -146,12 +146,13 @@ class OrderController extends Controller
         if (isset($_GET['Order'])) {
             $model->attributes = $_GET['Order'];
         }
-        $action_tag = isset($_GET['action_tag']) ? $_GET['action_tag'] : null;
+        $action_tag = isset($_GET['action_tag']) ? $_GET['action_tag'] : 'call';
         $data_provider = $model->searchNotActivated($action_tag);
 
         $this->render('admin', array(
             'model' => $model,
             'data_provider' => $data_provider,
+            'action_tag' => $action_tag,
         ));
     }
 

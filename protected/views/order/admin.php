@@ -24,13 +24,13 @@ $('.search-form form').submit(function(){
 ?>
 <?php
 Yii::app()->clientScript->registerScript('filter', "
-//$('.filter').click(function(){
-//	$('.search-form').toggle();
-//	return false;
-//});
+
+$('.filter-$action_tag').css('border', '3px solid red');
 $('.filter').click(function(){
+    $('.filter').css('border', '');
+	$(this).css('border', '3px solid red');
 	$.fn.yiiGridView.update('order-grid', {
-		data: 'action_tag=' + $(this).text()
+		data: 'action_tag=' + $(this).data('at')
 	});
 	return false;
 });
@@ -60,7 +60,7 @@ $('.filter').click(function(){
 <?php $this->widget('bootstrap.widgets.TbButton', array(
     'type'=>'success',
     'label'=>'Активация',
-    'htmlOptions'=>array('class'=>'filter filter-activate', 'data-at' => 'activte'),
+    'htmlOptions'=>array('class'=>'filter filter-activate', 'data-at' => 'activate'),
 )); ?>
 
 <?php $this->widget('bootstrap.widgets.TbButton', array(
@@ -95,7 +95,7 @@ $('.filter').click(function(){
 	'columns'=>array(
 		'id',
         array(
-            'value'=>'$data->card->number',
+            'value'=>'isset($data->card->number) ? $data->card->number : ""',
             'header'=>'Номер карты',
         ),
         'email',

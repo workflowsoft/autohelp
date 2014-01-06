@@ -155,12 +155,12 @@ class Order extends CActiveRecord
 		$criteria->compare('t.last_name',$this->last_name,true);
 		$criteria->compare('t.activation_start',NULL,true);
 
-        $criteria->addCondition('t.activation_start <= 0');
+        $criteria->addCondition('t.activation_start is null');
 
         if(!empty($action_tag)) {
             $criteria->join = 'LEFT JOIN `order2action_tag` O2AT ON O2AT.order_id = t.id
    LEFT JOIN `action_tag` AT ON AT.id = O2AT.action_tag_id';
-            $criteria->addCondition('name = "' . $action_tag .'"');
+            $criteria->addCondition('AT.name = "' . $action_tag .'"');
         }
 
 		return new CActiveDataProvider($this, array(
