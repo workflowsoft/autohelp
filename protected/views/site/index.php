@@ -11,4 +11,4 @@ $this->pageTitle=Yii::app()->name;
 
 <?php $this->endWidget(); ?>
 
-<?php //echo $l; ?>
+<?php var_dump($model); ?>
