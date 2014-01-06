@@ -20,7 +20,7 @@
             'class'=>'bootstrap.widgets.TbMenu',
             'items'=>array(
                 array('label'=>'Главная', 'url'=>array('/site/index')),
-                array('label'=>'Перечень заявок', 'url'=>array('/order/admin')),
+                array('label'=>'Перечень заявок', 'url'=>array('/order/admin/?action_tag=call')),
 //                array('label'=>'About', 'url'=>array('/site/page', 'view'=>'about')),
 //                array('label'=>'Contact', 'url'=>array('/site/contact')),
                 array('label'=>'Войти', 'url'=>array('/site/login'), 'visible'=>Yii::app()->user->isGuest),

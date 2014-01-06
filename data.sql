@@ -9,11 +9,11 @@ insert into card (number, series_id) values ('B100',LAST_INSERT_ID());
 insert into card_series(starting_number, ending_number, series_type, count) values (1,200,'C',199);
 insert into card (number, series_id) values ('C100',LAST_INSERT_ID());
 
-insert into `action_tag` (title, description) values('Обзвон', 'Первичные заявки, требующие уточнения данных и не оплаченные');
-insert into `action_tag` (title, description) values('Повторный обзвон', 'Первичные заявки, требующие уточнения данных и не оплаченные');
-insert into `action_tag` (title, description) values('Проверка', 'Оплаченные заявки, требующие уточнения данных');
-insert into `action_tag` (title, description) values('Активация', 'Заявки с проверенными данными, но не оплаченные');
-insert into `action_tag` (title, description) values('Истечение', 'Активированные карты, у которых истекает срок действия');
+insert into `action_tag` (`name`, `title`, `description`) values('call','Обзвон', 'Первичные заявки, требующие уточнения данных и не оплаченные');
+insert into `action_tag` (`name`, `title`, `description`) values('recall','Повторный обзвон', 'Первичные заявки, требующие уточнения данных и не оплаченные');
+insert into `action_tag` (`name`, `title`, `description`) values('check','Проверка', 'Оплаченные заявки, требующие уточнения данных');
+insert into `action_tag` (`name`, `title`, `description`) values('activate','Активация', 'Заявки с проверенными данными, но не оплаченные');
+insert into `action_tag` (`name`, `title`, `description`) values('expire','Истечение', 'Активированные карты, у которых истекает срок действия');
 
 
 INSERT into `service` (`title`, `description`) values ('Эвакуация', 'Возможность вызова эвакуатора неограниченное количество раз в любую точку Самары (в дальнейшем – Самарской области) в случае неисправности ТС и невозможности его дальнейшей эксплуатации');
@@ -81,3 +81,25 @@ insert into `user` (`last_name`, `email`, `password`) values ('Румянцев'
 SET @user_id = LAST_INSERT_ID();
 insert into `user2role` (`user_id`, `role_id`) select @user_id, id from role;
 
+
+/* begin dummies*/
+INSERT into `order`(`email`, `phone`) values ('client2@ya.ru','79279876532');
+INSERT into order2action_tag (`order_id`, `action_tag_id`)
+  select LAST_INSERT_ID() ,action_tag.id from action_tag where action_tag.name = 'call';
+
+INSERT into `order`(`email`, `phone`) values ('client3@ya.ru','79856328545');
+INSERT into order2action_tag (`order_id`, `action_tag_id`)
+  select LAST_INSERT_ID() ,action_tag.id from action_tag where action_tag.name = 'activate';
+
+INSERT into `order`(`email`, `phone`) values ('client6@ya.ru','65432168794');
+INSERT into order2action_tag (`order_id`, `action_tag_id`)
+  select LAST_INSERT_ID() ,action_tag.id from action_tag where action_tag.name = 'call';
+
+INSERT into `order`(`email`, `phone`) values ('client12@ya.ru','23216488746');
+INSERT into order2action_tag (`order_id`, `action_tag_id`)
+  select LAST_INSERT_ID() ,action_tag.id from action_tag where action_tag.name = 'recall';
+
+
+
+
+/* end dummies */

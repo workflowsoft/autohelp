@@ -31,10 +31,12 @@ CREATE TABLE `card` (
 
 CREATE TABLE `action_tag` (
   `id`          INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `name`       VARCHAR(128)     NOT NULL,
   `title`       VARCHAR(128)     NOT NULL,
   `description` VARCHAR(256),
   PRIMARY KEY (`id`),
-  UNIQUE KEY `title` (`title`)
+  UNIQUE KEY `title` (`title`),
+  UNIQUE KEY `name` (`name`)
 )
   ENGINE =InnoDB
   DEFAULT CHARSET =utf8;

@@ -47,7 +47,7 @@ class Order extends CActiveRecord
 		return array(
 			array('email, description, card_delivery_address, delivery_street', 'length', 'max'=>256),
 			array('phone, grn', 'length', 'max'=>16),
-            array('vin,grn', 'default', 'setOnEmpty' => true, 'value' => null),
+            array('vin,grn,card_id', 'default', 'setOnEmpty' => true, 'value' => null),
 			array('first_name, middle_name, last_name, ts_make, ts_model', 'length', 'max'=>64),
 			array('vin', 'length', 'max'=>17),
 			array('ts_color', 'length', 'max'=>6),
@@ -141,31 +141,27 @@ class Order extends CActiveRecord
 		));
 	}
 
-	public function searchNotActivated()
+	public function searchNotActivated($action_tag)
 	{
 		// @todo Please modify the following code to remove attributes that should not be searched.
 
 		$criteria=new CDbCriteria;
 
-		$criteria->compare('id',$this->id,true);
-		$criteria->compare('email',$this->email,true);
-		$criteria->compare('phone',$this->phone,true);
-//		$criteria->compare('description',$this->description,true);
-		$criteria->compare('first_name',$this->first_name,true);
-		$criteria->compare('middle_name',$this->middle_name,true);
-		$criteria->compare('last_name',$this->last_name,true);
-//		$criteria->compare('vin',$this->vin,true);
-//		$criteria->compare('grn',$this->grn,true);
-//		$criteria->compare('ts_make',$this->ts_make,true);
-//		$criteria->compare('ts_model',$this->ts_model,true);
-//		$criteria->compare('ts_color',$this->ts_color,true);
-//		$criteria->compare('card_delivery_address',$this->card_delivery_address,true);
-//		$criteria->compare('card_id',$this->card_id,true);
-		$criteria->compare('activation_start',NULL,true);
-        $criteria->addSearchCondition('activation_start', '<=', true );
-//		$criteria->compare('activation_end',NULL,true);
-//		$criteria->compare('delivery_coords',$this->delivery_coords,true);
-//		$criteria->compare('delivery_street',$this->delivery_street,true);
+		$criteria->compare('t.id',$this->id,true);
+		$criteria->compare('t.email',$this->email,true);
+		$criteria->compare('t.phone',$this->phone,true);
+		$criteria->compare('t.first_name',$this->first_name,true);
+		$criteria->compare('t.middle_name',$this->middle_name,true);
+		$criteria->compare('t.last_name',$this->last_name,true);
+		$criteria->compare('t.activation_start',NULL,true);
+
+        $criteria->addCondition('t.activation_start <= 0');
+
+        if(!empty($action_tag)) {
+            $criteria->join = 'LEFT JOIN `order2action_tag` O2AT ON O2AT.order_id = t.id
+   LEFT JOIN `action_tag` AT ON AT.id = O2AT.action_tag_id';
+            $criteria->addCondition('name = "' . $action_tag .'"');
+        }
 
 		return new CActiveDataProvider($this, array(
 			'criteria'=>$criteria,
