@@ -209,3 +209,6 @@ CREATE TABLE `service2group` (
   DEFAULT CHARSET = utf8;
 
 
+alter table `user` add `email` varchar (128) not null unique key;
+alter table `user` add `password` varchar (32);
+
