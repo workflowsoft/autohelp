@@ -5,8 +5,10 @@ $this->pageTitle=Yii::app()->name;
 ?>
 
 <?php $this->beginWidget('bootstrap.widgets.TbHeroUnit',array(
-    'heading'=>'Welcome to '.CHtml::encode(Yii::app()->name),
+    'heading'=>'Добро пожаловать на портал "'.CHtml::encode(Yii::app()->name) . '"',
 )); ?>
 
 
 <?php $this->endWidget(); ?>
+
+<?php //echo $l; ?>
