@@ -209,6 +209,7 @@ CREATE TABLE `service2group` (
   DEFAULT CHARSET = utf8;
 
 
-alter table `user` add `email` varchar (128) not null unique key;
-alter table `user` add `password` varchar (32);
+ALTER TABLE `user` ADD `email` VARCHAR(128) NOT NULL UNIQUE KEY;
+ALTER TABLE `user` ADD `password` VARCHAR(32);
 
+ALTER TABLE `card` ADD `prepaid` TINYINT(1) NOT NULL DEFAULT 0;
