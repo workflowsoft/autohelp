@@ -8,6 +8,8 @@
  * @property string $fist_name
  * @property string $middle_name
  * @property string $last_name
+ * @property string $email
+ * @property string $password
  *
  * The followings are the available model relations:
  * @property Ticket[] $tickets
@@ -31,10 +33,13 @@ class User extends CActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
+			array('email', 'required'),
 			array('fist_name, middle_name, last_name', 'length', 'max'=>64),
+			array('email', 'length', 'max'=>128),
+			array('password', 'length', 'max'=>32),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
-			array('id, fist_name, middle_name, last_name', 'safe', 'on'=>'search'),
+			array('id, fist_name, middle_name, last_name, email, password', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -61,6 +66,8 @@ class User extends CActiveRecord
 			'fist_name' => 'Fist Name',
 			'middle_name' => 'Middle Name',
 			'last_name' => 'Last Name',
+			'email' => 'Email',
+			'password' => 'Password',
 		);
 	}
 
@@ -86,6 +93,8 @@ class User extends CActiveRecord
 		$criteria->compare('fist_name',$this->fist_name,true);
 		$criteria->compare('middle_name',$this->middle_name,true);
 		$criteria->compare('last_name',$this->last_name,true);
+		$criteria->compare('email',$this->email,true);
+		$criteria->compare('password',$this->password,true);
 
 		return new CActiveDataProvider($this, array(
 			'criteria'=>$criteria,
