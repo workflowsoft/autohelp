@@ -63,17 +63,18 @@ $('.filter').click(function(){
     'htmlOptions'=>array('class'=>'filter filter-activate', 'data-at' => 'activate'),
 )); ?>
 
-<?php $this->widget('bootstrap.widgets.TbButton', array(
-    'type'=>'danger',
-    'label'=>'Истечение',
-    'htmlOptions'=>array('class'=>'filter filter-expire', 'data-at' => 'expire'),
-)); ?>
 
-<?php $this->widget('bootstrap.widgets.TbButton', array(
-    'type'=>'inverse',
-    'label'=>'Все',
-    'htmlOptions'=>array('class'=>'filter filter-all', 'data-at' => 'call'),
-)); ?>
+<?php //$this->widget('bootstrap.widgets.TbButton', array(
+//    'type'=>'danger',
+//    'label'=>'Истечение',
+//    'htmlOptions'=>array('class'=>'filter filter-expire', 'data-at' => 'expire'),
+//)); ?>
+<!---->
+<?php //$this->widget('bootstrap.widgets.TbButton', array(
+//    'type'=>'inverse',
+//    'label'=>'Все',
+//    'htmlOptions'=>array('class'=>'filter filter-all', 'data-at' => 'call'),
+//)); ?>
 
 
 <!--<p>-->
@@ -92,6 +93,9 @@ $('.filter').click(function(){
 	'id'=>'order-grid',
 	'dataProvider'=> $data_provider,
 	'filter'=>$model,
+    //goto update on row click
+    'selectionChanged'=>'function(id){ location.href = "'.$this->createUrl('update').'/id/"+$.fn.yiiGridView.getSelection(id);}',
+
 	'columns'=>array(
 		'id',
         array(
@@ -118,8 +122,8 @@ $('.filter').click(function(){
 //		'activation_end',
 //		'delivery_coords',
 //		'delivery_street',
-		array(
-			'class'=>'bootstrap.widgets.TbButtonColumn',
-		),
+//		array(
+//			'class'=>'bootstrap.widgets.TbButtonColumn',
+//		),
 	),
 )); ?>

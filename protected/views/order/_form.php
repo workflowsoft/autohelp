@@ -3,7 +3,7 @@
 	'enableAjaxValidation'=>false,
 )); ?>
 
-	<p class="help-block">Fields with <span class="required">*</span> are required.</p>
+    <p class="help-block">Поля отмеченные <span class="required">*</span> обязательны</p>
 
 	<?php echo $form->errorSummary($model); ?>
 
@@ -42,11 +42,63 @@
 	<?php echo $form->textFieldRow($model,'delivery_street',array('class'=>'span5','maxlength'=>256)); ?>
 
 	<div class="form-actions">
-		<?php $this->widget('bootstrap.widgets.TbButton', array(
-			'buttonType'=>'submit',
-			'type'=>'primary',
-			'label'=>$model->isNewRecord ? 'Создать' : 'Сохранить',
-		)); ?>
+		<?php
+
+        foreach ($model->action_tag as $action_tag) {
+            if ($action_tag->name === 'call') {
+                $this->widget('bootstrap.widgets.TbButton', array(
+                    'buttonType' => 'submit',
+                    'type' => 'primary',
+                    'label' => 'Повторный обзвон',
+                    'htmlOptions'   => array('name'=> 'recall'),
+                ));
+                echo '&nbsp;';
+                $this->widget('bootstrap.widgets.TbButton', array(
+                    'buttonType' => 'submit',
+                    'type'=>'success',
+                    'label' => 'Активация',
+                    'htmlOptions'   => array('name'=> 'activate'),
+                ));
+            }
+
+            if ($action_tag->name === 'recall') {
+                $this->widget('bootstrap.widgets.TbButton', array(
+                    'buttonType' => 'submit',
+                    'type'=>'success',
+                    'label' => 'Активация',
+                    'htmlOptions'   => array('name'=> 'activate'),
+                ));
+            }
+
+            if ($action_tag->name === 'check') {
+                $this->widget('bootstrap.widgets.TbButton', array(
+                    'buttonType' => 'submit',
+                    'type' => 'primary',
+                    'label' => 'Повторный обзвон',
+                    'htmlOptions'   => array('name'=> 'recall'),
+                ));
+                echo '&nbsp;';
+                $this->widget('bootstrap.widgets.TbButton', array(
+                    'buttonType' => 'submit',
+                    'type'=>'success',
+                    'label' => 'Активация',
+                    'htmlOptions'   => array('name'=> 'activate'),
+                ));
+            }
+
+
+            // Просто выставить даты начала и конца срока действия карты
+//            if ($action_tag->name === 'activate') {
+//                $this->widget('bootstrap.widgets.TbButton', array(
+//                    'buttonType' => 'submit',
+//                    'type'=>'success',
+//                    'label' => 'Активировать',
+//                ));
+//            }
+
+
+        }
+        ?>
 	</div>
 
 <?php $this->endWidget(); ?>
