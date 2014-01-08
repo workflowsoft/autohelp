@@ -59,18 +59,14 @@
                     'label' => 'Активация',
                     'htmlOptions'   => array('name'=> 'activate'),
                 ));
-            }
-
-            if ($action_tag->name === 'recall') {
+            } elseif ($action_tag->name === 'recall') {
                 $this->widget('bootstrap.widgets.TbButton', array(
                     'buttonType' => 'submit',
                     'type'=>'success',
                     'label' => 'Активация',
                     'htmlOptions'   => array('name'=> 'activate'),
                 ));
-            }
-
-            if ($action_tag->name === 'check') {
+            } elseif ($action_tag->name === 'check') {
                 $this->widget('bootstrap.widgets.TbButton', array(
                     'buttonType' => 'submit',
                     'type' => 'primary',
@@ -83,6 +79,12 @@
                     'type'=>'success',
                     'label' => 'Активация',
                     'htmlOptions'   => array('name'=> 'activate'),
+                ));
+            } else {
+                $this->widget('bootstrap.widgets.TbButton', array(
+                    'buttonType' => 'submit',
+                    'type' => 'primary',
+                    'label' => 'Сохранить',
                 ));
             }
 

@@ -93,6 +93,8 @@ $('.filter').click(function(){
 	'id'=>'order-grid',
 	'dataProvider'=> $data_provider,
 	'filter'=>$model,
+    'selectionChanged'=>'function(id){ location.href = "'.$this->createUrl('update').'/id/"+$.fn.yiiGridView.getSelection(id);}',
+
 	'columns'=>array(
 		'id',
         array(
