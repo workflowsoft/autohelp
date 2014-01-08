@@ -217,3 +217,6 @@ ALTER TABLE `user` ADD `password` VARCHAR(32);
 ALTER TABLE `card` ADD `prepaid` TINYINT(1) NOT NULL DEFAULT 0;
 
 ALTER TABLE `ticket` ADD `payment_without_card` TINYINT(1) NOT NULL DEFAULT 0;
+
+ALTER TABLE  `ticket` ADD  `order_id` INT(10) UNSIGNED;
+ALTER TABLE  `ticket` ADD CONSTRAINT FOREIGN KEY  (`order_id`) REFERENCES `order` (`id`)

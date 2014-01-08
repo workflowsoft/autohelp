@@ -22,8 +22,8 @@
                 array('label'=>'Главная', 'url'=>array('/site/index')),
                 array('label'=>'Управление заказами', 'url'=>array('/order/admin/?action_tag=call')),
                 array('label'=>'Создать заказ', 'url'=>array('/order/create')),
-//                array('label'=>'About', 'url'=>array('/site/page', 'view'=>'about')),
-//                array('label'=>'Contact', 'url'=>array('/site/contact')),
+                array('label'=>'Управление инцидентами', 'url'=>array('/ticket/admin')),
+                array('label'=>'Добавить инцидент', 'url'=>array('/ticket/create')),
                 array('label'=>'Войти', 'url'=>array('/site/login'), 'visible'=>Yii::app()->user->isGuest),
                 array('label'=>'Выйти ('.Yii::app()->user->name.')', 'url'=>array('/site/logout'), 'visible'=>!Yii::app()->user->isGuest)
             ),
