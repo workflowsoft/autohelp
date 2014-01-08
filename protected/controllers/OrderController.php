@@ -97,15 +97,47 @@ class OrderController extends Controller
         // Uncomment the following line if AJAX validation is needed
         // $this->performAjaxValidation($model);
 
+        // TODO very dirty, write the better front to back parameters transfer
+        $at_name = null;
+        if (isset($_POST['activate'])) {
+            $at_name = 'activate';
+        } elseif (isset($_POST['recall'])) {
+            $at_name = 'recall';
+        } elseif (isset($_POST['call'])) {
+            $at_name = 'call';
+        } elseif (isset($_POST['check'])) {
+            $at_name = 'check';
+        }
+
         if (isset($_POST['Order'])) {
             $model->attributes = $_POST['Order'];
-            if ($model->save())
+            if ($model->save()) {
+                if (isset($at_name)) {
+                    //найдем старый тег и удалим
+                    Order2actionTag::model()
+                        ->deleteAll(
+                            'order_id=:o_id AND action_tag_id=:at_id',
+                            array(
+                                ':o_id' => $model->id,
+                                ':at_id' => $model->action_tag[0]->id,
+                            )
+                        );
+                    //добавим новый
+                    $action_tag = ActionTag::model()->find('name=:name', array(':name' => $at_name));
+
+                    $relation = new Order2actionTag;
+                    $relation->action_tag_id = $action_tag->id;
+                    $relation->order_id = $model->id;
+                    $relation->save();
+                }
                 $this->redirect(array('view', 'id' => $model->id));
+            }
         }
 
         $this->render('update', array(
             'model' => $model,
         ));
+
     }
 
     /**
@@ -191,7 +223,7 @@ class OrderController extends Controller
      */
     public function loadModel($id)
     {
-        $model = Order::model()->findByPk($id);
+        $model = Order::model()->with('action_tag')->findByPk($id);
         if ($model === null)
             throw new CHttpException(404, 'The requested page does not exist.');
         return $model;
