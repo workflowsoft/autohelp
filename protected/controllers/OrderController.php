@@ -35,7 +35,7 @@ class OrderController extends Controller
                 'users' => array('@'),
             ),
             array('allow', // allow admin user to perform 'admin' and 'delete' actions
-                'actions' => array('admin', 'delete'),
+                'actions' => array('admin', 'delete', 'search'),
 //                'users' => array('admin', 'altruer@gmail.com', 'maden@csharper.ru'),
                 'users' => array('@')
             ),
@@ -191,6 +191,27 @@ class OrderController extends Controller
             'action_tag' => $action_tag,
         ));
     }
+
+
+    /**
+     * Manages all models.
+     */
+    public function actionSearch()
+    {
+        $model = new Order('search');
+        $model->unsetAttributes(); // clear any default values
+
+        if (isset($_GET['Order'])) {
+            $model->attributes = $_GET['Order'];
+        }
+        $data_provider = $model->search();
+
+        $this->render('search', array(
+            'model' => $model,
+            'data_provider' => $data_provider,
+        ));
+    }
+
 
     /**
      * Фильтрация по тегу действия

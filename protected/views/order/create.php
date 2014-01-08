@@ -11,6 +11,6 @@ $this->breadcrumbs=array(
 
 ?>
 
-<h1>Создание заявки</h1>
+<h1>Создание заказа</h1>
 
 <?php echo $this->renderPartial('_formCreate', array('model'=>$model)); ?>

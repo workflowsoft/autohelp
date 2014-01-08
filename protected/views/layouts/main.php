@@ -20,10 +20,18 @@
             'class'=>'bootstrap.widgets.TbMenu',
             'items'=>array(
                 array('label'=>'Главная', 'url'=>array('/site/index')),
-                array('label'=>'Управление заказами', 'url'=>array('/order/admin/?action_tag=call')),
-                array('label'=>'Создать заказ', 'url'=>array('/order/create')),
-                array('label'=>'Управление инцидентами', 'url'=>array('/ticket/admin')),
-                array('label'=>'Добавить инцидент', 'url'=>array('/ticket/create')),
+                array('label'=>'Поиск клиентов', 'url'=>array('/order/search')),
+
+                array('label'=>'Заказы', 'url'=>array('/order/admin/?action_tag=call'),
+                'items' => array(
+                    array('label'=>'Добавить заказ', 'url'=>array('/order/create')),
+                    array('label'=>'Управление заказами', 'url'=>array('/order/admin/?action_tag=call')),
+                )),
+                array('label'=>'Инциденты', 'url'=>array('/ticket/admin'),
+                    'items' => array(
+                        array('label'=>'Добавить инцидент', 'url'=>array('/ticket/create')),
+                        array('label'=>'Управление инцидентами', 'url'=>array('/ticket/admin')),
+                )),
                 array('label'=>'Войти', 'url'=>array('/site/login'), 'visible'=>Yii::app()->user->isGuest),
                 array('label'=>'Выйти ('.Yii::app()->user->name.')', 'url'=>array('/site/logout'), 'visible'=>!Yii::app()->user->isGuest)
             ),
