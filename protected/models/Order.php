@@ -47,7 +47,7 @@ class Order extends CActiveRecord
 		return array(
 			array('email, description, card_delivery_address, delivery_street', 'length', 'max'=>256),
 			array('phone, grn', 'length', 'max'=>16),
-            array('vin,grn,card_id', 'default', 'setOnEmpty' => true, 'value' => null),
+            array('vin,grn,card_id, activation_start, activation_end', 'default', 'setOnEmpty' => true, 'value' => null),
 			array('first_name, middle_name, last_name, ts_make, ts_model', 'length', 'max'=>64),
 			array('vin', 'length', 'max'=>17),
 			array('ts_color', 'length', 'max'=>6),
@@ -58,7 +58,7 @@ class Order extends CActiveRecord
 			array('id, email, phone, description, first_name, middle_name, last_name, vin, grn, ts_make, ts_model, ts_color, card_delivery_address, card_id, activation_start, activation_end, delivery_coords, delivery_street', 'safe', 'on'=>'search'),
 
             // date validation
-            array('activation_start, activation_end', 'type', 'type'=>'date', 'dateFormat'=>Yii::app()->locale->dateFormat),
+//            array('activation_start, activation_end', 'type', 'type'=>'date', 'dateFormat'=>Yii::app()->locale->dateFormat),
         );
 	}
 

@@ -9,9 +9,15 @@ $this->menu=array(
 );
 ?>
 
-<h1>Orders</h1>
+<h1>DELETED</h1>
 
-<?php $this->widget('bootstrap.widgets.TbListView',array(
-	'dataProvider'=>$dataProvider,
-	'itemView'=>'_view',
-)); ?>
+
+
+
+
+
+
+<?php //$this->widget('bootstrap.widgets.TbListView',array(
+//	'dataProvider'=>$dataProvider,
+//	'itemView'=>'_view',
+//)); ?>

@@ -1,12 +1,12 @@
 <?php
 $this->breadcrumbs=array(
-	'Заказы'=>array('index'),
+	'Заказы'=>array('admin'),
 	'Управление',
 );
 
 $this->menu=array(
 //	array('label'=>'List Order','url'=>array('index')),
-	array('label'=>'Создать заявку','url'=>array('create')),
+	array('label'=>'Создать заказ','url'=>array('create')),
 );
 
 Yii::app()->clientScript->registerScript('search', "

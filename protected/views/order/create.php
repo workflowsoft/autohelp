@@ -1,6 +1,6 @@
 <?php
 $this->breadcrumbs=array(
-	'Заявки'=>array('index'),
+	'Заказы'=>array('admin'),
 	'Создание',
 );
 
