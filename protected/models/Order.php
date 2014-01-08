@@ -90,7 +90,7 @@ class Order extends CActiveRecord
 			'ts_make' => 'Марка ТС',
 			'ts_model' => 'Модель ТС',
 			'ts_color' => 'Цвет ТС',
-			'card_delivery_address' => 'Адрес доставки карты',
+			'card_delivery_address' => 'Адрес доставки',
 			'card_id' => 'Номер карты',
 			'activation_start' => 'Начало действия карты',
 			'activation_end' => 'Окончание действия карты',
