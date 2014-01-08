@@ -1,11 +1,11 @@
 <?php
 $this->breadcrumbs=array(
-	'Инциденты. Поиск клиента'=>array('index'),
+	'Инциденты. Поиск клиента'=>array('searchCard'),
 	'Поиск клиента',
 );
 
 $this->menu=array(
-	array('label'=>'Список открытых инцидентов','url'=>array('admin')),
+	array('label'=>'Список открытых инцидентов','url'=>array('listNew')),
 );
 ?>
 

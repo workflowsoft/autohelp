@@ -27,7 +27,7 @@ class TicketController extends Controller
 	{
 		return array(
 			array('allow',  // allow all users to perform 'index' and 'view' actions
-				'actions'=>array('index','view'),
+				'actions'=>array('index','view', 'searchCard'),
 				'users'=>array('*'),
 			),
 			array('allow', // allow authenticated user to perform 'create' and 'update' actions
@@ -54,6 +54,21 @@ class TicketController extends Controller
 			'model'=>$this->loadModel($id),
 		));
 	}
+
+    public function actionSearchCard()
+    {
+        //По-сути мы используем поля заказа для его поиска. Заказ собтвенно и является необходимым условием обслуживания
+        $model = new Order;
+        if(isset($_POST['SearchCard']))
+        {
+            $model->attributes=$_POST['SearchCard'];
+            //Здесь мы осуществим поиск и вернем результат
+        }
+        $this->render('searchCard',array(
+            'model'=>$model,
+        ));
+    }
+
 
 	/**
 	 * Creates a new model.
