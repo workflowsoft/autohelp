@@ -63,12 +63,12 @@ class Ticket extends CActiveRecord
 	public function attributeLabels()
 	{
 		return array(
-			'id' => 'ID',
-			'status' => 'Status',
-			'comment' => 'Comment',
-			'user_id' => 'User',
-			'last_status_change' => 'Last Status Change',
-			'payment_without_card' => 'Payment Without Card',
+			'id' => 'Идентификатор ',
+			'status' => 'Статус',
+			'comment' => 'Комментарий',
+			'user_id' => 'Пользователь',
+			'last_status_change' => 'Последнее обновление статуса',
+			'payment_without_card' => 'Оплата не месте',
 		);
 	}
 
