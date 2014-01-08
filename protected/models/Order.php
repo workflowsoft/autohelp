@@ -56,8 +56,44 @@ class Order extends CActiveRecord
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
 			array('id, email, phone, description, first_name, middle_name, last_name, vin, grn, ts_make, ts_model, ts_color, card_delivery_address, card_id, activation_start, activation_end, delivery_coords, delivery_street', 'safe', 'on'=>'search'),
-		);
+
+            // date validation
+            array('activation_start, activation_end', 'type', 'type'=>'date', 'dateFormat'=>Yii::app()->locale->dateFormat),
+        );
 	}
+
+    /*
+    protected function beforeSave(){
+        foreach($this->metadata->tableSchema->columns as $columnName => $column){
+            if ($column->dbType == 'date'){
+                $this->$columnName = date('Y-m-d', CDateTimeParser::parse($this->$columnName, Yii::app()->locale->dateFormat));
+            }elseif ($column->dbType == 'datetime'){
+                $this->$columnName = date('Y-m-d H:i:s', CDateTimeParser::parse($this->$columnName, Yii::app()->locale->dateFormat));
+            }
+
+        }
+
+        return true;
+    }
+
+
+    protected function afterFind(){
+
+        foreach($this->metadata->tableSchema->columns as $columnName => $column){
+
+            if (!strlen($this->$columnName)) continue;
+
+            if ($column->dbType == 'date'){
+                $this->$columnName = Yii::app()->dateFormatter->formatDateTime(
+                    CDateTimeParser::parse($this->$columnName, 'yyyy-MM-dd'),'medium',null);
+            }elseif ($column->dbType == 'datetime'){
+                $this->$columnName = Yii::app()->dateFormatter->formatDateTime(
+                    CDateTimeParser::parse($this->$columnName, 'yyyy-MM-dd hh:mm:ss'));
+            }
+        }
+        return true;
+    }
+    */
 
 	/**
 	 * @return array relational rules.
@@ -69,6 +105,7 @@ class Order extends CActiveRecord
 		return array(
 			'card' => array(self::BELONGS_TO, 'Card', 'card_id'),
 			'order2actionTags' => array(self::HAS_MANY, 'Order2actionTag', 'order_id'),
+			'action_tag' => array(self::HAS_MANY, 'ActionTag', array('action_tag_id' => 'id'), 'through'=>'order2actionTags'),
 		);
 	}
 

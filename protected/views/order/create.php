@@ -1,15 +1,16 @@
 <?php
 $this->breadcrumbs=array(
-	'Orders'=>array('index'),
-	'Create',
+	'Заявки'=>array('index'),
+	'Создание',
 );
 
-$this->menu=array(
-	array('label'=>'List Order','url'=>array('index')),
-	array('label'=>'Manage Order','url'=>array('admin')),
-);
+//$this->menu=array(
+//	array('label'=>'Перечень заявок','url'=>array('admin')),
+//	array('label'=>'Manage Order','url'=>array('admin')),
+//);
+
 ?>
 
-<h1>Create Order</h1>
+<h1>Создание заявки</h1>
 
-<?php echo $this->renderPartial('_form', array('model'=>$model)); ?>
+<?php echo $this->renderPartial('_formCreate', array('model'=>$model)); ?>

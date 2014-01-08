@@ -66,19 +66,22 @@ class OrderController extends Controller
      */
     public function actionCreate()
     {
-        $model = new Order;
-
-        // Uncomment the following line if AJAX validation is needed
-        // $this->performAjaxValidation($model);
+        $order = new Order;
 
         if (isset($_POST['Order'])) {
-            $model->attributes = $_POST['Order'];
-            if ($model->save())
-                $this->redirect(array('view', 'id' => $model->id));
+            $order->attributes = $_POST['Order'];
+            $action_tag = ActionTag::model()->find('name=:name', array(':name' => 'call'));
+            if ($order->save()) {
+                $relation = new Order2actionTag;
+                $relation->action_tag_id = $action_tag->id;
+                $relation->order_id = $order->id;
+                $relation->save();
+                $this->redirect(array('view', 'id' => $order->id));
+            }
         }
 
         $this->render('create', array(
-            'model' => $model,
+            'model' => $order,
         ));
     }
 

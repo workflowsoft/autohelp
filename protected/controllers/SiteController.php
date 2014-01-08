@@ -27,12 +27,10 @@ class SiteController extends Controller
 	 */
 	public function actionIndex()
 	{
-		// renders the view file 'protected/views/site/index.php'
-		// using the default layout 'protected/views/layouts/main.php'
-//        $model = Order::model()->with('card')->findAll();
-        $model = new Order('search');
-        $model->unsetAttributes();
-        $stuff['model'] = $model;
+//        $stuff['model'] = Yii::app()->user;
+//        $user = User::model()->with('role')->find('email=:email', array(':email' => 'altruer@gmail.com'));
+//        $stuff['model'] = $user->role;
+        $stuff['model'] = Order::model()->with('action_tag')->findByPk(1);
 		$this->render('index', $stuff);
 //		$this->render('index');
 	}

@@ -21,6 +21,7 @@
             'items'=>array(
                 array('label'=>'Главная', 'url'=>array('/site/index')),
                 array('label'=>'Перечень заявок', 'url'=>array('/order/admin/?action_tag=call')),
+                array('label'=>'Создать заявку', 'url'=>array('/order/create')),
 //                array('label'=>'About', 'url'=>array('/site/page', 'view'=>'about')),
 //                array('label'=>'Contact', 'url'=>array('/site/contact')),
                 array('label'=>'Войти', 'url'=>array('/site/login'), 'visible'=>Yii::app()->user->isGuest),
@@ -35,6 +36,7 @@
     <?php if(isset($this->breadcrumbs)):?>
         <?php $this->widget('bootstrap.widgets.TbBreadcrumbs', array(
             'links'=>$this->breadcrumbs,
+            'homeLink'=> CHtml::link('Главная', $this->createUrl('/')),
         )); ?><!-- breadcrumbs -->
     <?php endif?>
 
