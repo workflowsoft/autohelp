@@ -133,7 +133,7 @@ CREATE TABLE `user` (
 CREATE TABLE `ticket` (
   `id`                 INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
   `status`             ENUM ('draft', 'new', 'assiging', 'assigned', 'in_progress', 'done', 'rejected'),
-  `comment`            VARCHAR(256),
+  `comment`            VARCHAR(2048),
   `user_id`            INT(10) UNSIGNED,
   `last_status_change` DATETIME,
 
