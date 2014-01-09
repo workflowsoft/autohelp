@@ -53,20 +53,50 @@ class TicketController extends Controller
 	 */
 	public function actionCreate()
 	{
-		$model=new Ticket;
 
+        $order_id = $_REQUEST['order_id'];
+        if(!isset($order_id)) {
+            throw new CHttpException(400,'Invalid request. Specify order_id');
+        }
+
+//        $order = new Order($order_id);
+        $order = Order::model()->findByPk($order_id);
+
+
+        $ticket=new Ticket;
 		// Uncomment the following line if AJAX validation is needed
 		// $this->performAjaxValidation($model);
 
 		if(isset($_POST['Ticket']))
 		{
-			$model->attributes=$_POST['Ticket'];
-			if($model->save())
-				$this->redirect(array('view','id'=>$model->id));
+            $ticket->attributes=$_POST['Ticket'];
+            $ticket->order_id = $order_id;
+			if($ticket->save()) {
+                if(isset($_POST['Service'])) {
+                    foreach ($_POST['Service'] as $key => $service) {
+                        if(!empty($service)) {
+                            $relation = new Ticket2service();
+                            $relation->ticket_id = $ticket->id;
+                            $relation->service_id = $key;
+
+                            $relation->save();
+                        }
+
+                    }
+                }
+
+                $this->redirect(array('view','id'=>$ticket->id));
+            }
+
+
 		}
 
+
+
 		$this->render('create',array(
-			'model'=>$model,
+			'ticket'=>$ticket,
+            'order' => $order,
+            'services' => new Services(),
 		));
 	}
 
@@ -132,11 +162,14 @@ class TicketController extends Controller
 	{
 		$model=new Ticket('search');
 		$model->unsetAttributes();  // clear any default values
-		if(isset($_GET['Ticket']))
+		if(isset($_GET['Ticket'])) {
 			$model->attributes=$_GET['Ticket'];
+        }
+        $status = isset($_GET['status']) ? $_GET['status'] : 'new';
 
 		$this->render('admin',array(
 			'model'=>$model,
+            'status' => $status,
 		));
 	}
 
