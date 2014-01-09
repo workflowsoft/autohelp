@@ -100,7 +100,11 @@ INSERT into `order`(`email`, `phone`) values ('client12@ya.ru','23216488746');
 INSERT into order2action_tag (`order_id`, `action_tag_id`)
   select LAST_INSERT_ID() ,action_tag.id from action_tag where action_tag.name = 'recall';
 
-
-
-
-/* end dummies */
+INSERT  into `ticket`(`status`, `comment`) VALUES ('new', 'ул. Степана разина первый перекресток перед палычем');
+INSERT `ticket2service`(`ticket_id`,`service_id`)
+    SELECT LAST_INSERT_ID(), `id` FROM `service`
+      WHERE title in ('Эвакуация','Шиномонтаж','Подогев двигателя','Разблокировка замков');
+INSERT  into `ticket`(`status`, `comment`) VALUES ('new', 'ул. Демократическая, сразу перед кольцом рынка Шапито');
+INSERT `ticket2service`(`ticket_id`,`service_id`)
+  SELECT LAST_INSERT_ID(), `id` FROM `service`
+  WHERE title in ('Эвакуация','Аварийный комиссар','Юридическая помощь','Помощь при ДТП');
