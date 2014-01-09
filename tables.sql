@@ -1,4 +1,4 @@
-﻿DROP SCHEMA `autohelp`;
+DROP SCHEMA `autohelp`;
 
 CREATE SCHEMA `autohelp`
   DEFAULT CHARACTER SET utf8;
