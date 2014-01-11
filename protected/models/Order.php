@@ -22,6 +22,7 @@
  * @property string $activation_end
  * @property string $delivery_coords
  * @property string $delivery_street
+ * @property int $delivered
  *
  * The followings are the available model relations:
  * @property Card $card
@@ -57,6 +58,8 @@ class Order extends CActiveRecord
 			// @todo Please remove those attributes that should not be searched.
 			array('id, email, phone, description, first_name, middle_name, last_name, vin, grn, ts_make, ts_model, ts_color, card_delivery_address, card_id, activation_start, activation_end, delivery_coords, delivery_street', 'safe', 'on'=>'search'),
 
+
+            array('delivered', 'numerical', 'integerOnly'=>true),
             // date validation
 //            array('activation_start, activation_end', 'type', 'type'=>'date', 'dateFormat'=>Yii::app()->locale->dateFormat),
         );
@@ -133,6 +136,7 @@ class Order extends CActiveRecord
 			'activation_end' => 'Окончание действия карты',
 			'delivery_coords' => 'Координаты доставки',
 			'delivery_street' => 'Уточнение координат доставки',
+			'delivered' => 'Карта доставлена',
 		);
 	}
 

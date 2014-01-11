@@ -5,6 +5,14 @@
 
     <p class="help-block">Поля отмеченные <span class="required">*</span> обязательны</p>
 
+    <?php
+        foreach ($model->action_tag as $action_tag) {
+            if ($action_tag->name == 'delivery') {
+                echo '<p>Если карта доставлена, обязательно введите номер карты</p>';
+            }
+        }
+    ?>
+
 	<?php echo $form->errorSummary($model); ?>
 
 	<?php echo $form->textFieldRow($model,'email',array('class'=>'span5','maxlength'=>256)); ?>
@@ -41,6 +49,14 @@
 
 	<?php echo $form->textFieldRow($model,'delivery_street',array('class'=>'span5','maxlength'=>256)); ?>
 
+    <?php
+        foreach ($model->action_tag as $action_tag) {
+            if ($action_tag->name == 'delivery') {
+                echo $form->checkboxRow($model, 'delivered', array('value' => 1, 'uncheckValue' => 0));
+            }
+        }
+    ?>
+
 	<div class="form-actions">
 		<?php
 
@@ -55,6 +71,13 @@
                 echo '&nbsp;';
                 $this->widget('bootstrap.widgets.TbButton', array(
                     'buttonType' => 'submit',
+                    'type' => 'primary',
+                    'label' => 'Доставка',
+                    'htmlOptions'   => array('name'=> 'delivery'),
+                ));
+                echo '&nbsp;';
+                $this->widget('bootstrap.widgets.TbButton', array(
+                    'buttonType' => 'submit',
                     'type'=>'success',
                     'label' => 'Активация',
                     'htmlOptions'   => array('name'=> 'activate'),
@@ -62,11 +85,32 @@
             } elseif ($action_tag->name === 'recall') {
                 $this->widget('bootstrap.widgets.TbButton', array(
                     'buttonType' => 'submit',
+                    'type' => 'primary',
+                    'label' => 'Доставка',
+                    'htmlOptions'   => array('name'=> 'delivery'),
+                ));
+                echo '&nbsp;';
+                $this->widget('bootstrap.widgets.TbButton', array(
+                    'buttonType' => 'submit',
                     'type'=>'success',
                     'label' => 'Активация',
                     'htmlOptions'   => array('name'=> 'activate'),
                 ));
             } elseif ($action_tag->name === 'check') {
+                $this->widget('bootstrap.widgets.TbButton', array(
+                    'buttonType' => 'submit',
+                    'type' => 'primary',
+                    'label' => 'Повторный обзвон',
+                    'htmlOptions'   => array('name'=> 'recall'),
+                ));
+                echo '&nbsp;';
+                $this->widget('bootstrap.widgets.TbButton', array(
+                    'buttonType' => 'submit',
+                    'type'=>'success',
+                    'label' => 'Активация',
+                    'htmlOptions'   => array('name'=> 'activate'),
+                ));
+            } elseif ($action_tag->name === 'delivery') {
                 $this->widget('bootstrap.widgets.TbButton', array(
                     'buttonType' => 'submit',
                     'type' => 'primary',

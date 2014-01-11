@@ -234,6 +234,7 @@ CREATE TABLE `ticket2service` (
   ENGINE = InnoDB
   DEFAULT CHARSET = utf8;
 
+alter table `order` add `delivered`  TINYINT(1) NOT NULL DEFAULT 0;
 delimiter //
 CREATE PROCEDURE getPartnersAssignList (IN TicketId INT(10) UNSIGNED)
 BEGIN
