@@ -15,6 +15,7 @@ insert into `action_tag` (`name`, `title`, `description`) values('check','Про
 insert into `action_tag` (`name`, `title`, `description`) values('activate','Активация', 'Заявки с проверенными данными, но не оплаченные');
 insert into `action_tag` (`name`, `title`, `description`) values('expire','Истечение', 'Активированные карты, у которых истекает срок действия');
 insert into `action_tag` (`name`, `title`, `description`) values('cash_on_place','Оплата на месте', 'Клиенты, которые не приобрели карты и оплачивают услуги на месте');
+insert into `action_tag` (`name`, `title`, `description`) values('delivery','Доставка', 'Клиенты, которым доставляют карту');
 
 
 INSERT into `service` (`title`, `description`) values ('Эвакуация', 'Возможность вызова эвакуатора неограниченное количество раз в любую точку Самары (в дальнейшем – Самарской области) в случае неисправности ТС и невозможности его дальнейшей эксплуатации');

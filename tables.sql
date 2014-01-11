@@ -233,3 +233,5 @@ CREATE TABLE `ticket2service` (
 )
   ENGINE = InnoDB
   DEFAULT CHARSET = utf8;
+
+alter table `order` add `delivered`  TINYINT(1) NOT NULL DEFAULT 0;
