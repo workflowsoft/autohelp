@@ -147,16 +147,24 @@ class TicketController extends Controller
                 $partners[$k]['services'][] = Service::model()->findByPk($sid);
             }
 
-            // Выбираем услуги, кот не могут быть предотавлены
+
+            // Выбираем услуги, кот не могут быть предоставлены
             if(empty($partner['PartnerId'])) {
                 foreach($partners[$k]['services'] as $service) {
                     $partners['services_not_available'][] = $service;
                 }
             } else {
+                //Запихнем все услуги партнера, для полного счастья
+                $ps = Partner::model()->with('service')->findByPk($partner['PartnerId']);
+                $partners[$k]['all_services'] = array_diff($ps->service, $partners[$k]['services']);
                 $partners['available'][] = $partners[$k];
             }
+
             unset($partners[$k]);
         }
+
+
+//        $ps = Partner::model()->with('service')->findByPk(1);
 
 
 		$this->render('partnerAssign',array(

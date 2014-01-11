@@ -1,25 +1,26 @@
 <?php
 
 /**
- * This is the model class for table "service".
+ * This is the model class for table "partner2service".
  *
- * The followings are the available columns in table 'service':
+ * The followings are the available columns in table 'partner2service':
  * @property string $id
- * @property string $title
- * @property string $description
+ * @property string $partner_id
+ * @property string $service_id
  *
  * The followings are the available model relations:
- * @property Partner2service[] $partner2services
- * @property Service2group[] $service2groups
+ * @property Partner $partner
+ * @property Service $service
+ * @property Partner2ticket[] $partner2tickets
  */
-class Service extends CActiveRecord
+class Partner2service extends CActiveRecord
 {
 	/**
 	 * @return string the associated database table name
 	 */
 	public function tableName()
 	{
-		return 'service';
+		return 'partner2service';
 	}
 
 	/**
@@ -30,12 +31,11 @@ class Service extends CActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('title', 'required'),
-			array('title', 'length', 'max'=>128),
-			array('description', 'length', 'max'=>256),
+			array('partner_id, service_id', 'required'),
+			array('partner_id, service_id', 'length', 'max'=>10),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
-			array('id, title, description', 'safe', 'on'=>'search'),
+			array('id, partner_id, service_id', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -47,8 +47,9 @@ class Service extends CActiveRecord
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
-			'partner2services' => array(self::HAS_MANY, 'Partner2service', 'service_id'),
-			'service2groups' => array(self::HAS_MANY, 'Service2group', 'service_id'),
+			'partner' => array(self::BELONGS_TO, 'Partner', 'partner_id'),
+			'service' => array(self::BELONGS_TO, 'Service', 'service_id'),
+			'partner2tickets' => array(self::HAS_MANY, 'Partner2ticket', 'partner2service_id'),
 		);
 	}
 
@@ -59,8 +60,8 @@ class Service extends CActiveRecord
 	{
 		return array(
 			'id' => 'ID',
-			'title' => 'Title',
-			'description' => 'Description',
+			'partner_id' => 'Partner',
+			'service_id' => 'Service',
 		);
 	}
 
@@ -83,8 +84,8 @@ class Service extends CActiveRecord
 		$criteria=new CDbCriteria;
 
 		$criteria->compare('id',$this->id,true);
-		$criteria->compare('title',$this->title,true);
-		$criteria->compare('description',$this->description,true);
+		$criteria->compare('partner_id',$this->partner_id,true);
+		$criteria->compare('service_id',$this->service_id,true);
 
 		return new CActiveDataProvider($this, array(
 			'criteria'=>$criteria,
@@ -95,16 +96,10 @@ class Service extends CActiveRecord
 	 * Returns the static model of the specified AR class.
 	 * Please note that you should have this exact method in all your CActiveRecord descendants!
 	 * @param string $className active record class name.
-	 * @return Service the static model class
+	 * @return Partner2service the static model class
 	 */
 	public static function model($className=__CLASS__)
 	{
 		return parent::model($className);
 	}
-
-    // is needed to compare services
-    function __toString(){
-        return $this->id;
-    }
-
 }
