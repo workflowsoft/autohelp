@@ -68,19 +68,12 @@ $('.filter').click(function(){
 )); ?>
 
 
-<?php //echo CHtml::link('Advanced Search','#',array('class'=>'search-button btn')); ?>
-<!--<div class="search-form" style="display:none">-->
-<?php //$this->renderPartial('_search',array(
-//	'model'=>$model,
-//)); ?>
-<!--</div><!-- search-form -->
-
-
-
 <?php $this->widget('bootstrap.widgets.TbGridView',array(
 	'id'=>'ticket-grid',
 	'dataProvider'=>$model->search(),
 	'filter'=>$model,
+    'selectionChanged'=>'function(id){ location.href = "'.$this->createUrl('partnerAssign').'/id/"+$.fn.yiiGridView.getSelection(id);}',
+
 	'columns'=>array(
 		'id',
 		'status',
@@ -88,8 +81,8 @@ $('.filter').click(function(){
 		'user_id',
 		'last_status_change',
 		'payment_without_card',
-		array(
-			'class'=>'bootstrap.widgets.TbButtonColumn',
-		),
+//		array(
+//			'class'=>'bootstrap.widgets.TbButtonColumn',
+//		),
 	),
 )); ?>

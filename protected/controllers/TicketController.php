@@ -27,7 +27,7 @@ class TicketController extends Controller
 	{
 		return array(
 			array('allow',  // allow all users to perform 'index' and 'view' actions
-                'actions'=>array('index','view','create','update','admin','delete'),
+                'actions'=>array('index','view','create','update','admin','delete', 'partnerassign'),
                 'users'=>array('@'),
 			),
 			array('deny',  // deny all users
@@ -121,6 +121,47 @@ class TicketController extends Controller
 
 		$this->render('update',array(
 			'model'=>$model,
+		));
+	}
+
+	public function actionPartnerAssign($id)
+	{
+		$model=$this->loadModel($id);
+
+		if(isset($_POST['Ticket']))
+		{
+			$model->attributes=$_POST['Ticket'];
+			if($model->save())
+				$this->redirect(array('view','id'=>$model->id));
+		}
+
+        // select available partners
+        $sql = "call getPartnersAssignList($id)";
+        $partners = Yii::app()->db->createCommand($sql)->queryAll();
+
+        foreach( $partners as $k => $partner) {
+            //Получаем услуги
+            $service_ids = preg_split('/,/', $partner['ServiceIds']);
+            $service_ids = array_unique($service_ids);
+            foreach($service_ids as $sid) {
+                $partners[$k]['services'][] = Service::model()->findByPk($sid);
+            }
+
+            // Выбираем услуги, кот не могут быть предотавлены
+            if(empty($partner['PartnerId'])) {
+                foreach($partners[$k]['services'] as $service) {
+                    $partners['services_not_available'][] = $service;
+                }
+            } else {
+                $partners['available'][] = $partners[$k];
+            }
+            unset($partners[$k]);
+        }
+
+
+		$this->render('partnerAssign',array(
+			'model'=>$model,
+            'partners' => $partners,
 		));
 	}
 
