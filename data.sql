@@ -105,6 +105,27 @@ INSERT `ticket2service`(`ticket_id`,`service_id`)
     SELECT LAST_INSERT_ID(), `id` FROM `service`
       WHERE title in ('Эвакуация','Шиномонтаж','Подогев двигателя','Разблокировка замков');
 INSERT  into `ticket`(`status`, `comment`) VALUES ('new', 'ул. Демократическая, сразу перед кольцом рынка Шапито');
+SET @secondTicket = LAST_INSERT_ID();
 INSERT `ticket2service`(`ticket_id`,`service_id`)
-  SELECT LAST_INSERT_ID(), `id` FROM `service`
+  SELECT @secondTicket, `id` FROM `service`
   WHERE title in ('Эвакуация','Аварийный комиссар','Юридическая помощь','Помощь при ДТП');
+
+INSERT INTO `partner` (`title`,`phone`) VALUES ('Эвакуатор 911', '999111999');
+SET @firstPartner = LAST_INSERT_ID();
+INSERT `partner2service` (`partner_id`,`service_id`)
+  SELECT @firstPartner, `id` FROM `service`
+  WHERE title in ('Эвакуация','Разблокировка руля','Помощь при ДТП');
+
+INSERT INTO `partner` (`title`,`phone`) VALUES ('Дыра в покрышке', '99932499');
+INSERT `partner2service` (`partner_id`,`service_id`)
+  SELECT LAST_INSERT_ID(), `id` FROM `service`
+  WHERE title in ('Шиномонтаж','Подогев двигателя','Зачистка клемм АКБ');
+
+INSERT INTO `partner` (`title`,`phone`) VALUES ('Не пропадешь', '99932499');
+INSERT `partner2service` (`partner_id`,`service_id`)
+  SELECT LAST_INSERT_ID(), `id` FROM `service`
+  WHERE title in ('Юридическая помощь','Помощь при ДТП');
+  
+INSERT `partner2ticket` (`partner2service_id`, `ticket_id`)
+    SELECT id, @secondTicket FROM partner2service
+    WHERE partner2service.partner_id = @firstPartner
