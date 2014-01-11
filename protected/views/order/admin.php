@@ -52,6 +52,12 @@ $('.filter').click(function(){
 )); ?>
 
 <?php $this->widget('bootstrap.widgets.TbButton', array(
+    'type'=>'info',
+    'label'=>'Доставка карты',
+    'htmlOptions'=>array('class'=>'filter filter-delivery', 'data-at' => 'delivery'),
+)); ?>
+
+<?php $this->widget('bootstrap.widgets.TbButton', array(
     'type'=>'warning',
     'label'=>'Проверка',
     'htmlOptions'=>array('class'=>'filter filter-check', 'data-at' => 'check'),
