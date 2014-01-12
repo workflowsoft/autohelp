@@ -261,3 +261,5 @@ BEGIN
     WHERE T2.`ticket_id` = TicketId
     ORDER BY `ServiceCoverage` DESC, `Workload` ASC;
 END//
+
+delimiter ;
