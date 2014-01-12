@@ -107,6 +107,8 @@ class OrderController extends Controller
             $at_name = 'call';
         } elseif (isset($_POST['check'])) {
             $at_name = 'check';
+        } elseif (isset($_POST['delivery'])) {
+            $at_name = 'delivery';
         }
 
         if (isset($_POST['Order'])) {
