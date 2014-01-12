@@ -19,7 +19,6 @@
         array(
             'class'=>'bootstrap.widgets.TbMenu',
             'items'=>array(
-                array('label'=>'Главная', 'url'=>array('/site/index')),
                 array('label'=>'Поиск клиентов', 'url'=>array('/order/search')),
 
                 array('label'=>'Заказы', 'url'=>array('/order/admin/?action_tag=call'),
