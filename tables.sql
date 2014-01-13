@@ -31,7 +31,7 @@ CREATE TABLE `card` (
 
 CREATE TABLE `action_tag` (
   `id`          INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `name`       VARCHAR(128)     NOT NULL,
+  `name`        VARCHAR(128)     NOT NULL,
   `title`       VARCHAR(128)     NOT NULL,
   `description` VARCHAR(256),
   PRIMARY KEY (`id`),
@@ -218,13 +218,13 @@ ALTER TABLE `card` ADD `prepaid` TINYINT(1) NOT NULL DEFAULT 0;
 
 ALTER TABLE `ticket` ADD `payment_without_card` TINYINT(1) NOT NULL DEFAULT 0;
 
-ALTER TABLE  `ticket` ADD  `order_id` INT(10) UNSIGNED;
-ALTER TABLE  `ticket` ADD CONSTRAINT FOREIGN KEY  (`order_id`) REFERENCES `order` (`id`);
+ALTER TABLE `ticket` ADD `order_id` INT(10) UNSIGNED;
+ALTER TABLE `ticket` ADD CONSTRAINT FOREIGN KEY (`order_id`) REFERENCES `order` (`id`);
 
 
 CREATE TABLE `ticket2service` (
-  `id`      INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `ticket_id` INT(10) UNSIGNED NOT NULL,
+  `id`         INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `ticket_id`  INT(10) UNSIGNED NOT NULL,
   `service_id` INT(10) UNSIGNED NOT NULL,
 
   PRIMARY KEY (`id`),
@@ -234,43 +234,57 @@ CREATE TABLE `ticket2service` (
   ENGINE = InnoDB
   DEFAULT CHARSET = utf8;
 
-alter table `order` add `delivered`  TINYINT(1) NOT NULL DEFAULT 0;
-delimiter //
-CREATE PROCEDURE getPartnersAssignList (IN TicketId INT(10) UNSIGNED)
-BEGIN
-  SELECT T2.*,IFNULL(T4.`TicketsInWork`, 0) AS `Workload` FROM
-    (SELECT  P.`Id` as `PartnerId`,
-             P.`title` as `PartnerTitle`,
-                    P.`phone` as `PartnerPhone`,
-       T.`ticket_id`, GROUP_CONCAT(T.`service_id`) as `ServiceIds`,
-                    GROUP_CONCAT(S.`title`) as `ServiceTitles`,
-                    COUNT(T.`service_id`) AS `ServiceCoverage`
-     FROM `ticket2service` T
-       LEFT JOIN `partner2service` PS ON PS.`service_id` = T.`service_id`
-       LEFT JOIN `service` S ON T.`service_id` = S.`id`
-       LEFT JOIN `partner` P ON P.`id` = PS.`partner_id`
-     GROUP BY `partner_id`) T2
-    LEFT JOIN
-    (SELECT  T3.`partner_id`, COUNT(*) AS `TicketsInWork` FROM
-      (SELECT PS.`partner_id`, PT.`ticket_id` FROM `partner2ticket` PT
-        INNER JOIN `partner2service` PS ON PS.`id` = PT.`partner2service_id`
-        INNER JOIN `ticket` TK ON PT.`ticket_id` = TK.`id`
-      WHERE TK.`status` IN ('assigned','assiging','in_progress')
-      GROUP BY PS.`partner_id`, PT.`ticket_id`) T3
-    GROUP BY T3.`partner_id`) T4 ON T4.`partner_id` = T2.`PartnerId`
+ALTER TABLE `order` ADD `delivered` TINYINT(1) NOT NULL DEFAULT 0;
+DELIMITER //
+CREATE PROCEDURE getPartnersAssignList(IN TicketId INT(10) UNSIGNED)
+  BEGIN
+    SELECT
+      T2.*,
+      IFNULL(T4.`TicketsInWork`, 0) AS `Workload`
+    FROM
+      (SELECT
+         P.`Id`                       AS `PartnerId`,
+         P.`title`                    AS `PartnerTitle`,
+         P.`phone`                    AS `PartnerPhone`,
+         T.`ticket_id`,
+         GROUP_CONCAT(T.`service_id`) AS `ServiceIds`,
+         GROUP_CONCAT(S.`title`)      AS `ServiceTitles`,
+         COUNT(T.`service_id`)        AS `ServiceCoverage`
+       FROM `ticket2service` T
+         LEFT JOIN `partner2service` PS ON PS.`service_id` = T.`service_id`
+         LEFT JOIN `service` S ON T.`service_id` = S.`id`
+         LEFT JOIN `partner` P ON P.`id` = PS.`partner_id`
+       GROUP BY `partner_id`) T2
+      LEFT JOIN
+      (SELECT
+         T3.`partner_id`,
+         COUNT(*) AS `TicketsInWork`
+       FROM
+         (SELECT
+            PS.`partner_id`,
+            PT.`ticket_id`
+          FROM `partner2ticket` PT
+            INNER JOIN `partner2service` PS ON PS.`id` = PT.`partner2service_id`
+            INNER JOIN `ticket` TK ON PT.`ticket_id` = TK.`id`
+          WHERE TK.`status` IN ('assigned', 'assiging', 'in_progress')
+          GROUP BY PS.`partner_id`, PT.`ticket_id`) T3
+       GROUP BY T3.`partner_id`) T4 ON T4.`partner_id` = T2.`PartnerId`
     WHERE T2.`ticket_id` = TicketId
     ORDER BY `ServiceCoverage` DESC, `Workload` ASC;
-END//
+  END//
 
-delimiter ;
+DELIMITER ;
 
 
-GRANT SELECT,INSERT
+GRANT SELECT, INSERT
 ON autohelp.partner
 TO partner_admin@localhost
 IDENTIFIED BY 'mysql159';
 
-GRANT SELECT,INSERT
+GRANT SELECT, INSERT
 ON autohelp.service
 TO partner_admin@localhost
 IDENTIFIED BY 'mysql159';
+
+
+ALTER TABLE `partner2ticket` ADD `arrival_time` TIME;

@@ -124,38 +124,48 @@ class TicketController extends Controller
 
     public function actiona_PartnerAssign()
     {
-        $partner2service = '';
         if (isset($_POST['data'])) {
             $data = $_POST['data'];
             foreach ($data as $item) {
                 if (!empty($item['partner_id']) && !empty($item['ticket_id'])) {
                     if (!empty($item['services'])) {
-                        foreach ($item['services'] as $service_id) {
+                        foreach ($item['services'] as $service) {
                             $ticket2service = new Ticket2service;
                             $ticket2service->ticket_id = $item['ticket_id'];
-                            $ticket2service->service_id = $service_id;
+                            $ticket2service->service_id = $service['id'];
                             $ticket2service->save();
 
                             $partner2ticket = new Partner2ticket;
-                            //check it
+                            $param = array(
+                                ':pid' => $item['partner_id'],
+                                ':sid' => $service['id'],
+                            );
                             $partner2service = Partner2service::model()
-                                ->find('partner_id=:pid and service_id=:sid',
-                                    array(
-                                        ':pid' => $item['partner_id'],
-                                        ':sid' => $service_id,
-                                    )
+                                ->find('partner_id=:pid and service_id=:sid', $param
                                 );
                             $partner2ticket->partner2service_id = $partner2service->id;
                             $partner2ticket->ticket_id = $item['ticket_id'];
+                            $partner2ticket->arrival_time = $this->addTime($service['time']);
                             $partner2ticket->save();
-
                         }
                     }
                 }
             }
         }
 
-        echo CJSON::encode(array('success' => true, 'u' => $partner2service));
+        echo CJSON::encode(array('success' => true));
+    }
+
+    /**
+     * adds minutes to current time
+     * @param int $minutes
+     */
+    private function addTime($minutes)
+    {
+        $time = new DateTime(date('H:i:s'));
+        $interval = new DateInterval('PT' . $minutes . 'M');
+        $time->add($interval);
+        return $time->format('H:i:s');
     }
 
 

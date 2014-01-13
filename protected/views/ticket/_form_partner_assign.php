@@ -42,30 +42,46 @@ function intersect(array1, array2) {
 
 function showActiveServices() {
     var partners = [];
+    var errors = false;
     $.each( $('.grid-view').find('.partner'), function( key, tr ) {
         var input = $(this);
         var partner_id = null;
         //партнер выбран
         if(input.attr('checked')){
           partner_id = $(this).data('id');
-          var service_ids = [];
+          var services = [];
             $.each( input.closest('tr').find('.service-checker'), function( key2, service ) {
                 var service_input =$(this);
                 if(service_input.attr('checked')){
                     var service_id = $(this).data('id');
-                    service_ids.push(service_id)
+                    var time_input = service_input.next().next();
+                    var time = time_input.val();
+                    if(!time) {
+                        alert('Не для всех услуг указано время');
+                        errors = true;
+                        return false;
+                    }
+
+                    services.push({
+                        'id' : service_id,
+                        'time' : time
+                    });
                 }
             });
           if (partner_id) {
             partners.push({
                 'ticket_id' : '$ticket_id',
                 'partner_id' : partner_id,
-                'service_ids' : service_ids
+                'services' : services
             });
           }
         }
 
     });
+
+    if(errors) {
+        return;
+    }
     var_dump(partners);
 
     $.ajax({
@@ -74,7 +90,7 @@ function showActiveServices() {
         data: {'data' : partners},
         // TODO fucking govnocode with redirects, use ajax or yii forms
         // Make action as api, it shouldn return the page
-        success: function(data) {  alert(11); var_dump(data);    /*document.location.href = '$view_url'*/},
+        success: function(data) {  var_dump(data);    /*document.location.href = '$view_url'*/},
         error: function(data) {alert('Не удалось назначить партнеров')},
         dataType: 'json'
     });
@@ -129,7 +145,7 @@ if (!empty($partners['services_not_available'])) {
     }
 }
 
-function makeServiceCheckBox($services, $checked)
+function makeServiceCheckBox($services, $checked, $partner_id)
 {
     $result = '';
     foreach ($services as $service) {
@@ -138,7 +154,7 @@ function makeServiceCheckBox($services, $checked)
             . ' class="service-checker" data-id="'
             . $service->id . '">';
         $result .= '<span class="label">' . $service->title . '</span>';
-        $result .= '&nbsp<input type="text" class="timer timer-' . $service->id . '" style="width:40px;">';
+        $result .= '&nbsp<input type="text" class="timer timer-' . $partner_id .'" data-id="' . $service->id . '" style="width:40px;"> минут';
 
         $result .= '<br>';
     }
@@ -177,12 +193,12 @@ $this->widget('bootstrap.widgets.TbGridView', array(
             'value' => function ($data) {
                     $result = '';
 
-                    $result .= makeServiceCheckBox($data['services'], true);
+                    $result .= makeServiceCheckBox($data['services'], true, $data['id']);
 
                     if (!empty($data['all_services'])) {
                         $result .= CHtml::link('Показать больше', '#', array('onclick' => '$(".more-services-' . $data['id'] . '").toggle(); event.stopPropagation()'));
                         $result .= '<div class="more-services more-services-' . $data['id'] . '" style="display: none;">';
-                        $result .= makeServiceCheckBox($data['all_services'], false);
+                        $result .= makeServiceCheckBox($data['all_services'], false, $data['id']);
                         $result .= '</div>';
                     }
 

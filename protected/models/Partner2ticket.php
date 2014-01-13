@@ -7,6 +7,7 @@
  * @property string $id
  * @property string $ticket_id
  * @property string $partner2service_id
+ * @property string $arrival_time
  *
  * The followings are the available model relations:
  * @property Ticket $ticket
@@ -60,6 +61,7 @@ class Partner2ticket extends CActiveRecord
 			'id' => 'ID',
 			'ticket_id' => 'Ticket',
 			'partner2service_id' => 'Partner2service',
+            'arrival_time' => 'Время прибытия'
 		);
 	}
 
