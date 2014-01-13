@@ -1,19 +1,11 @@
 <?php
-$this->breadcrumbs=array(
-	'Tickets'=>array('index'),
-	$model->id,
-);
-
 $this->menu=array(
-	array('label'=>'List Ticket','url'=>array('index')),
-	array('label'=>'Create Ticket','url'=>array('create')),
-	array('label'=>'Update Ticket','url'=>array('update','id'=>$model->id)),
-	array('label'=>'Delete Ticket','url'=>'#','linkOptions'=>array('submit'=>array('delete','id'=>$model->id),'confirm'=>'Are you sure you want to delete this item?')),
-	array('label'=>'Manage Ticket','url'=>array('admin')),
+	array('label'=>'Управление инцидентами','url'=>array('admin')),
+	array('label'=>'Поиск клиентов','url'=>array('/order/search')),
 );
 ?>
 
-<h1>View Ticket #<?php echo $model->id; ?></h1>
+<h1>Просмотр инцидента #<?php echo $model->id; ?></h1>
 
 <?php $this->widget('bootstrap.widgets.TbDetailView',array(
 	'data'=>$model,
