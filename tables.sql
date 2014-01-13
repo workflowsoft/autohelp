@@ -53,7 +53,7 @@ CREATE TABLE `order` (
   `grn`                   VARCHAR(16),
   `ts_make`               VARCHAR(64),
   `ts_model`              VARCHAR(64),
-  `ts_color`              VARCHAR(6),
+  `ts_color`              VARCHAR(64),
   `card_delivery_address` VARCHAR(256),
   `card_id`               INT(10) UNSIGNED,
   `activation_start`      DATETIME,
