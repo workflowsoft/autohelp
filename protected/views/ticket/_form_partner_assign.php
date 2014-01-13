@@ -3,6 +3,98 @@
     'enableAjaxValidation' => false,
 )); ?>
 
+
+
+<?php
+
+$url = Yii::app()->request->requestUri;
+$view_url = str_replace('partnerAssign', 'view', $url);
+$url = str_replace('partnerAssign', 'a_partnerAssign', $url);;
+$ticket_id = $model->id;
+
+Yii::app()->clientScript->registerScript('services', "
+
+function intersect(array1, array2) {
+   var result = [];
+   // Don't destroy the original arrays
+   var a = array1.slice(0);
+   var b = array2.slice(0);
+   var aLast = a.length - 1;
+   var bLast = b.length - 1;
+   while (aLast >= 0 && bLast >= 0) {
+      if (a[aLast] > b[bLast] ) {
+         a.pop();
+         aLast--;
+      } else if (a[aLast] < b[bLast] ){
+         b.pop();
+         bLast--;
+      } else /* they're equal */ {
+         result.push(a.pop());
+         b.pop();
+         aLast--;
+         bLast--;
+      }
+   }
+   return result;
+}
+
+
+
+function showActiveServices() {
+    var partners = [];
+    $.each( $('.grid-view').find('.partner'), function( key, tr ) {
+        var input = $(this);
+        var partner_id = null;
+        //партнер выбран
+        if(input.attr('checked')){
+          partner_id = $(this).data('id');
+          var service_ids = [];
+            $.each( input.closest('tr').find('.service-checker'), function( key2, service ) {
+                var service_input =$(this);
+                if(service_input.attr('checked')){
+                    var service_id = $(this).data('id');
+                    service_ids.push(service_id)
+                }
+            });
+          if (partner_id) {
+            partners.push({
+                'ticket_id' : '$ticket_id',
+                'partner_id' : partner_id,
+                'service_ids' : service_ids
+            });
+          }
+        }
+
+    });
+    var_dump(partners);
+
+    $.ajax({
+        type: 'POST',
+        url: '$url',
+        data: {'data' : partners},
+        // TODO fucking govnocode with redirects, use ajax or yii forms
+        // Make action as api, it shouldn return the page
+        success: function(data) {  alert(11); var_dump(data);    /*document.location.href = '$view_url'*/},
+        error: function(data) {alert('Не удалось назначить партнеров')},
+        dataType: 'json'
+    });
+
+}
+
+
+$( 'body' ).on( 'click', '.show-services', showActiveServices);
+
+function var_dump (object) {
+    console.log(object);
+}
+
+");
+
+?>
+
+
+
+
 <!--	<p class="help-block">Fields with <span class="required">*</span> are required.</p>-->
 
 <?php echo $form->errorSummary($model); ?>
@@ -41,8 +133,12 @@ function makeServiceCheckBox($services, $checked)
 {
     $result = '';
     foreach ($services as $service) {
-        $result .= '<input type="checkbox"' . ($checked ? 'checked="checked"' : '') . '>';
+        $result .= '<input type="checkbox"'
+            . ($checked ? 'checked="checked"' : '')
+            . ' class="service-checker" data-id="'
+            . $service->id . '">';
         $result .= '<span class="label">' . $service->title . '</span>';
+        $result .= '&nbsp<input type="text" class="timer timer-' . $service->id . '" style="width:40px;">';
 
         $result .= '<br>';
     }
@@ -68,7 +164,7 @@ $this->widget('bootstrap.widgets.TbGridView', array(
             'header' => '',
             'type' => 'raw',
             'value' => function ($data) {
-                    return '<input type="checkbox">';
+                    return '<input type="checkbox" class="partner" data-id="' . $data['id'] . '">';
                 },
         ),
 
@@ -103,10 +199,20 @@ $this->widget('bootstrap.widgets.TbGridView', array(
 
 <div class="form-actions">
     <?php $this->widget('bootstrap.widgets.TbButton', array(
-        'buttonType' => 'submit',
+//        'buttonType' => 'submit',
         'type' => 'primary',
-        'label' => 'Назначить исполнителей',
+        'label' => 'Назначить исполнителей!',
+        'htmlOptions' => array(
+            'class' => 'show-services',
+        ),
     )); ?>
+
+<!--    --><?php //$this->widget('bootstrap.widgets.TbButton', array(
+//        'buttonType' => 'submit',
+//        'type' => 'primary',
+//        'label' => 'Сохранить',
+//    )); ?>
+
 </div>
 
 
