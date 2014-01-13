@@ -263,3 +263,14 @@ BEGIN
 END//
 
 delimiter ;
+
+
+GRANT SELECT,INSERT
+ON autohelp.partner
+TO partner_admin@localhost
+IDENTIFIED BY 'mysql159';
+
+GRANT SELECT,INSERT
+ON autohelp.service
+TO partner_admin@localhost
+IDENTIFIED BY 'mysql159';
