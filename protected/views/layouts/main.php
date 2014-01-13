@@ -28,7 +28,7 @@
                 )),
                 array('label'=>'Инциденты', 'url'=>array('/ticket/admin'),
                     'items' => array(
-                        array('label'=>'Добавить инцидент', 'url'=>array('/ticket/create')),
+                        array('label'=>'Добавить инцидент', 'url'=>array('/order/search')),
                         array('label'=>'Управление инцидентами', 'url'=>array('/ticket/admin')),
                 )),
                 array('label'=>'Войти', 'url'=>array('/site/login'), 'visible'=>Yii::app()->user->isGuest),
