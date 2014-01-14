@@ -61,7 +61,6 @@ class TicketController extends Controller
             throw new CHttpException(400, 'Invalid request. Specify order_id');
         }
 
-        $order = new Order($order_id);
         $order = Order::model()->findByPk($order_id);
 
         if (isset($_POST['Ticket']) && isset($ticket_id)) {
@@ -71,7 +70,7 @@ class TicketController extends Controller
             }
             $ticket->attributes = $_POST['Ticket'];
             $ticket->order_id = $order_id;
-            $ticket->status = 'new';
+            $ticket->status = TicketStatus::NEW_TICKET;
             if ($ticket->save()) {
                 if (isset($_POST['Service'])) {
                     foreach ($_POST['Service'] as $key => $service) {
@@ -100,7 +99,7 @@ class TicketController extends Controller
         } else {
             // first status is draft
             $ticket = new Ticket;
-            $ticket->status = 'draft';
+            $ticket->status = TicketStatus::DRAFT;
             $ticket->order_id = $order_id;
             $ticket->save();
             $this->redirect(array('create', 'order_id' => $order_id, 'ticket_id' => $ticket->id));
