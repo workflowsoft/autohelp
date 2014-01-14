@@ -54,22 +54,24 @@ class TicketController extends Controller
     public function actionCreate()
     {
 
-        $order_id = $_REQUEST['order_id'];
-        if (!isset($order_id)) {
+        $order_id = isset($_REQUEST['order_id']) ? $_REQUEST['order_id'] : null;
+        $ticket_id = isset($_REQUEST['ticket_id']) ? $_REQUEST['ticket_id'] : null;
+
+        if (empty($order_id)) {
             throw new CHttpException(400, 'Invalid request. Specify order_id');
         }
 
-//        $order = new Order($order_id);
+        $order = new Order($order_id);
         $order = Order::model()->findByPk($order_id);
 
-
-        $ticket = new Ticket;
-        // Uncomment the following line if AJAX validation is needed
-        // $this->performAjaxValidation($model);
-
-        if (isset($_POST['Ticket'])) {
+        if (isset($_POST['Ticket']) && isset($ticket_id)) {
+            $ticket = Ticket::model()->findByPk($ticket_id);
+            if($ticket->status != 'draft') {
+                throw new CHttpException(400, 'We can save only drafts');
+            }
             $ticket->attributes = $_POST['Ticket'];
             $ticket->order_id = $order_id;
+            $ticket->status = 'new';
             if ($ticket->save()) {
                 if (isset($_POST['Service'])) {
                     foreach ($_POST['Service'] as $key => $service) {
@@ -86,16 +88,25 @@ class TicketController extends Controller
 
                 $this->redirect(array('view', 'id' => $ticket->id));
             }
-
-
         }
 
 
-        $this->render('create', array(
-            'ticket' => $ticket,
-            'order' => $order,
-            'services' => new Services(),
-        ));
+        if (!empty($ticket_id)) {
+            $this->render('create', array(
+                'ticket' => new Ticket,
+                'order' => $order,
+                'services' => new Services(),
+            ));
+        } else {
+            // first status is draft
+            $ticket = new Ticket;
+            $ticket->status = 'draft';
+            $ticket->order_id = $order_id;
+            $ticket->save();
+            $this->redirect(array('create', 'order_id' => $order_id, 'ticket_id' => $ticket->id));
+        }
+
+
     }
 
     /**
