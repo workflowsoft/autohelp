@@ -17,12 +17,6 @@ class UserIdentity extends CUserIdentity
 	 */
 	public function authenticate()
 	{
-		$users=array(
-			// username => password
-			'demo'=>'demo',
-			'admin'=>'admin',
-		);
-
         $user = User::model()->find('email=:email', array(':email' => $this->username));
 
         if(empty($user)) {

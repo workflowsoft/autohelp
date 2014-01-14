@@ -65,12 +65,13 @@ class TicketController extends Controller
 
         if (isset($_POST['Ticket']) && isset($ticket_id)) {
             $ticket = Ticket::model()->findByPk($ticket_id);
-            if($ticket->status != 'draft') {
+            if ($ticket->status != 'draft') {
                 throw new CHttpException(400, 'We can save only drafts');
             }
             $ticket->attributes = $_POST['Ticket'];
             $ticket->order_id = $order_id;
             $ticket->status = TicketStatus::NEW_TICKET;
+            $ticket->user_id = null;
             if ($ticket->save()) {
                 if (isset($_POST['Service'])) {
                     foreach ($_POST['Service'] as $key => $service) {
@@ -100,6 +101,8 @@ class TicketController extends Controller
             // first status is draft
             $ticket = new Ticket;
             $ticket->status = TicketStatus::DRAFT;
+            $user = User::model()->find('email=:email', array(':email' => Yii::app()->user->id));
+            $ticket->user_id = $user->id;
             $ticket->order_id = $order_id;
             $ticket->save();
             $this->redirect(array('create', 'order_id' => $order_id, 'ticket_id' => $ticket->id));

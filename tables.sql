@@ -124,6 +124,8 @@ CREATE TABLE `user` (
   `fist_name`   VARCHAR(64),
   `middle_name` VARCHAR(64),
   `last_name`   VARCHAR(64),
+  `email`       VARCHAR(128)     NOT NULL UNIQUE KEY,
+  `password`    VARCHAR(32),
 
   PRIMARY KEY (`id`)
 )
@@ -211,9 +213,6 @@ CREATE TABLE `service2group` (
   DEFAULT CHARSET = utf8;
 
 
-ALTER TABLE `user` ADD `email` VARCHAR(128) NOT NULL UNIQUE KEY;
-ALTER TABLE `user` ADD `password` VARCHAR(32);
-
 ALTER TABLE `card` ADD `prepaid` TINYINT(1) NOT NULL DEFAULT 0;
 
 ALTER TABLE `ticket` ADD `payment_without_card` TINYINT(1) NOT NULL DEFAULT 0;
@@ -288,3 +287,4 @@ IDENTIFIED BY 'mysql159';
 
 
 ALTER TABLE `partner2ticket` ADD `arrival_time` TIME;
+

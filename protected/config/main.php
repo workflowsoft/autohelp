@@ -66,8 +66,8 @@ return array(
 		// uncomment the following to use a MySQL database
         'db'=>array(
             'connectionString' => 'mysql:host=localhost;dbname=autohelp',
-//            'enableProfiling' => true,
-//            'enableParamLogging' => true,
+            'enableProfiling' => true,
+            'enableParamLogging' => true,
             'emulatePrepare' => true,
             'username' => 'root',
             'password' => 'mysql12345',
