@@ -27,6 +27,25 @@
 
 	<?php echo $form->textFieldRow($model,'ts_model',array('class'=>'span5','maxlength'=>64)); ?>
 
+    <?php
+    /*Используется
+    https://github.com/tonybolzan/yii-colorpicker (Yii)
+    http://www.laktek.com/2008/10/27/really-simple-color-picker-in-jquery/ (Demo)
+    http://github.com/laktek/really-simple-color-picker (Js)
+    */
+    $this->
+        widget(
+            'ext.colorpicker.ColorPicker', array(
+                'model' => $model->ts_color,
+                'name' => 'ts_color',
+                'options' => array( // Optional
+                    'pickerDefault' => "fff",
+                    'colors'=> array("000", 'fff', 'ccc')
+                ),
+            )
+        );
+    ?>
+
 	<?php echo $form->textFieldRow($model,'ts_color',array('class'=>'span5','maxlength'=>6)); ?>
 
 	<?php echo $form->textFieldRow($model,'card_delivery_address',array('class'=>'span5','maxlength'=>256)); ?>
