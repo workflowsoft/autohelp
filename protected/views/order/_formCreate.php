@@ -36,17 +36,29 @@
     $this->
         widget(
             'ext.colorpicker.ColorPicker', array(
-                'model' => $model->ts_color,
-                'name' => 'ts_color',
-                'options' => array( // Optional
-                    'pickerDefault' => "fff",
-                    'colors'=> array("000", 'fff', 'ccc')
+                'model' => $model,
+                'attribute' => 'ts_color',
+                'form' => $form,
+                'options' => array(
+                    'colors'=> array(
+                        "Черный"=>"000000",
+                        "Серебристый" => "C0C0C0",
+                        "Белый" => "FFFFFF",
+                        "Синий" => "0000FF",
+                        "Красный" => "FF0000",
+                        "Зеленый" => "00FF00",
+                        "Желтый" => "FFFF00",
+                        "Голубой" => "00FFFF"
+                    ),
+                    'defaultColor' => "Черный",
+                ),
+                'htmlOptions' => array(
+                    'class'=>'span5',
+                    'maxlength' => 128,
                 ),
             )
         );
     ?>
-
-	<?php echo $form->textFieldRow($model,'ts_color',array('class'=>'span5','maxlength'=>6)); ?>
 
 	<?php echo $form->textFieldRow($model,'card_delivery_address',array('class'=>'span5','maxlength'=>256)); ?>
 
