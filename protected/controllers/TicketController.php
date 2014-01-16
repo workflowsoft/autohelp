@@ -42,8 +42,32 @@ class TicketController extends Controller
      */
     public function actionView($id)
     {
+        $model = $this->loadModel($id);
+
+        $partner2ticket = Partner2ticket::model()->findAll('ticket_id=:id', array(':id' => $id));
+        $partners = array();
+        foreach ($partner2ticket as $item) {
+            $par2service = Partner2service::model()->findByPk($item->partner2service_id);
+            $partner = Partner::model()->findByPk($par2service->partner_id);
+            $service = Service::model()->findByPk($par2service->service_id);
+            if (empty($partners[$partner->id])) {
+                $partners[$partner->id] = array(
+                    'id' => $partner->id,
+                    'title' => $partner->title,
+                    'phone' => $partner->phone,
+                );
+            }
+            $partners[$partner->id]['services'][] = array(
+                'service' => $service,
+                'time' => $item->arrival_time,
+            );
+        }
+
+//        throw new CHttpException(400, var_export($partners, true));
+
         $this->render('view', array(
             'model' => $this->loadModel($id),
+            'partners' => $partners,
         ));
     }
 
