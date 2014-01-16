@@ -125,8 +125,7 @@ class TicketController extends Controller
             // first status is draft
             $ticket = new Ticket;
             $ticket->status = TicketStatus::DRAFT;
-            $user = User::model()->find('email=:email', array(':email' => Yii::app()->user->id));
-            $ticket->user_id = $user->id;
+            $ticket->user_id = UserIdentity::getCurrentUserId();
             $ticket->order_id = $order_id;
             $ticket->save();
             $this->redirect(array('create', 'order_id' => $order_id, 'ticket_id' => $ticket->id));
@@ -165,6 +164,9 @@ class TicketController extends Controller
             $data = $_POST['data'];
             foreach ($data as $item) {
                 if (!empty($item['partner_id']) && !empty($item['ticket_id'])) {
+                    $ticket = Ticket::model()->findByPk($item['ticket_id']);
+                    $ticket->status = TicketStatus::ASSIGNED;
+                    $ticket->save();
                     if (!empty($item['services'])) {
                         foreach ($item['services'] as $service) {
                             $ticket2service = new Ticket2service;
@@ -208,17 +210,23 @@ class TicketController extends Controller
 
     public function actionPartnerAssign($id)
     {
-        $model = $this->loadModel($id);
+        $ticket = $this->loadModel($id);
+        if($ticket->status == TicketStatus::ASSIGNING && UserIdentity::getCurrentUserId() !== $ticket->user_id) {
+            throw new CHttpException(400, 'Партнеры уже назначаются другим пользователем');
+        }
 
         if (isset($_POST['data'])) {
 //            $this->redirect(array('view','id'=>$model->id));
         }
 
         if (isset($_POST['Ticket'])) {
-            $model->attributes = $_POST['Ticket'];
-            if ($model->save())
-                $this->redirect(array('view', 'id' => $model->id));
+            $ticket->attributes = $_POST['Ticket'];
+            if ($ticket->save())
+                $this->redirect(array('view', 'id' => $ticket->id));
         }
+        $ticket->status = TicketStatus::ASSIGNING;
+        $ticket->user_id = UserIdentity::getCurrentUserId();
+        $ticket->save();
 
 
         // select available partners
@@ -254,7 +262,7 @@ class TicketController extends Controller
 
 
         $this->render('partnerAssign', array(
-            'model' => $model,
+            'model' => $ticket,
             'partners' => $partners,
         ));
     }
