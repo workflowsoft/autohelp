@@ -130,8 +130,10 @@ function var_dump (object) {
 
 
 // Data provider needs ids
-foreach ($partners['available'] as $k => $partner) {
-    $partners['available'][$k]['id'] = $partner['PartnerId'];
+if (!empty($partners['available'])) {
+    foreach ($partners['available'] as $k => $partner) {
+        $partners['available'][$k]['id'] = $partner['PartnerId'];
+    }
 }
 
 if (!empty($partners['services_not_available'])) {
@@ -154,7 +156,7 @@ function makeServiceCheckBox($services, $checked, $partner_id)
             . ' class="service-checker" data-id="'
             . $service->id . '">';
         $result .= '<span class="label">' . $service->title . '</span>';
-        $result .= '&nbsp<input type="text" class="timer timer-' . $partner_id .'" data-id="' . $service->id . '" style="width:40px;"> минут';
+        $result .= '&nbsp<input type="text" class="timer timer-' . $partner_id . '" data-id="' . $service->id . '" style="width:40px;"> минут';
 
         $result .= '<br>';
     }
@@ -164,51 +166,55 @@ function makeServiceCheckBox($services, $checked, $partner_id)
 }
 
 
-echo '<h4>Партнеры</h4>';
+if (!empty($partners['available'])) {
+    echo '<h4>Партнеры</h4>';
 
-$gridDataProvider = new CArrayDataProvider($partners['available']);
 
-$this->widget('bootstrap.widgets.TbGridView', array(
-    'type' => 'condensed',
-    'dataProvider' => $gridDataProvider,
-    'template' => "{items}",
-    'rowCssClassExpression' => '',
+    $gridDataProvider = new CArrayDataProvider($partners['available']);
+
+    $this->widget('bootstrap.widgets.TbGridView', array(
+        'type' => 'condensed',
+        'dataProvider' => $gridDataProvider,
+        'template' => "{items}",
+        'rowCssClassExpression' => '',
 //    'selectionChanged'=>'function(id){ location.href = "'.$this->createUrl('partnerAssign').'/id/"+$.fn.yiiGridView.getSelection(id);}',
-    'columns' => array(
-        array(
-            'name' => 'selected',
-            'header' => '',
-            'type' => 'raw',
-            'value' => function ($data) {
-                    return '<input type="checkbox" class="partner" data-id="' . $data['id'] . '">';
-                },
+        'columns' => array(
+            array(
+                'name' => 'selected',
+                'header' => '',
+                'type' => 'raw',
+                'value' => function ($data) {
+                        return '<input type="checkbox" class="partner" data-id="' . $data['id'] . '">';
+                    },
+            ),
+
+            array('name' => 'PartnerTitle', 'header' => 'Партнер'),
+            array('name' => 'PartnerPhone', 'header' => 'Контактный телефон партнера'),
+            array(
+                'name' => 'ServiceTitles',
+                'header' => 'Услуги',
+                'type' => 'raw',
+                'value' => function ($data) {
+                        $result = '';
+
+                        $result .= makeServiceCheckBox($data['services'], true, $data['id']);
+
+                        if (!empty($data['all_services'])) {
+                            $result .= CHtml::link('Показать больше', '#', array('onclick' => '$(".more-services-' . $data['id'] . '").toggle(); event.stopPropagation()'));
+                            $result .= '<div class="more-services more-services-' . $data['id'] . '" style="display: none;">';
+                            $result .= makeServiceCheckBox($data['all_services'], false, $data['id']);
+                            $result .= '</div>';
+                        }
+
+                        return $result;
+                    },
+            ),
+            array('name' => 'Workload', 'header' => 'Загруженность'),
         ),
+    ));
 
-        array('name' => 'PartnerTitle', 'header' => 'Партнер'),
-        array('name' => 'PartnerPhone', 'header' => 'Контактный телефон партнера'),
-        array(
-            'name' => 'ServiceTitles',
-            'header' => 'Услуги',
-            'type' => 'raw',
-            'value' => function ($data) {
-                    $result = '';
 
-                    $result .= makeServiceCheckBox($data['services'], true, $data['id']);
-
-                    if (!empty($data['all_services'])) {
-                        $result .= CHtml::link('Показать больше', '#', array('onclick' => '$(".more-services-' . $data['id'] . '").toggle(); event.stopPropagation()'));
-                        $result .= '<div class="more-services more-services-' . $data['id'] . '" style="display: none;">';
-                        $result .= makeServiceCheckBox($data['all_services'], false, $data['id']);
-                        $result .= '</div>';
-                    }
-
-                    return $result;
-                },
-        ),
-        array('name' => 'Workload', 'header' => 'Загруженность'),
-    ),
-));
-
+}
 ?>
 
 
@@ -223,11 +229,12 @@ $this->widget('bootstrap.widgets.TbGridView', array(
         ),
     )); ?>
 
-<!--    --><?php //$this->widget('bootstrap.widgets.TbButton', array(
-//        'buttonType' => 'submit',
-//        'type' => 'primary',
-//        'label' => 'Сохранить',
-//    )); ?>
+    <!--    --><?php //$this->widget('bootstrap.widgets.TbButton', array(
+    //        'buttonType' => 'submit',
+    //        'type' => 'primary',
+    //        'label' => 'Сохранить',
+    //    ));
+    ?>
 
 </div>
 

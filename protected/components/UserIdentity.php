@@ -30,4 +30,9 @@ class UserIdentity extends CUserIdentity
 
 		return !$this->errorCode;
 	}
+
+    public static function getCurrentUserId() {
+        $user = User::model()->find('email=:email', array(':email' => Yii::app()->user->id));
+        return $user->id;
+    }
 }
