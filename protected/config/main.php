@@ -6,7 +6,7 @@
 // This is the main Web application configuration. Any writable
 // CWebApplication properties can be configured here.
 
-Yii::setPathOfAlias('bootstrap', dirname(__FILE__).'/../extensions/bootstrap');
+Yii::setPathOfAlias('bootstrap', dirname(__FILE__).'/../extensions/yiibooster');
 Yii::setPathOfAlias('application.migrations', dirname(__FILE__).'/../migrations');
 
 
@@ -14,9 +14,12 @@ return array(
     'theme' => 'bootstrap',
 	'basePath'=>dirname(__FILE__).DIRECTORY_SEPARATOR.'..',
 	'name'=>'Помощь на дорогах',
-
+    'sourceLanguage'=>'en_US',
+    'language'=>'ru',
+    'charset'=>'utf-8',
+    'timeZone'=>'GMT',
 	// preloading 'log' component
-	'preload'=>array('log'),
+	'preload'=>array('log','bootstrap'),
 
 	// autoloading model and component classes
 	'import'=>array(
@@ -73,6 +76,7 @@ return array(
             'username' => 'root',
             'password' => 'mysql12345',
             'charset' => 'utf8',
+            'initSQLs'=>array("set time_zone='+00:00';"),
         ),
 		'errorHandler'=>array(
 			// use 'site/error' action to display errors

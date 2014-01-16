@@ -34,6 +34,7 @@
     http://github.com/laktek/really-simple-color-picker (Js)
     */
     $this->
+        //TODO:Сделать вывод цветов из таблицы БД
         widget(
             'ext.colorpicker.ColorPicker', array(
                 'model' => $model,
@@ -62,18 +63,35 @@
 
 	<?php echo $form->textFieldRow($model,'card_delivery_address',array('class'=>'span5','maxlength'=>256)); ?>
 
-	<?php echo $form->textFieldRow($model,'card_id',array('class'=>'span5','maxlength'=>10)); ?>
+	<?php echo $form->textFieldRow($model,'card_number',array('class'=>'span5','maxlength'=>10)); ?>
 
-	<?php echo $form->textFieldRow($model,'activation_start',array('class'=>'span5')); ?>
+    <?php echo $form->dateRangeRow(
+        $model,
+        'activation_range',
+        array(
+            'options' => array(
+                    'prepend' => '<i class="icon-calendar"></i>',
+                    'locale' => array(
+                        'fromLabel'=>'Начало',
+                        'toLabel' => 'Окончание',
+                        'applyLabel' => 'Активация',
+                        'cancelLabel' => 'Отмена',
+                        'weekLabel' => 'Нед.',
+                        'customRangeLabel' => 'Время активности карты',
+                    ),
+                    'format' => 'DD.MM.YYYY',
+                    'startDate' => date('d.m.Y', strtotime('+1 days')),
+                    'endDate' => date('d.m.Y', strtotime('+1 years +1 days')),
+                )
+            )
+        );
+    ?>
 
-	<?php echo $form->textFieldRow($model,'activation_end',array('class'=>'span5')); ?>
 
-<!--	--><?php //echo $form->textFieldRow($model,'activation_end',array('class'=>'span5')); ?>
+    <?php // echo $form->textFieldRow($model,'activation_start',array('class'=>'span5')); ?>
 
+	<?php //echo $form->textFieldRow($model,'activation_end',array('class'=>'span5')); ?>
 
-<!--	--><?php //echo $form->textFieldRow($model,'delivery_coords',array('class'=>'span5')); ?>
-
-<!--	--><?php //echo $form->textFieldRow($model,'delivery_street',array('class'=>'span5','maxlength'=>256)); ?>
 
 	<div class="form-actions">
 		<?php $this->widget('bootstrap.widgets.TbButton', array(

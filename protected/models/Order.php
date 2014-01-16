@@ -33,6 +33,10 @@ class Order extends CActiveRecord
 	/**
 	 * @return string the associated database table name
 	 */
+
+    public $activation_range;
+    public $card_number;
+
 	public function tableName()
 	{
 		return 'order';
@@ -131,12 +135,13 @@ class Order extends CActiveRecord
 			'ts_model' => 'Модель ТС',
 			'ts_color' => 'Цвет ТС',
 			'card_delivery_address' => 'Адрес доставки',
-			'card_id' => 'Номер карты',
+			'card_number' => 'Номер карты',
 			'activation_start' => 'Начало действия карты',
 			'activation_end' => 'Окончание действия карты',
 			'delivery_coords' => 'Координаты доставки',
 			'delivery_street' => 'Уточнение координат доставки',
 			'delivered' => 'Карта доставлена',
+            'activation_range' => 'Время действия карты',
 		);
 	}
 

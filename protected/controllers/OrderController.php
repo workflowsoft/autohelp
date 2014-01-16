@@ -69,7 +69,25 @@ class OrderController extends Controller
         $order = new Order;
 
         if (isset($_POST['Order'])) {
-            $order->attributes = $_POST['Order'];
+            $gotOrder = $_POST['Order'];
+            $order->activation_range = $_POST['Order']['activation_range'];
+            $dates = explode(" - ", $order->activation_range);
+            $order->card_number = $_POST['Order']['card_number'];
+
+            if ($order->card_number!="")
+            {
+
+            }
+            unset($gotOrder["card_number"]);
+
+            if (count($dates)>1)
+            {
+                $gotOrder["activation_start"] = date('Y-m-d H:i:s', strtotime($dates[0]));
+                $gotOrder["activation_end"] = date('Y-m-d H:i:s', strtotime($dates[1]));
+                unset($gotOrder["activation_range"]);
+            }
+
+            $order->attributes = $gotOrder;
             $action_tag = ActionTag::model()->find('name=:name', array(':name' => 'call'));
             if ($order->save()) {
                 $relation = new Order2actionTag;
