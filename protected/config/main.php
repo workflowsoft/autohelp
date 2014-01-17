@@ -6,7 +6,7 @@
 // This is the main Web application configuration. Any writable
 // CWebApplication properties can be configured here.
 
-Yii::setPathOfAlias('bootstrap', dirname(__FILE__).'/../extensions/yiibooster');
+Yii::setPathOfAlias('bootstrap', dirname(__FILE__).'/../extensions/yiibooster-2.1.1');
 Yii::setPathOfAlias('application.migrations', dirname(__FILE__).'/../migrations');
 
 
