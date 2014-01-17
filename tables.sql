@@ -134,7 +134,7 @@ CREATE TABLE `user` (
 
 CREATE TABLE `ticket` (
   `id`                 INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `status`             ENUM ('draft', 'new', 'assigning', 'assigned', 'in_progress', 'done', 'rejected'),
+  `status`             ENUM ('draft', 'new', 'assigning', 'assigned', 'in_progress', 'checking' , 'done', 'rejected'),
   `comment`            VARCHAR(2048),
   `reject_comment`     VARCHAR(2048),
   `user_id`            INT(10) UNSIGNED,

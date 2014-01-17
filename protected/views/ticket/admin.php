@@ -24,6 +24,13 @@ Yii::app()->clientScript->registerScript('status', "
 )); ?>
 
 <?php $this->widget('bootstrap.widgets.TbButton', array(
+    'type' => '',
+    'label' => 'Мои проверки',
+    'url' => $this->createUrl('/ticket/admin/status/checking'),
+    'htmlOptions' => array('class' => 'filter filter-checking', 'data-at' => 'checking'),
+)); ?>
+<br>
+<?php $this->widget('bootstrap.widgets.TbButton', array(
     'type' => 'info',
     'label' => 'Новые',
     'url' => $this->createUrl('/ticket/admin/status/new'),

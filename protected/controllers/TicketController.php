@@ -27,7 +27,7 @@ class TicketController extends Controller
     {
         return array(
             array('allow', // allow all users to perform 'index' and 'view' actions
-                'actions' => array('index', 'view', 'create', 'update', 'admin', 'delete', 'partnerassign', 'a_partnerassign'),
+                'actions' => array('index', 'view', 'create', 'update', 'admin', 'delete', 'partnerassign', 'a_partnerassign', 'check', 'a_saveChecked'),
                 'users' => array('@'),
             ),
             array('deny', // deny all users
@@ -67,6 +67,40 @@ class TicketController extends Controller
 
         $this->render('view', array(
             'model' => $this->loadModel($id),
+            'partners' => $partners,
+        ));
+    }
+
+    public function actionCheck($id)
+    {
+        $ticket = $this->loadModel($id);
+        $ticket->status = TicketStatus::CHECKING;
+        $ticket->user_id = UserIdentity::getCurrentUserId();
+        $ticket->save();
+
+        $partner2ticket = Partner2ticket::model()->findAll('ticket_id=:id', array(':id' => $id));
+        $partners = array();
+        foreach ($partner2ticket as $item) {
+            $par2service = Partner2service::model()->findByPk($item->partner2service_id);
+            $partner = Partner::model()->findByPk($par2service->partner_id);
+            $service = Service::model()->findByPk($par2service->service_id);
+            if (empty($partners[$partner->id])) {
+                $partners[$partner->id] = array(
+                    'id' => $partner->id,
+                    'title' => $partner->title,
+                    'phone' => $partner->phone,
+                );
+            }
+            $partners[$partner->id]['services'][] = array(
+                'service' => $service,
+                'time' => $item->arrival_time,
+            );
+        }
+
+//        throw new CHttpException(400, var_export($partners, true));
+
+        $this->render('view_check', array(
+            'model' => $ticket,
             'partners' => $partners,
         ));
     }
@@ -194,6 +228,41 @@ class TicketController extends Controller
 
         echo CJSON::encode(array('success' => true));
     }
+
+
+    public function actiona_saveChecked($id)
+    {
+        if(!isset($_POST['success'])) {
+            echo CJSON::encode(array('success' => false, 'description' => 'No success status'));
+            return;
+        }
+        $success = $_POST['success'];
+
+        if(!$success ) {
+            if( empty($_POST['reject_comment'])) {
+                echo CJSON::encode(array('success' => false, 'description' => 'Reject comment mustn\'t be empty'));
+                return;
+            } else {
+                $reject_comment = $_POST['reject_comment'];
+            }
+        }
+
+        $ticket = Ticket::model()->findByPk($id);
+
+        if($success) {
+            $ticket->status = TicketStatus::DONE;
+        } else {
+            $ticket->status = TicketStatus::REJECTED;
+            $ticket->reject_comment = $reject_comment;
+        }
+        $ticket->user_id = null;
+        if($ticket->save()) {
+            echo CJSON::encode(array('success' => true));
+        } else {
+            echo CJSON::encode(array('success' => false));
+        }
+    }
+
 
     /**
      * adds minutes to current time

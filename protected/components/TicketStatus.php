@@ -13,6 +13,7 @@ class TicketStatus {
     const ASSIGNING = 'assigning';
     const ASSIGNED = 'assigned';
     const IN_PROGRESS = 'in_progress';
+    const CHECKING = 'checking';
     const DONE = 'done';
     const REJECTED = 'rejected';
 

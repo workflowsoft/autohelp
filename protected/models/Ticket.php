@@ -69,6 +69,7 @@ class Ticket extends CActiveRecord
 			'user_id' => 'Пользователь',
 			'last_status_change' => 'Последнее обновление статуса',
 			'payment_without_card' => 'Оплата не месте',
+            'reject_comment' => 'Причина отказа',
 		);
 	}
 

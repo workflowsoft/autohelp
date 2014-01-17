@@ -82,7 +82,7 @@ function showActiveServices() {
     if(errors) {
         return;
     }
-    var_dump(partners);
+//    var_dump(partners);
 
     $.ajax({
         type: 'POST',
@@ -90,7 +90,7 @@ function showActiveServices() {
         data: {'data' : partners},
         // TODO fucking govnocode with redirects, use ajax or yii forms
         // Make action as api, it shouldn return the page
-        success: function(data) {  var_dump(data);    /*document.location.href = '$view_url'*/},
+        success: function(data) {  document.location.href = '$view_url'},
         error: function(data) {alert('Не удалось назначить партнеров')},
         dataType: 'json'
     });
