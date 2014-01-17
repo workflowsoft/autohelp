@@ -59,11 +59,39 @@ Yii::app()->clientScript->registerScript('status', "
 )); ?>
 
 
-<?php $this->widget('bootstrap.widgets.TbGridView', array(
+<?php
+
+switch ($status) {
+    case 'draft' :
+        $selection_changed = 'update';
+        break;
+    case 'new' :
+        $selection_changed = 'partnerAssign';
+        break;
+    case 'assigning' :
+        $selection_changed = 'partnerAssign';
+        break;
+    case 'assigned' :
+        $selection_changed = 'check';
+        break;
+    case 'checking' :
+        $selection_changed = 'check';
+        break;
+    case 'done' :
+        $selection_changed = 'view';
+        break;
+    case 'rejected' :
+        $selection_changed = 'view';
+        break;
+    default;
+}
+$selection_changed = $this->createUrl($selection_changed);
+
+$this->widget('bootstrap.widgets.TbGridView', array(
     'id' => 'ticket-grid',
     'dataProvider' => $model->searchByStatus($status),
     'filter' => $model,
-    'selectionChanged' => 'function(id){ location.href = "' . $this->createUrl('partnerAssign') . '/id/"+$.fn.yiiGridView.getSelection(id);}',
+    'selectionChanged' => 'function(id){ location.href = "' . $selection_changed . '/id/"+$.fn.yiiGridView.getSelection(id);}',
 
     'columns' => array(
         'id',

@@ -182,6 +182,7 @@ class TicketController extends Controller
 
         if (isset($_POST['Ticket'])) {
             $model->attributes = $_POST['Ticket'];
+            $model->status = TicketStatus::NEW_TICKET;
             if ($model->save())
                 $this->redirect(array('view', 'id' => $model->id));
         }
