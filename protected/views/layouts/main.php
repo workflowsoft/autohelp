@@ -27,7 +27,7 @@
                 array('label'=>'Инциденты', 'url'=>array('/ticket/admin'),
                     'items' => array(
                         array('label'=>'Добавить инцидент', 'url'=>array('/order/search')),
-                        array('label'=>'Управление инцидентами', 'url'=>array('/ticket/admin')),
+                        array('label'=>'Управление инцидентами', 'url'=>array('/ticket/admin/status/new')),
                 )),
                 array('label'=>'Войти', 'url'=>array('/site/login'), 'visible'=>Yii::app()->user->isGuest),
                 array('label'=>'Выйти ('.Yii::app()->user->name.')', 'url'=>array('/site/logout'), 'visible'=>!Yii::app()->user->isGuest)

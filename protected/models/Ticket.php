@@ -102,7 +102,23 @@ class Ticket extends CActiveRecord
 		));
 	}
 
-	/**
+
+    public function searchByStatus($status = TicketStatus::NEW_TICKET)
+    {
+        $criteria=new CDbCriteria;
+
+        $criteria->compare('status',$status);
+        if($status == TicketStatus::DRAFT || $status == TicketStatus::ASSIGNING) {
+            $criteria->compare('user_id',UserIdentity::getCurrentUserId());
+        }
+
+        return new CActiveDataProvider($this, array(
+            'criteria'=>$criteria,
+        ));
+    }
+
+
+    /**
 	 * Returns the static model of the specified AR class.
 	 * Please note that you should have this exact method in all your CActiveRecord descendants!
 	 * @param string $className active record class name.

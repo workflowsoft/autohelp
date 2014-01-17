@@ -301,12 +301,13 @@ class TicketController extends Controller
      */
     public function actionAdmin()
     {
-        $model = new Ticket('search');
+        $status = isset($_REQUEST['status']) ?$_REQUEST['status'] : 'new';
+        $model = new Ticket();
+//        $data_provider = $model->searchByStatus($status);
         $model->unsetAttributes(); // clear any default values
         if (isset($_GET['Ticket'])) {
             $model->attributes = $_GET['Ticket'];
         }
-        $status = isset($_GET['status']) ? $_GET['status'] : 'new';
 
         $this->render('admin', array(
             'model' => $model,
