@@ -55,7 +55,7 @@ class Order extends CActiveRecord
             array('vin,grn,card_id, activation_start, activation_end', 'default', 'setOnEmpty' => true, 'value' => null),
 			array('first_name, middle_name, last_name, ts_make, ts_model', 'length', 'max'=>64),
 			array('vin', 'length', 'max'=>17),
-			array('ts_color', 'length', 'max'=>6),
+			array('ts_color', 'length', 'max'=>64),
 			array('card_id', 'length', 'max'=>10),
 			array('activation_start, activation_end, delivery_coords', 'safe'),
 			// The following rule is used by search().
