@@ -254,6 +254,7 @@ CREATE PROCEDURE getPartnersAssignList(IN TicketId INT(10) UNSIGNED)
          LEFT JOIN `partner2service` PS ON PS.`service_id` = T.`service_id`
          LEFT JOIN `service` S ON T.`service_id` = S.`id`
          LEFT JOIN `partner` P ON P.`id` = PS.`partner_id`
+         WHERE T.ticket_Id = TicketId
        GROUP BY `partner_id`) T2
       LEFT JOIN
       (SELECT
@@ -269,7 +270,6 @@ CREATE PROCEDURE getPartnersAssignList(IN TicketId INT(10) UNSIGNED)
           WHERE TK.`status` IN ('assigned', 'assiging', 'in_progress')
           GROUP BY PS.`partner_id`, PT.`ticket_id`) T3
        GROUP BY T3.`partner_id`) T4 ON T4.`partner_id` = T2.`PartnerId`
-    WHERE T2.`ticket_id` = TicketId
     ORDER BY `ServiceCoverage` DESC, `Workload` ASC;
   END//
 
