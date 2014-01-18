@@ -15,7 +15,9 @@
 
 <!--	--><?php //echo $form->textFieldRow($model,'last_status_change',array('class'=>'span5')); ?>
 
-<?php echo $form->checkboxRow($model, 'payment_without_card'); ?>
+<?php
+    echo $form->checkboxRow($model, 'payment_without_card', array('disabled' => true));
+?>
 
 
 <h4>Необходимые услуги </h4>
@@ -23,15 +25,8 @@
 <?php
 
 
-//$form=$this->beginWidget('bootstrap.widgets.TbActiveForm',array(
-//    'id'=>'service-form',
-//    'enableAjaxValidation'=>false,
-//));
-
 if (!empty($services)) {
     foreach ($services as $key => $service) {
-//    var_dump($key);
-//    echo $form->checkBox($service, 'id' /* , array('disabled'=>true)*/);
         echo '<input name="Service[' . $service->id . ']" id="Service_id_' . $service->id . '" value="1" type="checkbox">';
 
         echo '&nbsp';
@@ -42,14 +37,6 @@ if (!empty($services)) {
         echo '<br>';
     }
 }
-
-//echo $form->checkBoxListRow($model, 'id', array(
-//        1 => 'Option one is this and that—be sure to include why it\'s great',
-//        2 => 'Option two can also be checked and included in form results',
-//        3 => 'Option three can—yes, you guessed it—also be checked and included in form results',
-//    ), array('hint'=>'<strong>Note:</strong> Labels surround all the options for much larger click areas.')
-//);
-
 
 ?>
 

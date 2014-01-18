@@ -54,9 +54,18 @@ $( 'body' ).on( 'click', '.save-rejected', save);
         'id',
 //        'status',
         'comment',
-//		'user_id',
-//		'last_status_change',
-        'payment_without_card',
+        array(
+            'name' => 'payment_without_card',
+            'type' => 'raw',
+            'value' => function ($data) {
+                    $checkbox = '<input disabled="disabled" type="checkbox"' .
+                        ($data['payment_without_card'] ? 'checked="checked"' : '') .
+                        '>';
+
+                    return $checkbox;
+                },
+        ),
+
     ),
 )); ?>
 

@@ -150,8 +150,10 @@ class TicketController extends Controller
 
 
         if (!empty($ticket_id)) {
+            $ticket = new Ticket;
+            $ticket->payment_without_card = !$order->isActivated();
             $this->render('create', array(
-                'ticket' => new Ticket,
+                'ticket' => $ticket,
                 'order' => $order,
                 'services' => new Services(),
             ));
