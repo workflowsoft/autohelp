@@ -123,7 +123,7 @@ function var_dump (object) {
 
 <!--	--><?php //echo $form->textFieldRow($model,'last_status_change',array('class'=>'span5')); ?>
 
-<?php echo $form->checkboxRow($model, 'payment_without_card'); ?>
+<?php echo $form->checkboxRow($model, 'payment_without_card', array('disabled' => true)); ?>
 
 
 <?php
@@ -164,6 +164,11 @@ function makeServiceCheckBox($services, $checked, $partner_id)
     return $result;
 
 }
+
+
+echo '<h4>Информация о клиенте</h4>';
+echo $this->renderPartial('_order_view', array('model'=>$order));
+
 
 
 if (!empty($partners['available'])) {

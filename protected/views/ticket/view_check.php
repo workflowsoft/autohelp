@@ -71,10 +71,13 @@ $( 'body' ).on( 'click', '.save-rejected', save);
 
 <?php
 
+echo '<h4>Информация о клиенте</h4>';
+echo $this->renderPartial('_order_view', array('model'=>$order));
+
+
 echo '<h4>Назначенные Партнеры</h4>';
 
 $gridDataProvider = new CArrayDataProvider($partners);
-
 $this->widget('bootstrap.widgets.TbGridView', array(
     'type' => 'condensed',
     'dataProvider' => $gridDataProvider,

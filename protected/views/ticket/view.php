@@ -7,7 +7,10 @@ $this->menu = array(
 
 <h1>Просмотр инцидента #<?php echo $model->id; ?></h1>
 
-<?php $this->widget('bootstrap.widgets.TbDetailView', array(
+<?php
+
+
+$this->widget('bootstrap.widgets.TbDetailView', array(
     'data' => $model,
     'attributes' => array(
         'id',
@@ -29,6 +32,11 @@ $this->menu = array(
 )); ?>
 
 <?php
+
+
+echo '<h4>Информация о клиенте</h4>';
+echo $this->renderPartial('_order_view', array('model'=>$order));
+
 
 echo '<h4>Назначенные Партнеры</h4>';
 

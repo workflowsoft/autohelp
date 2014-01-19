@@ -7,6 +7,7 @@
         array(
             'model'=>$model,
             'partners' => $partners,
+            'order' => $order,
         )
     );
 ?>

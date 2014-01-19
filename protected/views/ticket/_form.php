@@ -46,7 +46,7 @@ if (!empty($services)) {
     <?php $this->widget('bootstrap.widgets.TbButton', array(
         'buttonType' => 'submit',
         'type' => 'primary',
-        'label' => $model->isNewRecord ? 'Создать' : 'Save',
+        'label' => $model->isNewRecord ? 'Создать' : 'Сохранить',
     )); ?>
 </div>
 
