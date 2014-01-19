@@ -60,6 +60,7 @@ class TicketController extends Controller
             $partners[$partner->id]['services'][] = array(
                 'service' => $service,
                 'time' => $item->arrival_time,
+                'reject_comment' => $item->reject_comment,
             );
         }
 
@@ -252,6 +253,30 @@ class TicketController extends Controller
                 $reject_comment = $_POST['reject_comment'];
             }
         }
+
+        //save rejected services
+        if(!empty($_POST['rejected_services'])) {
+            foreach($_POST['rejected_services'] as $service) {
+                $partner2service = Partner2service::model()->find(
+                    'partner_id=:pid and service_id=:sid',
+                    array(
+                        ':pid' => $service['partner_id'],
+                        ':sid' => $service['service_id'],
+                    )
+                );
+                $partner2ticket = Partner2ticket::model()->find(
+                    'partner2service_id=:p2sid and ticket_id=:tid',
+                    array(
+                        ':p2sid' => $partner2service->id,
+                        ':tid' => $id,
+                    )
+                );
+
+                $partner2ticket->reject_comment = $service['comment'];
+                $partner2ticket->save();
+            }
+        }
+
 
         $ticket = Ticket::model()->findByPk($id);
 

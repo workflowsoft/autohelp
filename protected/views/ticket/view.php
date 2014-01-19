@@ -60,6 +60,10 @@ $this->widget('bootstrap.widgets.TbGridView', array(
                         $result .= '<span class="label">' . $service['service']->title . '</span>';
                         $result .= '&nbsp;';
                         $result .= $service['time'];
+                        $result .= '&nbsp;';
+                        if($service['reject_comment']) {
+                            $result .= '<b>Отклонено с комментарием: ' . $service['reject_comment'] . '</b>';
+                        }
                         $result .= '<br>';
                     }
 

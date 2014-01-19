@@ -176,6 +176,7 @@ CREATE TABLE `partner2ticket` (
   `id`                 INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
   `ticket_id`          INT(10) UNSIGNED NOT NULL,
   `partner2service_id` INT(10) UNSIGNED NOT NULL,
+  `reject_comment`     VARCHAR (1024),
 
   PRIMARY KEY (`id`),
   FOREIGN KEY (`ticket_id`) REFERENCES `ticket` (`id`),

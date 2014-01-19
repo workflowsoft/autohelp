@@ -22,6 +22,29 @@ function save(){
         }
         postdata['success'] = 0;
         postdata['reject_comment'] = comment;
+
+        var services = [];
+        var error = false;
+        $.each( $('.grid-view').find('.service-checker'), function( key, tr ) {
+            if($(this).attr('checked')) {
+                var reject_input = $(this).next().next();
+                if(reject_input.val() == '') {
+                    error = true;
+                    return false;
+                }
+                services.push({
+                    'partner_id' : reject_input.data('partner_id'),
+                    'service_id' : reject_input.data('id'),
+                    'comment' : reject_input.val()
+                });
+            }
+        });
+        if(error) {
+            alert('Причина отказа не может быть пустой');
+            return false;
+        }
+        postdata['rejected_services'] = services;
+
     }
 
     $.ajax({
@@ -39,8 +62,15 @@ function save(){
     return false;
 }
 
+function showServiceReject () {
+    $('.service-checker').toggle();
+    $('.service-reject').toggle();
+}
+
+
 $( 'body' ).on( 'click', '.save-success', save);
 $( 'body' ).on( 'click', '.save-rejected', save);
+$( 'body' ).on( 'click', '.show-service-reject', showServiceReject);
 ");
 ?>
 
@@ -72,10 +102,42 @@ $( 'body' ).on( 'click', '.save-rejected', save);
 <?php
 
 echo '<h4>Информация о клиенте</h4>';
-echo $this->renderPartial('_order_view', array('model'=>$order));
+echo $this->renderPartial('_order_view', array('model' => $order));
 
 
 echo '<h4>Назначенные Партнеры</h4>';
+
+$this->widget('bootstrap.widgets.TbButton', array(
+    'type' => 'danger',
+    'label' => 'Отметить услуги, которые не могут быть оказаны',
+    'htmlOptions' => array(
+        'class' => 'show-service-reject',
+    ),
+
+));
+
+function makeServiceCheckBox($services, $partner_id)
+{
+    $result = '';
+    foreach ($services as $service) {
+
+        $result .= '<input type="checkbox" style="display:none;"'
+            . ' class="service-checker" data-id="'
+            . $service['service']->id . '">';
+
+        $result .= '<span class="label">' . $service['service']->title . '</span>';
+        $result .= '&nbsp;';
+        $result .= $service['time'];
+        $result .= '&nbsp;';
+        $result .= '<input type="text" placeholder="Причина отказа" style="display:none;" class="service-reject" data-partner_id="'.$partner_id .'" data-id="' . $service['service']->id . '">';
+
+        $result .= '<br>';
+    }
+
+    return $result;
+
+}
+
 
 $gridDataProvider = new CArrayDataProvider($partners);
 $this->widget('bootstrap.widgets.TbGridView', array(
@@ -92,12 +154,14 @@ $this->widget('bootstrap.widgets.TbGridView', array(
             'type' => 'raw',
             'value' => function ($data) {
                     $result = '';
-                    foreach($data['services'] as $service) {
-                        $result .= '<span class="label">' . $service['service']->title . '</span>';
-                        $result .= '&nbsp;';
-                        $result .= $service['time'];
-                        $result .= '<br>';
-                    }
+                    $result .= makeServiceCheckBox($data['services'], $data['id']);
+//                    foreach($data['services'] as $service) {
+
+//                        $result .= '<span class="label">' . $service['service']->title . '</span>';
+//                        $result .= '&nbsp;';
+//                        $result .= $service['time'];
+                    $result .= '<br>';
+//                    }
 
                     return $result;
                 },
@@ -105,18 +169,18 @@ $this->widget('bootstrap.widgets.TbGridView', array(
     ),
 ));
 
-$form=$this->beginWidget('bootstrap.widgets.TbActiveForm',array(
-    'id'=>'ticket-form',
-    'enableAjaxValidation'=>false,
+$form = $this->beginWidget('bootstrap.widgets.TbActiveForm', array(
+    'id' => 'ticket-form',
+    'enableAjaxValidation' => false,
 ));
 
-echo $form->textAreaRow($model,'reject_comment',array('class'=>'span5 reject-comment','maxlength'=>2048));
+echo $form->textAreaRow($model, 'reject_comment', array('class' => 'span5 reject-comment', 'maxlength' => 2048));
 ?>
 <div class="form-actions">
     <?php
     $this->widget('bootstrap.widgets.TbButton', array(
-        'type'=>'success',
-        'label'=> 'В успешные',
+        'type' => 'success',
+        'label' => 'В успешные',
         'htmlOptions' => array(
             'class' => 'save-success',
         ),
@@ -126,8 +190,8 @@ echo $form->textAreaRow($model,'reject_comment',array('class'=>'span5 reject-com
     echo '&nbsp';
 
     $this->widget('bootstrap.widgets.TbButton', array(
-        'type'=>'danger',
-        'label'=> 'В отказ',
+        'type' => 'danger',
+        'label' => 'В отказ',
         'htmlOptions' => array(
             'class' => 'save-rejected',
         ),
