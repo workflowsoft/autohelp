@@ -226,9 +226,17 @@ class OrderController extends Controller
         }
         $data_provider = $model->search();
 
+        $sql = 'SELECT order_id, id as `ticket_id` from ticket where order_id > 0';
+        $query_results = Yii::app()->db->createCommand($sql)->queryAll();
+        $order2ticket = array();
+        foreach ($query_results as $res) {
+            $order2ticket[$res['order_id']] = $res['ticket_id'];
+        }
+
         $this->render('search', array(
             'model' => $model,
             'data_provider' => $data_provider,
+            'order2ticket' => $order2ticket,
         ));
     }
 
