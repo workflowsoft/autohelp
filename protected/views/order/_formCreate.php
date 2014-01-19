@@ -63,7 +63,29 @@
 
 	<?php echo $form->textFieldRow($model,'card_delivery_address',array('class'=>'span5','maxlength'=>256)); ?>
 
-	<?php echo $form->textFieldRow($model,'card_number',array('class'=>'span5','maxlength'=>10)); ?>
+	<?php $this->
+            widget('ext.maskedinput.MaskedInput', array(
+                    'model' => $model,
+                    'attribute' => 'card_number',
+                    'form' => $form,
+                    'mask' => 's999999999',
+                    'completed' => 'function(){
+                            var cardNumber = this.val();
+                            $.get("/index.php/api/card/check/"+cardNumber,
+                            function(data, textStatus, jqXHR) { alert(data); },
+                            "json" );
+                        }',
+                    'charMap'=> array(
+                        's'=> '[abcABC]',
+                        '9'=> '[0-9]'
+                    ),
+                    'htmlOptions' => array(
+                        'class'=>'span5',
+                        'maxlength' => 10,
+                        ),
+                    )
+        );
+    ?>
 
     <?php echo $form->dateRangeRow(
         $model,

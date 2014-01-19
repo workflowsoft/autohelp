@@ -58,7 +58,14 @@ return array(
 			'urlFormat'=>'path',
 //            'showScriptName' => false,
 			'rules'=>array(
-                '' => 'order/search'
+                '' => 'order/search',
+                //REST API
+                array('<controller>/get', 'pattern'=>'api/<controller:\w+>', 'verb' => 'GET'),
+                array('<controller>/post', 'pattern'=>'api/<controller:\w+>', 'verb' => 'POST'),
+                array('<controller>/put', 'pattern'=>'api/<controller:\w+>', 'verb' => 'PUT'),
+                array('<controller>/delete', 'pattern'=>'api/<controller:\w+>', 'verb' => 'DELETE'),
+                array('<controller>/<action>', 'pattern'=>'api/<controller:\w+>/<action:\w+>/<id:.+>', 'verb' => 'GET'),
+
 				/*'<controller:\w+>/<id:\d+>'=>'<controller>/view',
 				'<controller:\w+>/<action:\w+>/<id:\d+>'=>'<controller>/<action>',
 				'<controller:\w+>/<action:\w+>'=>'<controller>/<action>',*/
