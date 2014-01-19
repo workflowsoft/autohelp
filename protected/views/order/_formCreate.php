@@ -70,9 +70,14 @@
                     'form' => $form,
                     'mask' => 's999999999',
                     'completed' => 'function(){
-                            var cardNumber = this.val();
-                            $.get("/index.php/api/card/check/"+cardNumber,
-                            function(data, textStatus, jqXHR) { alert(data); },
+                            var cardField = this;
+                            $.get("/index.php/api/card/check/"+cardField.val(),
+                            function(data, textStatus, jqXHR) {
+                                if (data.result == "CanCreateNew" || data.result == "CanUseThis")
+                                    cardField.css("border-color", "green");
+                                else
+                                    cardField.css("border-color", "red");
+                             },
                             "json" );
                         }',
                     'charMap'=> array(

@@ -17,13 +17,10 @@ class CardController extends  Controller {
                  ),
         );
     }
+
     public function actionCheck($id)
     {
-        $result = array(
-         'result'=>'exists',
-         'cardNumber'=> $id,
-         'series'=>'A'
-        );
+        $result = CardChecker::CheckCard($id);
         $this->_sendResponse(200, CJSON::encode($result));
     }
 

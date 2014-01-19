@@ -76,7 +76,25 @@ class OrderController extends Controller
 
             if ($order->card_number!="")
             {
-
+                $cardResult = CardChecker::CheckCard($order->card_number);
+                if ($cardResult['result'] != "CanCreateNew" && $cardResult['result']!= "CanUseThis")
+                    throw new CException("Карточка не может быть использована по причине:".$cardResult['result']);
+                else
+                {
+                    //Создаем карточку или используем существующую
+                    if ($cardResult['result'] == "CanUseThis")
+                    {
+                        $gotOrder["card_id"] = $cardResult['id'];
+                    }
+                    else if ($cardResult['result'] == "CanCreateNew")
+                    {
+                        $card = new Card;
+                        $card->number = $order->card_number;
+                        $card->series_id = $cardResult['series_id'];
+                        $card->save();
+                        $gotOrder['card_id'] = $card->id;
+                    }
+                }
             }
             unset($gotOrder["card_number"]);
 

@@ -1,13 +1,13 @@
 use autohelp;
 
 insert into card_series(starting_number, ending_number, series_type, count) values (1,200,'A',199);
-insert into card (number, series_id) values ('A100',LAST_INSERT_ID());
+insert into card (number, series_id) values ('A000000001',LAST_INSERT_ID());
 
 insert into card_series(starting_number, ending_number, series_type, count) values (1,200,'B',199);
-insert into card (number, series_id) values ('B100',LAST_INSERT_ID());
+insert into card (number, series_id) values ('B000000001',LAST_INSERT_ID());
 
 insert into card_series(starting_number, ending_number, series_type, count) values (1,200,'C',199);
-insert into card (number, series_id) values ('C100',LAST_INSERT_ID());
+insert into card (number, series_id) values ('C000000001',LAST_INSERT_ID());
 
 insert into `action_tag` (`name`, `title`, `description`) values('call','Обзвон', 'Первичные заявки, требующие уточнения данных и не оплаченные');
 insert into `action_tag` (`name`, `title`, `description`) values('recall','Повторный обзвон', 'Первичные заявки, требующие уточнения данных и не оплаченные');
