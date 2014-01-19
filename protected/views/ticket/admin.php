@@ -95,13 +95,6 @@ $this->widget('bootstrap.widgets.TbGridView', array(
 
     'columns' => array(
         'id',
-//        'status',
         'comment',
-        'user_id',
-        'last_status_change',
-        'payment_without_card',
-//		array(
-//			'class'=>'bootstrap.widgets.TbButtonColumn',
-//		),
     ),
 )); ?>

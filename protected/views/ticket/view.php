@@ -7,19 +7,36 @@ $this->menu = array(
 
 <h1>Просмотр инцидента #<?php echo $model->id; ?></h1>
 
-<?php $this->widget('bootstrap.widgets.TbDetailView', array(
+<?php
+
+
+$this->widget('bootstrap.widgets.TbDetailView', array(
     'data' => $model,
     'attributes' => array(
         'id',
         'status',
         'comment',
-//		'user_id',
-//		'last_status_change',
-        'payment_without_card',
+        array(
+            'name' => 'payment_without_card',
+            'type' => 'raw',
+            'value' => function ($data) {
+                    $checkbox = '<input disabled="disabled" type="checkbox"' .
+                        ($data['payment_without_card'] ? 'checked="checked"' : '') .
+                        '>';
+
+                    return $checkbox;
+                },
+        ),
+
     ),
 )); ?>
 
 <?php
+
+
+echo '<h4>Информация о клиенте</h4>';
+echo $this->renderPartial('_order_view', array('model'=>$order));
+
 
 echo '<h4>Назначенные Партнеры</h4>';
 

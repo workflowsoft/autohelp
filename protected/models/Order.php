@@ -224,4 +224,23 @@ class Order extends CActiveRecord
 	{
 		return parent::model($className);
 	}
+
+    public function isActivated() {
+        //replace with php comparation
+        $id = $this->id;
+        $table = $this->tableName();
+        $sql = "
+          SELECT
+	        CURRENT_TIMESTAMP() between activation_start and activation_end as `activated`
+          FROM
+	        `$table`
+          WHERE
+	        id = $id;
+        ";
+        $result = Yii::app()->db->createCommand($sql)->query()->read();
+
+        return $result['activated'];
+
+
+    }
 }

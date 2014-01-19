@@ -42,7 +42,7 @@ class TicketController extends Controller
      */
     public function actionView($id)
     {
-        $model = $this->loadModel($id);
+        $ticket = $this->loadModel($id);
 
         $partner2ticket = Partner2ticket::model()->findAll('ticket_id=:id', array(':id' => $id));
         $partners = array();
@@ -66,7 +66,8 @@ class TicketController extends Controller
 //        throw new CHttpException(400, var_export($partners, true));
 
         $this->render('view', array(
-            'model' => $this->loadModel($id),
+            'model' => $ticket,
+            'order' => Order::model()->findByPk($ticket->order_id),
             'partners' => $partners,
         ));
     }
@@ -102,6 +103,7 @@ class TicketController extends Controller
         $this->render('view_check', array(
             'model' => $ticket,
             'partners' => $partners,
+            'order' => Order::model()->findByPk($ticket->order_id),
         ));
     }
 
@@ -150,8 +152,10 @@ class TicketController extends Controller
 
 
         if (!empty($ticket_id)) {
+            $ticket = new Ticket;
+            $ticket->payment_without_card = !$order->isActivated();
             $this->render('create', array(
-                'ticket' => new Ticket,
+                'ticket' => $ticket,
                 'order' => $order,
                 'services' => new Services(),
             ));
@@ -175,20 +179,21 @@ class TicketController extends Controller
      */
     public function actionUpdate($id)
     {
-        $model = $this->loadModel($id);
+        $ticket = $this->loadModel($id);
 
         // Uncomment the following line if AJAX validation is needed
         // $this->performAjaxValidation($model);
 
         if (isset($_POST['Ticket'])) {
-            $model->attributes = $_POST['Ticket'];
-            $model->status = TicketStatus::NEW_TICKET;
-            if ($model->save())
-                $this->redirect(array('view', 'id' => $model->id));
+            $ticket->attributes = $_POST['Ticket'];
+            $ticket->status = TicketStatus::NEW_TICKET;
+            if ($ticket->save())
+                $this->redirect(array('view', 'id' => $ticket->id));
         }
 
         $this->render('update', array(
-            'model' => $model,
+            'model' => $ticket,
+            'order' => Order::model()->findByPk($ticket->order_id),
         ));
     }
 
@@ -334,6 +339,7 @@ class TicketController extends Controller
         $this->render('partnerAssign', array(
             'model' => $ticket,
             'partners' => $partners,
+            'order' => Order::model()->findByPk($ticket->order_id),
         ));
     }
 
