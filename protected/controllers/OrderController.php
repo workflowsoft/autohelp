@@ -69,50 +69,17 @@ class OrderController extends Controller
         $order = new Order;
 
         if (isset($_POST['Order'])) {
-            $gotOrder = $_POST['Order'];
-            $order->activation_range = $_POST['Order']['activation_range'];
-            $dates = explode(" - ", $order->activation_range);
-            $order->card_number = $_POST['Order']['card_number'];
-
-            if ($order->card_number!="")
+            $order->attributes = $_POST['Order'];
+            if ($order->validate())
             {
-                $cardResult = CardChecker::CheckCard($order->card_number);
-                if ($cardResult['result'] != "CanCreateNew" && $cardResult['result']!= "CanUseThis")
-                    throw new CException("Карточка не может быть использована по причине:".$cardResult['result']);
-                else
-                {
-                    //Создаем карточку или используем существующую
-                    if ($cardResult['result'] == "CanUseThis")
-                    {
-                        $gotOrder["card_id"] = $cardResult['id'];
-                    }
-                    else if ($cardResult['result'] == "CanCreateNew")
-                    {
-                        $card = new Card;
-                        $card->number = $order->card_number;
-                        $card->series_id = $cardResult['series_id'];
-                        $card->save();
-                        $gotOrder['card_id'] = $card->id;
-                    }
+                $action_tag = ActionTag::model()->find('name=:name', array(':name' => 'call'));
+                if ($order->save()) {
+                    $relation = new Order2actionTag;
+                    $relation->action_tag_id = $action_tag->id;
+                    $relation->order_id = $order->id;
+                    $relation->save();
+                    $this->redirect(array('view', 'id' => $order->id));
                 }
-            }
-            unset($gotOrder["card_number"]);
-
-            if (count($dates)>1)
-            {
-                $gotOrder["activation_start"] = date('Y-m-d H:i:s', strtotime($dates[0]));
-                $gotOrder["activation_end"] = date('Y-m-d H:i:s', strtotime($dates[1]));
-                unset($gotOrder["activation_range"]);
-            }
-
-            $order->attributes = $gotOrder;
-            $action_tag = ActionTag::model()->find('name=:name', array(':name' => 'call'));
-            if ($order->save()) {
-                $relation = new Order2actionTag;
-                $relation->action_tag_id = $action_tag->id;
-                $relation->order_id = $order->id;
-                $relation->save();
-                $this->redirect(array('view', 'id' => $order->id));
             }
         }
 

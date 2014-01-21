@@ -7,11 +7,22 @@
 
 	<?php echo $form->errorSummary($model); ?>
 
-	<?php echo $form->textFieldRow($model,'email',array('class'=>'span5','maxlength'=>256)); ?>
+    <?php $this->
+        widget('ext.maskedinput.MaskedInput', array(
+                'model' => $model,
+                'attribute' => 'phone',
+                'form' => $form,
+                'mask' => '+9-999-9999999',
+                'htmlOptions' => array(
+                    'class'=>'span5'
+                ),
+            )
+        );
+    ?>
 
-	<?php echo $form->textFieldRow($model,'phone',array('class'=>'span5','maxlength'=>16)); ?>
+    <?php echo $form->textFieldRow($model,'email',array('class'=>'span5','maxlength'=>256)); ?>
 
-	<?php echo $form->textFieldRow($model,'description',array('class'=>'span5','maxlength'=>256)); ?>
+	<?php echo $form->textAreaRow($model,'description',array('class'=>'span5','maxlength'=>256)); ?>
 
 	<?php echo $form->textFieldRow($model,'first_name',array('class'=>'span5','maxlength'=>64)); ?>
 
@@ -19,9 +30,41 @@
 
 	<?php echo $form->textFieldRow($model,'last_name',array('class'=>'span5','maxlength'=>64)); ?>
 
-	<?php echo $form->textFieldRow($model,'vin',array('class'=>'span5','maxlength'=>17)); ?>
+    <?php $this->
+        widget('ext.maskedinput.MaskedInput', array(
+            'model' => $model,
+            'attribute' => 'vin',
+            'form' => $form,
+            'mask' => 'sssssssssvsdddddd',
+            'charMap'=> array(
+                's'=> '[a-h,A-H,j-n,J-N,p-z,P-Z,0-9]',
+                'v'=> '[a-h,A-H,j-n,J-N,p,P,r-t,R-T,v-z,V-Z,0-9]',
+                'd'=> '[0-9]'
+            ),
+            'htmlOptions' => array(
+                'class'=>'span5'
+            ),
+        )
+    );
+    ?>
 
-	<?php echo $form->textFieldRow($model,'grn',array('class'=>'span5','maxlength'=>16)); ?>
+    <?php $this->
+        widget('ext.maskedinput.MaskedInput', array(
+                'model' => $model,
+                'attribute' => 'grn',
+                'form' => $form,
+                'mask' => 'sdddbbddd',
+                'charMap'=> array(
+                    's'=> '[0-9ABCEHKMOPTXYabcehkmoptxyАВСЕНКМОРТХУавсенкмортху]',
+                    'b' => '[ABCEHKMOPTXYabcehkmoptxyАВСЕНКМОРТХУавсенкмортху]',
+                    'd'=> '[0-9]'
+                ),
+                'htmlOptions' => array(
+                    'class'=>'span5'
+                ),
+            )
+        );
+    ?>
 
 	<?php echo $form->textFieldRow($model,'ts_make',array('class'=>'span5','maxlength'=>64)); ?>
 
@@ -61,7 +104,7 @@
         );
     ?>
 
-	<?php echo $form->textFieldRow($model,'card_delivery_address',array('class'=>'span5','maxlength'=>256)); ?>
+	<?php echo $form->textAreaRow($model,'card_delivery_address',array('class'=>'span5','maxlength'=>256)); ?>
 
 	<?php $this->
             widget('ext.maskedinput.MaskedInput', array(
@@ -109,16 +152,13 @@
                     'format' => 'DD.MM.YYYY',
                     'startDate' => date('d.m.Y', strtotime('+1 days')),
                     'endDate' => date('d.m.Y', strtotime('+1 years +1 days')),
-                )
+                ),
+                'htmlOptions' => array(
+                    'class'=>'span5'
+                ),
             )
         );
     ?>
-
-
-    <?php // echo $form->textFieldRow($model,'activation_start',array('class'=>'span5')); ?>
-
-	<?php //echo $form->textFieldRow($model,'activation_end',array('class'=>'span5')); ?>
-
 
 	<div class="form-actions">
 		<?php $this->widget('bootstrap.widgets.TbButton', array(

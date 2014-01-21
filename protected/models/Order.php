@@ -34,8 +34,9 @@ class Order extends CActiveRecord
 	 * @return string the associated database table name
 	 */
 
-    public $activation_range;
+    public $cardResult;
     public $card_number;
+    public $activation_range;
 
 	public function tableName()
 	{
@@ -50,40 +51,103 @@ class Order extends CActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('email, description, card_delivery_address, delivery_street', 'length', 'max'=>256),
-			array('phone, grn', 'length', 'max'=>16),
-            array('vin,grn,card_id, activation_start, activation_end', 'default', 'setOnEmpty' => true, 'value' => null),
-			array('first_name, middle_name, last_name, ts_make, ts_model', 'length', 'max'=>64),
-			array('vin', 'length', 'max'=>17),
-			array('ts_color', 'length', 'max'=>64),
-			array('card_id', 'length', 'max'=>10),
-			array('activation_start, activation_end, delivery_coords', 'safe'),
+            //Сначала общие правила валидации по форматам данных
+            array('email', 'email'),
+            array('phone', 'match', 'pattern'=>'/^\+\d+\-\d+\-\d+$/'),
+            array('vin', 'match', 'pattern'=>'/^(([a-h,A-H,j-n,J-N,p-z,P-Z,0-9]{9})([a-h,A-H,j-n,J-N,p,P,r-t,R-T,v-z,V-Z,0-9])([a-h,A-H,j-n,J-N,p-z,P-Z,0-9])(\d{6}))$/'),
+            array('grn','match', 'pattern'=> '/[0-9ABCEHKMOPTXYabcehkmoptxyАВСЕНКМОРТХУавсенкмортху]\d{3}[ABCEHKMOPTXYabcehkmoptxyАВСЕНКМОРТХУавсенкмортху]{2}\d{2,3}/'),
+            //У нас всегда обязателен номер телефона, без вариантов. Нет телефона = некуда звонить
+            array('phone', 'required'),
+            //Обязательность у нас выстраивается сложно в зависимости от запрашиваемого сценария
+
+            //Проверка формата диавазона карт
+            array('activation_range', 'checkActivationDate'),
+            //Фиьтрация диапазона действия карт
+            array('activation_range', 'filter', 'filter'=>array( $this, 'filterActivationDate' )),
+
+            array('delivered', 'numerical', 'integerOnly'=>true),
+
+            array('ts_color', 'length', 'max'=>64),
+            array('card_id', 'length', 'max'=>10),
+
+            array('first_name, middle_name, last_name, ts_make, ts_model', 'length', 'max'=>64),
+
+            array('vin, grn ,card_id, activation_start, activation_end', 'default', 'setOnEmpty' => true, 'value' => null),
+
+            //Мы можем всегда массово назначить эти атрибуты
+            array('delivery_coords, activation_range', 'safe'),
+
+            //Сложная валидация карт с походом в базу данных
+            array('card_number', 'checkCardNumber'),
+
+
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
 			array('id, email, phone, description, first_name, middle_name, last_name, vin, grn, ts_make, ts_model, ts_color, card_delivery_address, card_id, activation_start, activation_end, delivery_coords, delivery_street', 'safe', 'on'=>'search'),
 
-
-            array('delivered', 'numerical', 'integerOnly'=>true),
-            // date validation
-//            array('activation_start, activation_end', 'type', 'type'=>'date', 'dateFormat'=>Yii::app()->locale->dateFormat),
         );
 	}
 
-    /*
-    protected function beforeSave(){
-        foreach($this->metadata->tableSchema->columns as $columnName => $column){
-            if ($column->dbType == 'date'){
-                $this->$columnName = date('Y-m-d', CDateTimeParser::parse($this->$columnName, Yii::app()->locale->dateFormat));
-            }elseif ($column->dbType == 'datetime'){
-                $this->$columnName = date('Y-m-d H:i:s', CDateTimeParser::parse($this->$columnName, Yii::app()->locale->dateFormat));
+    public  function  checkCardNumber($attribute,$params)
+    {
+        if ($this[$attribute])
+        {
+            $this->cardResult = CardChecker::CheckCard($this[$attribute]);
+            if ($this->cardResult['result'] != "CanCreateNew" && $this->cardResult['result']!= "CanUseThis")
+            {
+                $error = "Карточка не может быть использована по причине: ".(($this->cardResult['result']=='AlreadyUsed')?"Уже используется":"Серия данной карты не найдена");
+                $this->addError('card_number',$error);
             }
-
         }
+    }
 
-        return true;
+    public  function filterActivationDate($value)
+    {
+        $dates = explode(" - ", $value);
+        if (count($dates)>1)
+        {
+            $this->activation_start = date('Y-m-d H:i:s', strtotime($dates[0]));
+            $this->activation_end = date('Y-m-d H:i:s', strtotime($dates[1]));
+        }
+        return $value;
+    }
+
+    public  function checkActivationDate($attribute,$params)
+    {
+        if($this[$attribute])
+        {
+            preg_match("/^(\d{2}\.\d{2}.\d{4}) \- (\d{2}\.\d{2}.\d{4})$/", $this[$attribute], $datePatrs);
+            if (!count($datePatrs))
+                $this->addError('activation_range',"Некорректный формат диапазона действия карты");
+        }
     }
 
 
+    protected function beforeSave()
+    {
+        $result = true;
+        if (isset($this->card_number) && isset($this->cardResult))
+        {
+            //Создаем карточку или используем существующую
+            if ($this->cardResult['result'] == "CanUseThis")
+            {
+                $this->card_id = $this->cardResult['id'];
+            }
+            else if ($this->cardResult['result'] == "CanCreateNew")
+            {
+                $card = new Card;
+                $card->number = $this->card_number;
+                $card->series_id = $this->cardResult['series_id'];
+                $result = $card->save();
+                $this->card_id = $card->id;
+                //TODO: Не забыть про транзакцию. Карту сохраняем только с самим заказов
+            }
+            else $result = false;
+        }
+        return $result;
+    }
+
+    /*
     protected function afterFind(){
 
         foreach($this->metadata->tableSchema->columns as $columnName => $column){

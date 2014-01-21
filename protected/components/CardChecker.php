@@ -7,11 +7,11 @@
  */
 class CardChecker
 {
-    public static  function getCardSeries($cardFullNumber)
+    public static function getCardSeries($cardFullNumber)
     {
         $result = null;
         preg_match("/([A-Za-z])(\d+)/", $cardFullNumber, $cardPatrs);
-        if (count($cardFullNumber))
+        if (count($cardPatrs))
         {
             $series = CardSeries::model()->find('series_type=:series and starting_number<=:number and ending_number>=:number',
                 array(':series'=>$cardPatrs[1], ':number'=>$cardPatrs[2])
