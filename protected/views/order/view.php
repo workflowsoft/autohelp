@@ -32,10 +32,10 @@ $this->menu=array(
 		'ts_model',
 		'ts_color',
 		'card_delivery_address',
-		array(
-            'label' => $model->card->getAttributeLabel('number'),
+        array(
+            'label' => 'Номер карты',
             'type' => 'raw',
-            'value' => CHtml::encode($model->card->number)
+            'value' => isset($model->card->number) ? CHtml::encode($model->card->number) : '',
         ),
         array(
 		    'name' => 'activation_start',

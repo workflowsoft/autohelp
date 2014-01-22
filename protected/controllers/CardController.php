@@ -18,7 +18,7 @@ class CardController extends  Controller {
         );
     }
 
-    public function actionCheck($id)
+    public function actionApiCheck($id)
     {
         $result = CardChecker::CheckCard($id);
         $this->_sendResponse(200, CJSON::encode($result));

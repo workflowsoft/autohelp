@@ -64,6 +64,7 @@ return array(
                 array('<controller>/post', 'pattern'=>'api/<controller:\w+>', 'verb' => 'POST'),
                 array('<controller>/put', 'pattern'=>'api/<controller:\w+>', 'verb' => 'PUT'),
                 array('<controller>/delete', 'pattern'=>'api/<controller:\w+>', 'verb' => 'DELETE'),
+//                array('<controller>/<action>', 'pattern'=>'<controller:\w+>/<action:\w+>/<id:.+>', 'verb' => 'GET'),
                 array('<controller>/<action>', 'pattern'=>'api/<controller:\w+>/<action:\w+>/<id:.+>', 'verb' => 'GET'),
 
 				/*'<controller:\w+>/<id:\d+>'=>'<controller>/view',
@@ -81,7 +82,7 @@ return array(
             'enableParamLogging' => true,
             'emulatePrepare' => true,
             'username' => 'root',
-            'password' => 'mysql12345',
+            'password' => 'mysql1234',
             'charset' => 'utf8',
             'initSQLs'=>array("set time_zone='+00:00';"),
         ),
