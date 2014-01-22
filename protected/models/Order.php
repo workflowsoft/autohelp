@@ -23,6 +23,7 @@
  * @property string $delivery_coords
  * @property string $delivery_street
  * @property int $delivered
+ * @property string $activation_comment
  *
  * The followings are the available model relations:
  * @property Card $card
@@ -55,13 +56,23 @@ class Order extends CActiveRecord
             array('email', 'email'),
             array('phone', 'match', 'pattern'=>'/^\+\d+\-\d+\-\d+$/'),
             array('vin', 'match', 'pattern'=>'/^(([a-h,A-H,j-n,J-N,p-z,P-Z,0-9]{9})([a-h,A-H,j-n,J-N,p,P,r-t,R-T,v-z,V-Z,0-9])([a-h,A-H,j-n,J-N,p-z,P-Z,0-9])(\d{6}))$/'),
-            array('grn','match', 'pattern'=> '/[0-9ABCEHKMOPTXYabcehkmoptxyАВСЕНКМОРТХУавсенкмортху]\d{3}[ABCEHKMOPTXYabcehkmoptxyАВСЕНКМОРТХУавсенкмортху]{2}\d{2,3}/'),
+            array('grn','match', 'pattern'=> '/^[0-9ABCEHKMOPTXYabcehkmoptxyАВСЕНКМОРТХУавсенкмортху]\d{3}[ABCEHKMOPTXYabcehkmoptxyАВСЕНКМОРТХУавсенкмортху]{2}\d{2,3}$/u'),
             //У нас всегда обязателен номер телефона, без вариантов. Нет телефона = некуда звонить
             array('phone', 'required'),
             //Обязательность у нас выстраивается сложно в зависимости от запрашиваемого сценария
 
+            //Сложная валидация карт с походом в базу данных
+            array('card_number', 'checkCardNumber'),
+
             //Проверка формата диавазона карт
             array('activation_range', 'checkActivationDate'),
+
+            //Проверка коментария платежа
+            array('activation_comment', 'checkActivationComment'),
+
+            //Проверка факта доставки карты
+            array('delivered', 'checkDelivered'),
+
             //Фиьтрация диапазона действия карт
             array('activation_range', 'filter', 'filter'=>array( $this, 'filterActivationDate' )),
 
@@ -77,16 +88,35 @@ class Order extends CActiveRecord
             //Мы можем всегда массово назначить эти атрибуты
             array('delivery_coords, activation_range', 'safe'),
 
-            //Сложная валидация карт с походом в базу данных
-            array('card_number', 'checkCardNumber'),
-
 
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
-			array('id, email, phone, description, first_name, middle_name, last_name, vin, grn, ts_make, ts_model, ts_color, card_delivery_address, card_id, activation_start, activation_end, delivery_coords, delivery_street', 'safe', 'on'=>'search'),
+			array('id, email, phone, description, first_name, middle_name, last_name, vin, grn, ts_make, ts_model, ts_color, card_delivery_address, card_id, activation_start, activation_end, delivery_coords, delivery_street, card_number', 'safe', 'on'=>'search'),
 
         );
 	}
+
+    public  function checkActivationComment($attribute,$params)
+    {
+        if ($this[$attribute])
+        {
+            if (!$this->activation_range)
+            {
+                $this->addError($attribute, "Нельзя выставлять коментарий активации карты без указания даты активации");
+            }
+        }
+    }
+
+    public function  checkDelivered($attribute,$params)
+    {
+        if ($this[$attribute])
+        {
+            if ($this[$attribute] == 1 && !$this->card_number)
+            {
+                  $this->addError('delivered', "Доставка невозможна без указания номера карты");
+            }
+        }
+    }
 
     public  function  checkCardNumber($attribute,$params)
     {
@@ -119,6 +149,30 @@ class Order extends CActiveRecord
             preg_match("/^(\d{2}\.\d{2}.\d{4}) \- (\d{2}\.\d{2}.\d{4})$/", $this[$attribute], $datePatrs);
             if (!count($datePatrs))
                 $this->addError('activation_range',"Некорректный формат диапазона действия карты");
+            else
+            {
+                if (!$this->card_number)
+                {
+                   //Не указан номер карты, так тоже не пойдет активировать
+                   $this->addError('card_number',"Попытка активации карты без номера карты, которую предполагается активировать");
+                }
+                //Если с датой активации все ОК, то обязательно должен быть коментарий и номер валидный номер карты
+                if (!$this->activation_comment)
+                {
+                    //TODO: Учесть, что если карта была оплачена через интернет, коментарий при активации необязателен
+                    //Нет коментария к активации карты
+                    $this->addError('activation_comment',"Попытка активации карты без указания коментария активации");
+                }
+                /*А еще активация невозможна без обязательны идентификационных признаков.
+                  Должен быть хотя бы VIN или GRN
+                */
+                if (!$this->grn && !$this->vin)
+                {
+                    $identifyError = "Попытка активации карты без указания идентификационных параметров ТС, Нужен VIN или ГРН";
+                    $this->addError('grn',$identifyError);
+                    $this->addError('vin',$identifyError);
+                }
+            }
         }
     }
 
@@ -206,6 +260,7 @@ class Order extends CActiveRecord
 			'delivery_street' => 'Уточнение координат доставки',
 			'delivered' => 'Карта доставлена',
             'activation_range' => 'Время действия карты',
+            'activation_comment' => 'Коментарий активации (платежный документ)'
 		);
 	}
 
@@ -245,6 +300,11 @@ class Order extends CActiveRecord
 		$criteria->compare('activation_end',$this->activation_end,true);
 		$criteria->compare('delivery_coords',$this->delivery_coords,true);
 		$criteria->compare('delivery_street',$this->delivery_street,true);
+        if ($this->card_number)
+        {
+            $criteria->with = array('card');
+            $criteria->addCondition('card.number LIKE "'.$this->card_number.'%"');
+        }
 
 		return new CActiveDataProvider($this, array(
 			'criteria'=>$criteria,
@@ -286,7 +346,7 @@ class Order extends CActiveRecord
 	 */
 	public static function model($className=__CLASS__)
 	{
-		return parent::model($className);
+		return parent::model($className)->with('card');
 	}
 
     public function isActivated() {

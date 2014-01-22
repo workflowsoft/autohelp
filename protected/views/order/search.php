@@ -75,6 +75,7 @@ $this->widget('bootstrap.widgets.TbGridView', array(
         array(
             'value' => 'isset($data->card->number) ? $data->card->number : ""',
             'header' => 'Номер карты',
+            'filter' => CHtml::activeTextField($model, 'card_number'),
         ),
         'grn',
         'vin',

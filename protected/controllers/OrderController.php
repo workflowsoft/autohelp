@@ -209,6 +209,7 @@ class OrderController extends Controller
         if (isset($_GET['Order'])) {
             $model->attributes = $_GET['Order'];
         }
+
         $data_provider = $model->search();
 
         $sql = 'SELECT order_id, id as `ticket_id` from ticket where order_id > 0';
@@ -257,7 +258,7 @@ class OrderController extends Controller
      */
     public function loadModel($id)
     {
-        $model = Order::model()->with('action_tag')->findByPk($id);
+        $model = Order::model()->with('action_tag')->with('card')->findByPk($id);
         if ($model === null)
             throw new CHttpException(404, 'The requested page does not exist.');
         return $model;

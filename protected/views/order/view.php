@@ -5,11 +5,9 @@ $this->breadcrumbs=array(
 );
 
 $this->menu=array(
-//	array('label'=>'List Order','url'=>array('index')),
 	array('label'=>'Создать заказ','url'=>array('create')),
 	array('label'=>'Редактировать заказ','url'=>array('update','id'=>$model->id)),
-	array('label'=>'Удалить заказ','url'=>'#','linkOptions'=>array('submit'=>array('delete','id'=>$model->id),'confirm'=>'Are you sure you want to delete this item?')),
-//	array('label'=>'Manage Order','url'=>array('admin')),
+	array('label'=>'Удалить заказ','url'=>'#','linkOptions'=>array('submit'=>array('delete','id'=>$model->id),'confirm'=>'Действительно удалить заказ?')),
 );
 ?>
 
@@ -19,7 +17,10 @@ $this->menu=array(
 	'data'=>$model,
 	'attributes'=>array(
 		'id',
-		'email',
+        array(
+            'name' => 'email',
+            'type' => 'email'
+        ),
 		'phone',
 		'description',
 		'first_name',
@@ -31,10 +32,23 @@ $this->menu=array(
 		'ts_model',
 		'ts_color',
 		'card_delivery_address',
-		'card_id',
-		'activation_start',
-		'activation_end',
-		'delivery_coords',
+		array(
+            'label' => $model->card->getAttributeLabel('number'),
+            'type' => 'raw',
+            'value' => CHtml::encode($model->card->number)
+        ),
+        array(
+		    'name' => 'activation_start',
+            'type' => 'date'
+        ),
+        array(
+            'name' => 'activation_end',
+            'type' => 'date'
+        ),
 		'delivery_street',
+        array(
+            'name' => 'delivered',
+            'type' => 'boolean'
+        ),
 	),
 )); ?>

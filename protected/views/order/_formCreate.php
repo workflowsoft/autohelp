@@ -160,6 +160,8 @@
         );
     ?>
 
+   <?php echo $form->textAreaRow($model,'activation_comment',array('class'=>'span5','maxlength'=>256)); ?>
+
 	<div class="form-actions">
 		<?php $this->widget('bootstrap.widgets.TbButton', array(
 			'buttonType'=>'submit',

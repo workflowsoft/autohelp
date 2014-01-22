@@ -60,10 +60,10 @@ class Card extends CActiveRecord
 	public function attributeLabels()
 	{
 		return array(
-			'id' => 'ID',
-			'number' => 'Number',
-			'series_id' => 'Series',
-			'prepaid' => 'Prepaid',
+			'id' => 'Идентификатор',
+			'number' => 'Номер',
+			'series_id' => 'Идентификатор серии',
+			'prepaid' => 'Предоплачена',
 		);
 	}
 

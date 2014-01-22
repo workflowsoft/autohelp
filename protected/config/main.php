@@ -103,6 +103,11 @@ return array(
 
 			),
 		),
+        'format' => array(
+            'class' => 'CFormatter',
+            'dateFormat' => 'd.m.Y',
+            'booleanFormat'=> array('Нет','Да')
+        )
 	),
 
 	// application-level parameters that can be accessed

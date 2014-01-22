@@ -289,4 +289,4 @@ IDENTIFIED BY 'mysql159';
 
 
 ALTER TABLE `partner2ticket` ADD `arrival_time` TIME;
-
+ALTER TABLE `order` ADD `activation_comment` VARCHAR(256);
