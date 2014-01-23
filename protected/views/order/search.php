@@ -66,6 +66,7 @@ $this->widget('bootstrap.widgets.TbGridView', array(
     'id' => 'order-grid',
     'dataProvider' => $data_provider,
     'filter' => $model,
+    'emptyText' => '<a href="'.$this->createUrl('/order/create/from_search/1').'" class="btn btn-success">Добавить нового клиента</a>',
     //goto update on row click
     'selectionChanged' => 'function(id){ location.href = "' . $this->createUrl('/ticket/create') . '/order_id/"+$.fn.yiiGridView.getSelection(id);}',
 

@@ -78,7 +78,11 @@ class OrderController extends Controller
                     $relation->action_tag_id = $action_tag->id;
                     $relation->order_id = $order->id;
                     $relation->save();
-                    $this->redirect(array('view', 'id' => $order->id));
+                    if(isset($_REQUEST['from_search'])) {
+                        $this->redirect(array('/ticket/create', 'order_id' => $order->id));
+                    } else {
+                        $this->redirect(array('view', 'id' => $order->id));
+                    }
                 }
             }
         }
