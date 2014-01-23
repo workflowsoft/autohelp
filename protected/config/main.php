@@ -82,7 +82,7 @@ return array(
             'enableParamLogging' => true,
             'emulatePrepare' => true,
             'username' => 'root',
-            'password' => 'mysql1234',
+            'password' => 'mysql12345',
             'charset' => 'utf8',
             'initSQLs'=>array("set time_zone='+00:00';"),
         ),
