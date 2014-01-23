@@ -122,6 +122,12 @@ class TicketController extends Controller
             throw new CHttpException(400, 'Invalid request. Specify order_id');
         }
 
+        //если для этого ордера уже существуюет тикет, редирект на него
+        $old_ticket = Ticket::model()->find('order_id=:order_id', array(':order_id' => $order_id));
+        if($old_ticket) {
+            $this->redirect(array('/ticket/view', 'id' => $old_ticket->id));
+        }
+
         $order = Order::model()->findByPk($order_id);
 
         if (isset($_POST['Ticket']) && isset($ticket_id)) {
