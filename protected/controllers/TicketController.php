@@ -124,7 +124,7 @@ class TicketController extends Controller
 
         //если для этого ордера уже существуюет тикет, редирект на него
         $old_ticket = Ticket::model()->find('order_id=:order_id', array(':order_id' => $order_id));
-        if($old_ticket) {
+        if($old_ticket && empty($ticket_id)) {
             $this->redirect(array('/ticket/view', 'id' => $old_ticket->id));
         }
 
@@ -137,6 +137,7 @@ class TicketController extends Controller
             }
             $ticket->attributes = $_POST['Ticket'];
             $ticket->order_id = $order_id;
+            $ticket->payment_without_card = !$order->isActivated();
             $ticket->status = TicketStatus::NEW_TICKET;
             $ticket->user_id = null;
             if ($ticket->save()) {
