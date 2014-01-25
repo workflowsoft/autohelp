@@ -47,7 +47,10 @@ if (!empty($services)) {
         'buttonType' => 'submit',
         'type' => 'primary',
         'label' => $model->isNewRecord ? 'Создать' : 'Сохранить',
-    )); ?>
+    ));
+
+    echo $this->renderPartial('_reject_widget', array('ticket_id'=>$model->id));
+    ?>
 </div>
 
 

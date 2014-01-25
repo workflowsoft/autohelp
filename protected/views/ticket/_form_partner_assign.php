@@ -231,15 +231,10 @@ if (!empty($partners['available'])) {
         'htmlOptions' => array(
             'class' => 'show-services',
         ),
-    )); ?>
+    ));
 
-    <!--    --><?php //$this->widget('bootstrap.widgets.TbButton', array(
-    //        'buttonType' => 'submit',
-    //        'type' => 'primary',
-    //        'label' => 'Сохранить',
-    //    ));
+    echo $this->renderPartial('_reject_widget', array('ticket_id'=>$model->id));
     ?>
-
 </div>
 
 

@@ -76,7 +76,7 @@ class ApiticketController extends Controller
 
     public function actionReject($id)
     {
-        if (empty($id) || !empty($_POST['reject_comment'])) {
+        if (empty($id) || empty($_POST['reject_comment'])) {
             $this->_sendResponse(404, 'No ticket id specified or empty data');
         }
 

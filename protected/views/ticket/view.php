@@ -10,12 +10,19 @@ $this->menu = array(
 <?php
 
 
+
+
+echo '<h4>Информация о клиенте</h4>';
+echo $this->renderPartial('_order_view', array('model'=>$order));
+
+echo '<h4>Информация об инциденте</h4>';
 $this->widget('bootstrap.widgets.TbDetailView', array(
     'data' => $model,
     'attributes' => array(
         'id',
         'status',
         'comment',
+        'reject_comment',
         array(
             'name' => 'payment_without_card',
             'type' => 'raw',
@@ -29,13 +36,8 @@ $this->widget('bootstrap.widgets.TbDetailView', array(
         ),
 
     ),
-)); ?>
+));
 
-<?php
-
-
-echo '<h4>Информация о клиенте</h4>';
-echo $this->renderPartial('_order_view', array('model'=>$order));
 
 
 echo '<h4>Назначенные Партнеры</h4>';
@@ -72,6 +74,9 @@ $this->widget('bootstrap.widgets.TbGridView', array(
         ),
     ),
 ));
+
+
+echo $this->renderPartial('_reject_widget', array('ticket_id'=>$model->id));
 
 ?>
 
