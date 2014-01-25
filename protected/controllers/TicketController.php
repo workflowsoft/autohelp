@@ -321,9 +321,10 @@ class TicketController extends Controller
     public function actionPartnerAssign($id)
     {
         $ticket = $this->loadModel($id);
-        if ($ticket->status != TicketStatus::ASSIGNING){
+        if ($ticket->status != TicketStatus::ASSIGNING && $ticket->status != TicketStatus::NEW_TICKET){
             throw new CHttpException(400, 'Статус данного инцдента не позволяет назначение');
-        } elseif (UserIdentity::getCurrentUserId() !== $ticket->user_id) {
+        }
+        if ($ticket->status == TicketStatus::ASSIGNING && UserIdentity::getCurrentUserId() !== $ticket->user_id) {
             throw new CHttpException(400, 'Партнеры уже назначаются другим пользователем');
         }
 

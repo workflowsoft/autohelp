@@ -1,6 +1,6 @@
 <?php
 
-class APITicketController extends Controller
+class ApiTicketController extends Controller
 {
     /**
      * @var string the default layout for the views. Defaults to '//layouts/column2', meaning
@@ -74,7 +74,7 @@ class APITicketController extends Controller
     }
 
 
-    public function actionsaveChecked($id)
+    public function actionSaveChecked($id)
     {
         if (!isset($_POST['success'])) {
             echo CJSON::encode(array('success' => false, 'description' => 'No success status'));
