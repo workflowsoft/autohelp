@@ -6,7 +6,7 @@
  * Time: 16:53
  */
 
-class ApiCardController extends  Controller {
+class ApicardController extends  Controller {
 
     public function accessRules()
     {
