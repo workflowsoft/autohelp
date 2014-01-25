@@ -1,6 +1,6 @@
 <?php
 
-class TicketController extends Controller
+class APITicketController extends Controller
 {
     /**
      * @var string the default layout for the views. Defaults to '//layouts/column2', meaning
@@ -37,54 +37,53 @@ class TicketController extends Controller
     }
 
 
-    public function actionPartnerAssign()
+    public function actionPartnerAssign($id)
     {
-        if (isset($_POST['data'])) {
-            $data = $_POST['data'];
-            foreach ($data as $item) {
-                if (!empty($item['partner_id']) && !empty($item['ticket_id'])) {
-                    $ticket = Ticket::model()->findByPk($item['ticket_id']);
-                    $ticket->status = TicketStatus::ASSIGNED;
-                    $ticket->save();
-                    if (!empty($item['services'])) {
-                        foreach ($item['services'] as $service) {
-                            $ticket2service = new Ticket2service;
-                            $ticket2service->ticket_id = $item['ticket_id'];
-                            $ticket2service->service_id = $service['id'];
-                            $ticket2service->save();
+//        $this->_sendResponse(400, CJSON::encode($_POST['data']));
+        if (empty($id) || !isset($_POST['data'])) {
+            $this->_sendResponse(404, 'No ticket id specified or empty data');
+        }
+        $ticket_id = $id;
+        $ticket = Ticket::model()->findByPk($ticket_id);
 
-                            $partner2ticket = new Partner2ticket;
-                            $param = array(
-                                ':pid' => $item['partner_id'],
-                                ':sid' => $service['id'],
-                            );
-                            $partner2service = Partner2service::model()
-                                ->find('partner_id=:pid and service_id=:sid', $param
-                                );
-                            $partner2ticket->partner2service_id = $partner2service->id;
-                            $partner2ticket->ticket_id = $item['ticket_id'];
-                            $partner2ticket->arrival_time = $this->addTime($service['time']);
-                            $partner2ticket->save();
-                        }
-                    }
-                }
+        if($ticket->status != TicketStatus::ASSIGNING) {
+            $this->_sendResponse(404, 'Incorrect status for assign');
+        }
+        $data = $_POST['data'];
+        foreach ($data as $item) {
+            if (!empty($item['partner_id']) && !empty($item['service_id'])) {
+                $partner2ticket = new Partner2ticket;
+                $param = array(
+                    ':pid' => $item['partner_id'],
+                    ':sid' => $item['service_id'],
+                );
+                $partner2service = Partner2service::model()
+                    ->find('partner_id=:pid and service_id=:sid', $param
+                    );
+                $partner2ticket->partner2service_id = $partner2service->id;
+                $partner2ticket->ticket_id = $ticket_id;
+                $partner2ticket->arrival_time = $this->addTime($item['time']);
+                $partner2ticket->save();
             }
         }
 
-        echo CJSON::encode(array('success' => true));
+        $ticket->status = TicketStatus::ASSIGNED;
+        $ticket->save();
+
+        $this->_sendResponse(200, CJSON::encode(array('success' => true)));
     }
 
 
     public function actionsaveChecked($id)
     {
-        if(!isset($_POST['success'])) {
+        if (!isset($_POST['success'])) {
             echo CJSON::encode(array('success' => false, 'description' => 'No success status'));
             return;
         }
         $success = $_POST['success'];
 
-        if(!$success ) {
-            if( empty($_POST['reject_comment'])) {
+        if (!$success) {
+            if (empty($_POST['reject_comment'])) {
                 echo CJSON::encode(array('success' => false, 'description' => 'Reject comment mustn\'t be empty'));
                 return;
             } else {
@@ -93,8 +92,8 @@ class TicketController extends Controller
         }
 
         //save rejected services
-        if(!empty($_POST['rejected_services'])) {
-            foreach($_POST['rejected_services'] as $service) {
+        if (!empty($_POST['rejected_services'])) {
+            foreach ($_POST['rejected_services'] as $service) {
                 $partner2service = Partner2service::model()->find(
                     'partner_id=:pid and service_id=:sid',
                     array(
@@ -118,14 +117,14 @@ class TicketController extends Controller
 
         $ticket = Ticket::model()->findByPk($id);
 
-        if($success) {
+        if ($success) {
             $ticket->status = TicketStatus::DONE;
         } else {
             $ticket->status = TicketStatus::REJECTED;
             $ticket->reject_comment = $reject_comment;
         }
         $ticket->user_id = null;
-        if($ticket->save()) {
+        if ($ticket->save()) {
             echo CJSON::encode(array('success' => true));
         } else {
             echo CJSON::encode(array('success' => false));

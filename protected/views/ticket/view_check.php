@@ -1,3 +1,78 @@
+<script type="text/javascript">
+
+    function save() {
+        var postdata = {};
+        if ($(this).hasClass('save-success')) {
+            postdata['success'] = 1;
+        } else {
+            var comment = $('.reject-comment').val();
+            if (comment == '') {
+                alert('Поле комментария отказа не может быть пустым');
+                return false;
+            }
+            postdata['success'] = 0;
+            postdata['reject_comment'] = comment;
+
+            var services = [];
+            var error = false;
+            $.each($('.grid-view').find('.service-checker'), function (key, tr) {
+                if ($(this).attr('checked')) {
+                    var reject_input = $(this).next().next();
+                    if (reject_input.val() == '') {
+                        error = true;
+                        return false;
+                    }
+                    services.push({
+                        'partner_id': reject_input.data('partner_id'),
+                        'service_id': reject_input.data('id'),
+                        'comment': reject_input.val()
+                    });
+                }
+            });
+            if (error) {
+                alert('Причина отказа не может быть пустой');
+                return false;
+            }
+            postdata['rejected_services'] = services;
+
+        }
+
+        $.ajax({
+            type: 'POST',
+            url: '$url',
+            data: postdata,
+            // TODO fucking govnocode with redirects, use ajax or yii forms
+            // Make action as api, it shouldn return the page
+            success: function (data) {
+                if (data['success']) {
+                    document.location.href = '$redirect_url'
+                } else {
+                    alert('При соранении статуса возникли ошибки')
+                }
+            },
+            error: function (data) {
+                alert('Не удалось сохранить статус инцидента')
+            },
+            dataType: 'json'
+        });
+
+
+        return false;
+    }
+
+    function showServiceReject() {
+        $('.service-checker').toggle();
+        $('.service-reject').toggle();
+    }
+
+
+    $('body').on('click', '.save-success', save);
+    $('body').on('click', '.save-rejected', save);
+    $('body').on('click', '.show-service-reject', showServiceReject);
+
+</script>
+
+
 <?php
 $this->menu = array(
     array('label' => 'Управление инцидентами', 'url' => array('admin')),
@@ -7,76 +82,9 @@ $this->menu = array(
 $url = Yii::app()->request->requestUri;
 $url = str_replace('check', 'a_saveChecked', $url);
 $redirect_url = $this->createUrl('/ticket/admin/status/checking');
-
-Yii::app()->clientScript->registerScript('actions', "
-
-function save(){
-    var postdata = {};
-    if($(this).hasClass('save-success')) {
-        postdata['success'] = 1;
-    } else {
-        var comment =$('.reject-comment').val();
-        if( comment == '') {
-            alert('Поле комментария отказа не может быть пустым');
-            return false;
-        }
-        postdata['success'] = 0;
-        postdata['reject_comment'] = comment;
-
-        var services = [];
-        var error = false;
-        $.each( $('.grid-view').find('.service-checker'), function( key, tr ) {
-            if($(this).attr('checked')) {
-                var reject_input = $(this).next().next();
-                if(reject_input.val() == '') {
-                    error = true;
-                    return false;
-                }
-                services.push({
-                    'partner_id' : reject_input.data('partner_id'),
-                    'service_id' : reject_input.data('id'),
-                    'comment' : reject_input.val()
-                });
-            }
-        });
-        if(error) {
-            alert('Причина отказа не может быть пустой');
-            return false;
-        }
-        postdata['rejected_services'] = services;
-
-    }
-
-    $.ajax({
-        type: 'POST',
-        url: '$url',
-        data: postdata,
-        // TODO fucking govnocode with redirects, use ajax or yii forms
-        // Make action as api, it shouldn return the page
-        success: function(data) {  if(data['success']) { document.location.href = '$redirect_url'} else {alert('При соранении статуса возникли ошибки')}},
-        error: function(data) {alert('Не удалось сохранить статус инцидента')},
-        dataType: 'json'
-    });
-
-
-    return false;
-}
-
-function showServiceReject () {
-    $('.service-checker').toggle();
-    $('.service-reject').toggle();
-}
-
-
-$( 'body' ).on( 'click', '.save-success', save);
-$( 'body' ).on( 'click', '.save-rejected', save);
-$( 'body' ).on( 'click', '.show-service-reject', showServiceReject);
-");
 ?>
 
-
-
-<h1>Проверка инцидента #<?php echo $model->id; ?></h1>
+<h1> Проверка инцидента #<?php echo $model->id; ?></h1>
 
 <?php $this->widget('bootstrap.widgets.TbDetailView', array(
     'data' => $model,
@@ -129,7 +137,7 @@ function makeServiceCheckBox($services, $partner_id)
         $result .= '&nbsp;';
         $result .= $service['time'];
         $result .= '&nbsp;';
-        $result .= '<input type="text" placeholder="Причина отказа" style="display:none;" class="service-reject" data-partner_id="'.$partner_id .'" data-id="' . $service['service']->id . '">';
+        $result .= '<input type="text" placeholder="Причина отказа" style="display:none;" class="service-reject" data-partner_id="' . $partner_id . '" data-id="' . $service['service']->id . '">';
 
         $result .= '<br>';
     }
