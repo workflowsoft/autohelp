@@ -99,13 +99,6 @@ class OrderController extends Controller
      */
     public function actionUpdate($id)
     {
-        $model = $this->loadModel($id);
-
-        // Uncomment the following line if AJAX validation is needed
-        // $this->performAjaxValidation($model);
-
-        // TODO very dirty, write the better front to back parameters transfer
-        $at_name = null;
         if (isset($_POST['activate'])) {
             $at_name = 'activate';
         } elseif (isset($_POST['recall'])) {
@@ -116,12 +109,20 @@ class OrderController extends Controller
             $at_name = 'check';
         } elseif (isset($_POST['delivery'])) {
             $at_name = 'delivery';
-        }
+        } else
+            $at_name = null;
+
+        $model = $this->loadModel($id, $at_name);
+
+        // Uncomment the following line if AJAX validation is needed
+        // $this->performAjaxValidation($model);
+
+        // TODO very dirty, write the better front to back parameters transfer
 
         if (isset($_POST['Order'])) {
             $model->attributes = $_POST['Order'];
             if ($model->save()) {
-                if (isset($at_name)) {
+                if (!is_null($at_name)) {
                     //найдем старый тег и удалим
                     Order2actionTag::model()
                         ->deleteAll(
@@ -260,10 +261,12 @@ class OrderController extends Controller
      * @internal param \the $integer ID of the model to be loaded
      * @return \CActiveRecord
      */
-    public function loadModel($id)
+    public function loadModel($id, $mode = null)
     {
         $model = Order::model()->with('action_tag')->findByPk($id);
-        if ($model === null)
+        if (!is_null($mode))
+            $model->scenario = $mode;
+        if ($model == null)
             throw new CHttpException(404, 'The requested page does not exist.');
         return $model;
     }

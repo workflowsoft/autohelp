@@ -88,6 +88,8 @@ class Order extends CActiveRecord
             //Мы можем всегда массово назначить эти атрибуты
             array('delivery_coords, activation_range', 'safe'),
 
+            //А еще если мы делаем доставку, обязательно нужно чтобы был адрес дсставки
+            array('card_delivery_address', 'required', 'on'=> 'delivery'),
 
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
