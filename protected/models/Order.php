@@ -122,7 +122,7 @@ class Order extends CActiveRecord
     {
         if ($this[$attribute])
         {
-            $this->cardResult = CardChecker::CheckCard($this[$attribute]);
+            $this->cardResult = CardChecker::CheckCard($this[$attribute], $this->id);
             if ($this->cardResult['result'] != "CanCreateNew" && $this->cardResult['result']!= "CanUseThis")
             {
                 $error = "Карточка не может быть использована по причине: ".(($this->cardResult['result']=='AlreadyUsed')?"Уже используется":"Серия данной карты не найдена");
@@ -140,6 +140,13 @@ class Order extends CActiveRecord
             $this->activation_end = date('Y-m-d H:i:s', strtotime($dates[1]));
         }
         return $value;
+    }
+
+    protected function afterFind()
+    {
+        parent::afterFind();
+        if ($this->card)
+            $this->card_number = $this->card->number;
     }
 
     public  function checkActivationDate($attribute,$params)

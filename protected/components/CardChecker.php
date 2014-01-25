@@ -22,7 +22,7 @@ class CardChecker
         return $result;
     }
 
-    public static function CheckCard($cardId)
+    public static function CheckCard($cardId, $orderId = null)
     {
         $result = array(
             'cardNumber'=> $cardId
@@ -33,7 +33,7 @@ class CardChecker
         if (isset($card))
         {
             $result['id'] = $card->id;
-            if (count($card->orders))
+            if (count($card->orders) && $card->orders[0]->id != $orderId)
             {
                 $result['result'] = 'AlreadyUsed';
                 $result['order_id'] = $card->orders[0]->id;

@@ -60,16 +60,15 @@ return array(
 			'rules'=>array(
                 '' => 'order/search',
                 //REST API
-                array('<controller>/get', 'pattern'=>'api/<controller:\w+>', 'verb' => 'GET'),
-                array('<controller>/post', 'pattern'=>'api/<controller:\w+>', 'verb' => 'POST'),
-                array('<controller>/put', 'pattern'=>'api/<controller:\w+>', 'verb' => 'PUT'),
-                array('<controller>/delete', 'pattern'=>'api/<controller:\w+>', 'verb' => 'DELETE'),
-//                array('<controller>/<action>', 'pattern'=>'<controller:\w+>/<action:\w+>/<id:.+>', 'verb' => 'GET'),
-                array('<controller>/<action>', 'pattern'=>'api/<controller:\w+>/<action:\w+>/<id:.+>', 'verb' => 'GET'),
-
-				/*'<controller:\w+>/<id:\d+>'=>'<controller>/view',
+                array('api<controller>/get', 'pattern'=>'api/<controller:\w+>', 'verb' => 'GET'),
+                array('api<controller>/post', 'pattern'=>'api/<controller:\w+>', 'verb' => 'POST'),
+                array('api<controller>/put', 'pattern'=>'api/<controller:\w+>', 'verb' => 'PUT'),
+                array('api<controller>/delete', 'pattern'=>'api/<controller:\w+>', 'verb' => 'DELETE'),
+                array('api<controller>/<action>', 'pattern'=>'api/<controller:\w+>/<action:\w+>/<id:.+>', 'verb' => 'GET'),
+                //Стандартные пути
+				'<controller:\w+>/<id:\d+>'=>'<controller>/view',
 				'<controller:\w+>/<action:\w+>/<id:\d+>'=>'<controller>/<action>',
-				'<controller:\w+>/<action:\w+>'=>'<controller>/<action>',*/
+				'<controller:\w+>/<action:\w+>'=>'<controller>/<action>',
 			),
 		),
 //		'db'=>array(

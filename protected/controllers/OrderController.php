@@ -262,7 +262,7 @@ class OrderController extends Controller
      */
     public function loadModel($id)
     {
-        $model = Order::model()->with('action_tag')->with('card')->findByPk($id);
+        $model = Order::model()->with('action_tag')->findByPk($id);
         if ($model === null)
             throw new CHttpException(404, 'The requested page does not exist.');
         return $model;

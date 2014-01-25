@@ -114,7 +114,7 @@
                     'mask' => 's999999999',
                     'completed' => 'function(){
                             var cardField = this;
-                            $.get("/index.php/api/card/check/"+cardField.val(),
+                            $.get("/api/card/check/"+cardField.val(),
                             function(data, textStatus, jqXHR) {
                                 if (data.result == "CanCreateNew" || data.result == "CanUseThis")
                                     cardField.css("border-color", "green");

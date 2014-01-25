@@ -6,7 +6,7 @@
  * Time: 16:53
  */
 
-class CardController extends  Controller {
+class ApiCardController extends  Controller {
 
     public function accessRules()
     {
@@ -18,10 +18,9 @@ class CardController extends  Controller {
         );
     }
 
-    public function actionApiCheck($id)
+    public function actionCheck($id)
     {
         $result = CardChecker::CheckCard($id);
         $this->_sendResponse(200, CJSON::encode($result));
     }
-
  }
