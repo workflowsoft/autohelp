@@ -124,20 +124,21 @@ class TicketController extends Controller
 
         //если для этого ордера уже существуюет тикет, редирект на него
         $old_ticket = Ticket::model()->find('order_id=:order_id', array(':order_id' => $order_id));
-        if($old_ticket && empty($ticket_id)) {
+        if ($old_ticket && empty($ticket_id)) {
             $this->redirect(array('/ticket/view', 'id' => $old_ticket->id));
         }
 
         $order = Order::model()->findByPk($order_id);
 
         if (isset($_POST['Ticket']) && isset($ticket_id)) {
+
             $ticket = Ticket::model()->findByPk($ticket_id);
             if ($ticket->status != 'draft') {
                 throw new CHttpException(400, 'We can save only drafts');
             }
             $ticket->attributes = $_POST['Ticket'];
             $ticket->order_id = $order_id;
-            $ticket->payment_without_card = !$order->isActivated();
+            $ticket->payment_without_card = (int)!$order->isActivated();
             $ticket->status = TicketStatus::NEW_TICKET;
             $ticket->user_id = null;
             if ($ticket->save()) {
@@ -154,8 +155,10 @@ class TicketController extends Controller
                     }
                 }
 
-                $this->redirect(array('view', 'id' => $ticket->id));
+            } else {
+                throw new CHttpException(400, var_export($ticket->getErrors(), true));
             }
+            $this->redirect(array('view', 'id' => $ticket->id));
         }
 
 
@@ -246,14 +249,14 @@ class TicketController extends Controller
 
     public function actiona_saveChecked($id)
     {
-        if(!isset($_POST['success'])) {
+        if (!isset($_POST['success'])) {
             echo CJSON::encode(array('success' => false, 'description' => 'No success status'));
             return;
         }
         $success = $_POST['success'];
 
-        if(!$success ) {
-            if( empty($_POST['reject_comment'])) {
+        if (!$success) {
+            if (empty($_POST['reject_comment'])) {
                 echo CJSON::encode(array('success' => false, 'description' => 'Reject comment mustn\'t be empty'));
                 return;
             } else {
@@ -262,8 +265,8 @@ class TicketController extends Controller
         }
 
         //save rejected services
-        if(!empty($_POST['rejected_services'])) {
-            foreach($_POST['rejected_services'] as $service) {
+        if (!empty($_POST['rejected_services'])) {
+            foreach ($_POST['rejected_services'] as $service) {
                 $partner2service = Partner2service::model()->find(
                     'partner_id=:pid and service_id=:sid',
                     array(
@@ -287,14 +290,14 @@ class TicketController extends Controller
 
         $ticket = Ticket::model()->findByPk($id);
 
-        if($success) {
+        if ($success) {
             $ticket->status = TicketStatus::DONE;
         } else {
             $ticket->status = TicketStatus::REJECTED;
             $ticket->reject_comment = $reject_comment;
         }
         $ticket->user_id = null;
-        if($ticket->save()) {
+        if ($ticket->save()) {
             echo CJSON::encode(array('success' => true));
         } else {
             echo CJSON::encode(array('success' => false));
@@ -318,7 +321,7 @@ class TicketController extends Controller
     public function actionPartnerAssign($id)
     {
         $ticket = $this->loadModel($id);
-        if($ticket->status == TicketStatus::ASSIGNING && UserIdentity::getCurrentUserId() !== $ticket->user_id) {
+        if ($ticket->status == TicketStatus::ASSIGNING && UserIdentity::getCurrentUserId() !== $ticket->user_id) {
             throw new CHttpException(400, 'Партнеры уже назначаются другим пользователем');
         }
 
@@ -409,7 +412,7 @@ class TicketController extends Controller
      */
     public function actionAdmin()
     {
-        $status = isset($_REQUEST['status']) ?$_REQUEST['status'] : 'new';
+        $status = isset($_REQUEST['status']) ? $_REQUEST['status'] : 'new';
         $model = new Ticket();
 //        $data_provider = $model->searchByStatus($status);
         $model->unsetAttributes(); // clear any default values

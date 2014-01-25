@@ -1,3 +1,100 @@
+<script type="text/javascript">
+    function intersect(array1, array2) {
+        var result = [];
+        // Don't destroy the original arrays
+        var a = array1.slice(0);
+        var b = array2.slice(0);
+        var aLast = a.length - 1;
+        var bLast = b.length - 1;
+        while (aLast >= 0 && bLast >= 0) {
+            if (a[aLast] > b[bLast]) {
+                a.pop();
+                aLast--;
+            } else if (a[aLast] < b[bLast]) {
+                b.pop();
+                bLast--;
+            } else /* they're equal */ {
+                result.push(a.pop());
+                b.pop();
+                aLast--;
+                bLast--;
+            }
+        }
+        return result;
+    }
+
+
+    function showActiveServices() {
+        var partners = [];
+        var errors = false;
+        $.each($('.grid-view').find('.partner'), function (key, tr) {
+            var input = $(this);
+            var partner_id = null;
+            //партнер выбран
+            if (input.attr('checked')) {
+                partner_id = $(this).data('id');
+                var services = [];
+                $.each(input.closest('tr').find('.service-checker'), function (key2, service) {
+                    var service_input = $(this);
+                    if (service_input.attr('checked')) {
+                        var service_id = $(this).data('id');
+                        var time_input = service_input.next().next();
+                        var time = time_input.val();
+                        if (!time) {
+                            alert('Не для всех услуг указано время');
+                            errors = true;
+                            return false;
+                        }
+
+                        services.push({
+                            'id': service_id,
+                            'time': time
+                        });
+                    }
+                });
+                if (partner_id) {
+                    partners.push({
+                        'ticket_id': '$ticket_id',
+                        'partner_id': partner_id,
+                        'services': services
+                    });
+                }
+            }
+
+        });
+
+        if (errors) {
+            return;
+        }
+
+        $.ajax({
+            type: 'POST',
+            url: '$url',
+            data: {'data': partners},
+            // TODO fucking govnocode with redirects, use ajax or yii forms
+            // Make action as api, it shouldn return the page
+            success: function (data) {
+                document.location.href = '$view_url'
+            },
+            error: function (data) {
+                alert('Не удалось назначить партнеров')
+            },
+            dataType: 'json'
+        });
+
+    }
+
+
+    $('body').on('click', '.show-services', showActiveServices);
+
+    function var_dump(object) {
+        console.log(object);
+    }
+
+</script>
+
+
+
 <?php $form = $this->beginWidget('bootstrap.widgets.TbActiveForm', array(
     'id' => 'ticket-form',
     'enableAjaxValidation' => false,
@@ -11,100 +108,6 @@ $url = Yii::app()->request->requestUri;
 $view_url = str_replace('partnerAssign', 'view', $url);
 $url = str_replace('partnerAssign', 'a_partnerAssign', $url);;
 $ticket_id = $model->id;
-
-Yii::app()->clientScript->registerScript('services', "
-
-function intersect(array1, array2) {
-   var result = [];
-   // Don't destroy the original arrays
-   var a = array1.slice(0);
-   var b = array2.slice(0);
-   var aLast = a.length - 1;
-   var bLast = b.length - 1;
-   while (aLast >= 0 && bLast >= 0) {
-      if (a[aLast] > b[bLast] ) {
-         a.pop();
-         aLast--;
-      } else if (a[aLast] < b[bLast] ){
-         b.pop();
-         bLast--;
-      } else /* they're equal */ {
-         result.push(a.pop());
-         b.pop();
-         aLast--;
-         bLast--;
-      }
-   }
-   return result;
-}
-
-
-
-function showActiveServices() {
-    var partners = [];
-    var errors = false;
-    $.each( $('.grid-view').find('.partner'), function( key, tr ) {
-        var input = $(this);
-        var partner_id = null;
-        //партнер выбран
-        if(input.attr('checked')){
-          partner_id = $(this).data('id');
-          var services = [];
-            $.each( input.closest('tr').find('.service-checker'), function( key2, service ) {
-                var service_input =$(this);
-                if(service_input.attr('checked')){
-                    var service_id = $(this).data('id');
-                    var time_input = service_input.next().next();
-                    var time = time_input.val();
-                    if(!time) {
-                        alert('Не для всех услуг указано время');
-                        errors = true;
-                        return false;
-                    }
-
-                    services.push({
-                        'id' : service_id,
-                        'time' : time
-                    });
-                }
-            });
-          if (partner_id) {
-            partners.push({
-                'ticket_id' : '$ticket_id',
-                'partner_id' : partner_id,
-                'services' : services
-            });
-          }
-        }
-
-    });
-
-    if(errors) {
-        return;
-    }
-//    var_dump(partners);
-
-    $.ajax({
-        type: 'POST',
-        url: '$url',
-        data: {'data' : partners},
-        // TODO fucking govnocode with redirects, use ajax or yii forms
-        // Make action as api, it shouldn return the page
-        success: function(data) {  document.location.href = '$view_url'},
-        error: function(data) {alert('Не удалось назначить партнеров')},
-        dataType: 'json'
-    });
-
-}
-
-
-$( 'body' ).on( 'click', '.show-services', showActiveServices);
-
-function var_dump (object) {
-    console.log(object);
-}
-
-");
 
 ?>
 
@@ -167,8 +170,7 @@ function makeServiceCheckBox($services, $checked, $partner_id)
 
 
 echo '<h4>Информация о клиенте</h4>';
-echo $this->renderPartial('_order_view', array('model'=>$order));
-
+echo $this->renderPartial('_order_view', array('model' => $order));
 
 
 if (!empty($partners['available'])) {
