@@ -1,53 +1,36 @@
+<?php
+$url = Yii::app()->request->requestUri;
+$url = '/api/ticket/saveChecked/' . $model->id;
+$redirect_url = $this->createUrl('/ticket/admin/status/checking');
+
+?>
+
 <script type="text/javascript">
 
     function save() {
         var postdata = {};
-        if ($(this).hasClass('save-success')) {
-            postdata['success'] = 1;
-        } else {
-            var comment = $('.reject-comment').val();
-            if (comment == '') {
-                alert('Поле комментария отказа не может быть пустым');
-                return false;
+        var services = [];
+        $.each($('.grid-view').find('.service-checker'), function (key, tr) {
+            if ($(this).attr('checked')) {
+                var reject_input = $(this).next().next().next();
+                services.push({
+                    'partner_id': reject_input.data('partner-id'),
+                    'service_id': reject_input.data('service-id'),
+                    'comment': reject_input.val()
+                });
             }
-            postdata['success'] = 0;
-            postdata['reject_comment'] = comment;
-
-            var services = [];
-            var error = false;
-            $.each($('.grid-view').find('.service-checker'), function (key, tr) {
-                if ($(this).attr('checked')) {
-                    var reject_input = $(this).next().next();
-                    if (reject_input.val() == '') {
-                        error = true;
-                        return false;
-                    }
-                    services.push({
-                        'partner_id': reject_input.data('partner_id'),
-                        'service_id': reject_input.data('id'),
-                        'comment': reject_input.val()
-                    });
-                }
-            });
-            if (error) {
-                alert('Причина отказа не может быть пустой');
-                return false;
-            }
-            postdata['rejected_services'] = services;
-
-        }
+        });
+        postdata['rejected_services'] = services;
 
         $.ajax({
             type: 'POST',
-            url: '$url',
+            url: '<?php echo $url ?>',
             data: postdata,
-            // TODO fucking govnocode with redirects, use ajax or yii forms
-            // Make action as api, it shouldn return the page
             success: function (data) {
                 if (data['success']) {
-                    document.location.href = '$redirect_url'
+                    document.location.href = '<?php echo $redirect_url?>'
                 } else {
-                    alert('При соранении статуса возникли ошибки')
+                    alert('При сохранении инцидента возникли ошибки')
                 }
             },
             error: function (data) {
@@ -65,10 +48,26 @@
         $('.service-reject').toggle();
     }
 
+    function onKeyUpServiceReject() {
+        var input = $(this);
+        var sc = '.service-checker-' + input.data('partner-id') + '-' + input.data('service-id');
+        if (input.val() != '') {
+            $(sc).attr('checked', true);
+        } else {
+            $(sc).attr('checked', false);
+        }
 
-    $('body').on('click', '.save-success', save);
-    $('body').on('click', '.save-rejected', save);
-    $('body').on('click', '.show-service-reject', showServiceReject);
+    }
+
+
+    $(document).ready(function () {
+        $('body').on('keyup', '.service-reject', onKeyUpServiceReject);
+        $('body').on('click', '.save-done', save);
+//        $('body').on('click', '.save-rejected', save);
+        $('body').on('click', '.show-service-reject', showServiceReject);
+
+    });
+
 
 </script>
 
@@ -79,14 +78,17 @@ $this->menu = array(
     array('label' => 'Поиск клиентов', 'url' => array('/order/search')),
 );
 
-$url = Yii::app()->request->requestUri;
-$url = str_replace('check', 'a_saveChecked', $url);
-$redirect_url = $this->createUrl('/ticket/admin/status/checking');
 ?>
 
 <h1> Проверка инцидента #<?php echo $model->id; ?></h1>
 
-<?php $this->widget('bootstrap.widgets.TbDetailView', array(
+<?php
+
+echo '<h4>Информация о клиенте</h4>';
+echo $this->renderPartial('_order_view', array('model' => $order));
+
+echo '<h4>Информация об инциденте</h4>';
+$this->widget('bootstrap.widgets.TbDetailView', array(
     'data' => $model,
     'attributes' => array(
         'id',
@@ -105,16 +107,10 @@ $redirect_url = $this->createUrl('/ticket/admin/status/checking');
         ),
 
     ),
-)); ?>
-
-<?php
-
-echo '<h4>Информация о клиенте</h4>';
-echo $this->renderPartial('_order_view', array('model' => $order));
+));
 
 
 echo '<h4>Назначенные Партнеры</h4>';
-
 $this->widget('bootstrap.widgets.TbButton', array(
     'type' => 'danger',
     'label' => 'Отметить услуги, которые не могут быть оказаны',
@@ -124,20 +120,27 @@ $this->widget('bootstrap.widgets.TbButton', array(
 
 ));
 
+
 function makeServiceCheckBox($services, $partner_id)
 {
     $result = '';
     foreach ($services as $service) {
 
-        $result .= '<input type="checkbox" style="display:none;"'
-            . ' class="service-checker" data-id="'
+        $result .= '<input type="checkbox" disabled style="display:none;"'
+            . ' class="service-checker service-checker-' . $partner_id . '-' . $service['service']->id . '" data-id="'
             . $service['service']->id . '">';
 
         $result .= '<span class="label">' . $service['service']->title . '</span>';
         $result .= '&nbsp;';
         $result .= $service['time'];
         $result .= '&nbsp;';
-        $result .= '<input type="text" placeholder="Причина отказа" style="display:none;" class="service-reject" data-partner_id="' . $partner_id . '" data-id="' . $service['service']->id . '">';
+        $result .= '<br>';
+        $result .= '<input
+            type="text"
+            placeholder="Причина отказа"
+            style="display:none;"
+            class="service-reject "
+            data-partner-id="' . $partner_id . '" data-service-id="' . $service['service']->id . '">';
 
         $result .= '<br>';
     }
@@ -163,13 +166,7 @@ $this->widget('bootstrap.widgets.TbGridView', array(
             'value' => function ($data) {
                     $result = '';
                     $result .= makeServiceCheckBox($data['services'], $data['id']);
-//                    foreach($data['services'] as $service) {
-
-//                        $result .= '<span class="label">' . $service['service']->title . '</span>';
-//                        $result .= '&nbsp;';
-//                        $result .= $service['time'];
                     $result .= '<br>';
-//                    }
 
                     return $result;
                 },
@@ -182,29 +179,29 @@ $form = $this->beginWidget('bootstrap.widgets.TbActiveForm', array(
     'enableAjaxValidation' => false,
 ));
 
-echo $form->textAreaRow($model, 'reject_comment', array('class' => 'span5 reject-comment', 'maxlength' => 2048));
+//echo $form->textAreaRow($model, 'reject_comment', array('class' => 'span5 reject-comment', 'maxlength' => 2048));
 ?>
 <div class="form-actions">
     <?php
     $this->widget('bootstrap.widgets.TbButton', array(
         'type' => 'success',
-        'label' => 'В успешные',
+        'label' => 'Закрыть инцидент',
         'htmlOptions' => array(
-            'class' => 'save-success',
+            'class' => 'save-done',
         ),
 
     ));
 
-    echo '&nbsp';
-
-    $this->widget('bootstrap.widgets.TbButton', array(
-        'type' => 'danger',
-        'label' => 'В отказ',
-        'htmlOptions' => array(
-            'class' => 'save-rejected',
-        ),
-
-    ));
+    //    echo '&nbsp';
+    //
+    //    $this->widget('bootstrap.widgets.TbButton', array(
+    //        'type' => 'danger',
+    //        'label' => 'В отказ',
+    //        'htmlOptions' => array(
+    //            'class' => 'save-rejected',
+    //        ),
+    //
+    //    ));
 
 
     ?>

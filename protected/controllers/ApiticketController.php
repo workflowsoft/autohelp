@@ -27,7 +27,7 @@ class ApiticketController extends Controller
     {
         return array(
             array('allow', // allow all users to perform 'index' and 'view' actions
-                'actions' => array('index', 'view', 'create', 'update', 'admin', 'delete', 'partnerassign', 'a_partnerassign', 'check', 'a_saveChecked'),
+                'actions' => array('reject', 'partnerassign', 'savechecked'),
                 'users' => array('@'),
             ),
             array('deny', // deny all users
@@ -46,7 +46,7 @@ class ApiticketController extends Controller
         $ticket_id = $id;
         $ticket = Ticket::model()->findByPk($ticket_id);
 
-        if($ticket->status != TicketStatus::ASSIGNING) {
+        if ($ticket->status != TicketStatus::ASSIGNING) {
             $this->_sendResponse(404, 'Incorrect status for assign');
         }
         $data = $_POST['data'];
@@ -74,24 +74,34 @@ class ApiticketController extends Controller
     }
 
 
+    public function actionReject($id)
+    {
+        if (empty($id) || !empty($_POST['reject_comment'])) {
+            $this->_sendResponse(404, 'No ticket id specified or empty data');
+        }
+
+        $ticket = Ticket::model()->findByPk($id);
+
+        $ticket->status = TicketStatus::REJECTED;
+        $ticket->reject_comment = $_POST['reject_comment'];
+
+        $ticket->user_id = null;
+        $response = array();
+        if ($ticket->save()) {
+            $response = array('success' => true);
+        } else {
+            $response = array('success' => true);
+        }
+        $this->_sendResponse(200, CJSON::encode($response));
+    }
+
+
     public function actionSaveChecked($id)
     {
-        if (!isset($_POST['success'])) {
-            echo CJSON::encode(array('success' => false, 'description' => 'No success status'));
-            return;
-        }
-        $success = $_POST['success'];
-
-        if (!$success) {
-            if (empty($_POST['reject_comment'])) {
-                echo CJSON::encode(array('success' => false, 'description' => 'Reject comment mustn\'t be empty'));
-                return;
-            } else {
-                $reject_comment = $_POST['reject_comment'];
-            }
+        if (empty($id)) {
+            $this->_sendResponse(200, CJSON::encode(array('success' => false, 'description' => 'No ticket id')));
         }
 
-        //save rejected services
         if (!empty($_POST['rejected_services'])) {
             foreach ($_POST['rejected_services'] as $service) {
                 $partner2service = Partner2service::model()->find(
@@ -116,21 +126,16 @@ class ApiticketController extends Controller
 
 
         $ticket = Ticket::model()->findByPk($id);
-
-        if ($success) {
-            $ticket->status = TicketStatus::DONE;
-        } else {
-            $ticket->status = TicketStatus::REJECTED;
-            $ticket->reject_comment = $reject_comment;
-        }
+        $ticket->status = TicketStatus::DONE;
         $ticket->user_id = null;
+        $response = array();
         if ($ticket->save()) {
-            echo CJSON::encode(array('success' => true));
+            $response = array('success' => true);
         } else {
-            echo CJSON::encode(array('success' => false));
+            $response = array('success' => false);
         }
+        $this->_sendResponse(200, CJSON::encode($response));
     }
-
 
     /**
      * adds minutes to current time
