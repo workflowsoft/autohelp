@@ -2,7 +2,7 @@
 
 $url = Yii::app()->request->requestUri;
 $view_url = str_replace('partnerAssign', 'view', $url);
-$url = str_replace('ticket', 'APITicket', $url);;
+$url = str_replace('ticket', 'api/ticket', $url);;
 $ticket_id = $model->id;
 
 ?>
@@ -107,17 +107,17 @@ $ticket_id = $model->id;
 
 <!--	<p class="help-block">Fields with <span class="required">*</span> are required.</p>-->
 
-<?php echo $form->errorSummary($model); ?>
+<?php //echo $form->errorSummary($model); ?>
 
 <!--	--><?php //echo $form->textFieldRow($model,'status',array('class'=>'span5','maxlength'=>11)); ?>
 
-<?php echo $form->textAreaRow($model, 'comment', array('class' => 'span5', 'maxlength' => 256)); ?>
+<?php //echo $form->textAreaRow($model, 'comment', array('class' => 'span5', 'maxlength' => 256)); ?>
 
 <!--	--><?php //echo $form->textFieldRow($model,'user_id',array('class'=>'span5','maxlength'=>10)); ?>
 
 <!--	--><?php //echo $form->textFieldRow($model,'last_status_change',array('class'=>'span5')); ?>
 
-<?php echo $form->checkboxRow($model, 'payment_without_card', array('disabled' => true)); ?>
+<?php //echo $form->checkboxRow($model, 'payment_without_card', array('disabled' => true)); ?>
 
 
 <?php
@@ -130,16 +130,6 @@ if (!empty($partners['available'])) {
     }
 }
 
-if (!empty($partners['services_not_available'])) {
-    echo '<h4>Услуги, которые не могут быть предоставлены</h4>';
-    foreach ($partners['services_not_available'] as $service) {
-        $this->widget('bootstrap.widgets.TbLabel', array(
-            'type' => 'important',
-            'label' => $service->title,
-        ));
-        echo '<br>';
-    }
-}
 
 function makeServiceCheckBox($services, $checked, $partner_id)
 {
@@ -162,6 +152,40 @@ function makeServiceCheckBox($services, $checked, $partner_id)
 
 echo '<h4>Информация о клиенте</h4>';
 echo $this->renderPartial('_order_view', array('model' => $order));
+
+echo '<h4>Информация об инциденте</h4>';
+$this->widget('bootstrap.widgets.TbDetailView', array(
+    'data' => $model,
+    'attributes' => array(
+        'id',
+//        'status',
+        'comment',
+        array(
+            'name' => 'payment_without_card',
+            'type' => 'raw',
+            'value' => function ($data) {
+                    $checkbox = '<input disabled="disabled" type="checkbox"' .
+                        ($data['payment_without_card'] ? 'checked="checked"' : '') .
+                        '>';
+
+                    return $checkbox;
+                },
+        ),
+
+    ),
+));
+
+
+if (!empty($partners['services_not_available'])) {
+    echo '<h4>Услуги, которые не могут быть предоставлены</h4>';
+    foreach ($partners['services_not_available'] as $service) {
+        $this->widget('bootstrap.widgets.TbLabel', array(
+            'type' => 'important',
+            'label' => $service->title,
+        ));
+        echo '<br>';
+    }
+}
 
 
 if (!empty($partners['available'])) {
