@@ -1,6 +1,6 @@
 <?php
 $this->breadcrumbs=array(
-	'Заказы'=>array('admin'),
+	'Заказы'=>array('admin','action_tag'=>$model->activeActionTag),
 	$model->id=>array('view','id'=>$model->id),
 //	'',
 );

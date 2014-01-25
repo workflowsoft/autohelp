@@ -38,6 +38,7 @@ class Order extends CActiveRecord
     public $cardResult;
     public $card_number;
     public $activation_range;
+    public $activeActionTag;
 
 	public function tableName()
 	{
@@ -149,6 +150,8 @@ class Order extends CActiveRecord
         parent::afterFind();
         if ($this->card)
             $this->card_number = $this->card->number;
+        if ($this->action_tag && count($this->action_tag))
+            $this->activeActionTag = $this->action_tag[0]->name;
     }
 
     public  function checkActivationDate($attribute,$params)
@@ -355,7 +358,7 @@ class Order extends CActiveRecord
 	 */
 	public static function model($className=__CLASS__)
 	{
-		return parent::model($className)->with('card');
+		return parent::model($className)->with('card')->with('action_tag');
 	}
 
     public function isActivated() {
