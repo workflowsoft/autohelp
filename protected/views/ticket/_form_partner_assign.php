@@ -2,7 +2,7 @@
 
 $url = Yii::app()->request->requestUri;
 $view_url = str_replace('partnerAssign', 'view', $url);
-$url = str_replace('ticket', 'api/ticket', $url);;
+$url = '/api/ticket/partnerAssign/' . $model->id;
 $ticket_id = $model->id;
 
 ?>

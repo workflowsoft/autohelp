@@ -65,7 +65,7 @@ return array(
                 array('api<controller>/post', 'pattern' => 'api/<controller:\w+>', 'verb' => 'POST'),
                 array('api<controller>/put', 'pattern' => 'api/<controller:\w+>', 'verb' => 'PUT'),
                 array('api<controller>/delete', 'pattern' => 'api/<controller:\w+>', 'verb' => 'DELETE'),
-                array('api<controller>/<action>', 'pattern' => 'api/<controller:\w+>/<action:\w+>/<id:.+>', 'verb' => 'GET'),
+                array('api<controller>/<action>', 'pattern' => 'api/<controller:\w+>/<action:\w+>/<id:.+>'),
                 //Стандартные пути
                 '<controller:\w+>/<id:\d+>' => '<controller>/view',
                 '<controller:\w+>/<action:\w+>/<id:\d+>' => '<controller>/<action>',
