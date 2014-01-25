@@ -1,3 +1,13 @@
+<?php
+
+$url = Yii::app()->request->requestUri;
+$view_url = str_replace('partnerAssign', 'view', $url);
+$url = str_replace('ticket', 'APITicket', $url);;
+$ticket_id = $model->id;
+
+?>
+
+
 <script type="text/javascript">
     function intersect(array1, array2) {
         var result = [];
@@ -27,65 +37,57 @@
     function showActiveServices() {
         var partners = [];
         var errors = false;
-        $.each($('.grid-view').find('.partner'), function (key, tr) {
-            var input = $(this);
-            var partner_id = null;
-            //партнер выбран
-            if (input.attr('checked')) {
-                partner_id = $(this).data('id');
-                var services = [];
-                $.each(input.closest('tr').find('.service-checker'), function (key2, service) {
-                    var service_input = $(this);
-                    if (service_input.attr('checked')) {
-                        var service_id = $(this).data('id');
-                        var time_input = service_input.next().next();
-                        var time = time_input.val();
-                        if (!time) {
-                            alert('Не для всех услуг указано время');
-                            errors = true;
-                            return false;
-                        }
 
-                        services.push({
-                            'id': service_id,
-                            'time': time
-                        });
-                    }
+        var services = [];
+        $.each($('.service-checker'), function (key, service) {
+            var service_input = $(this);
+            if (service_input.attr('checked')) {
+                var time_input = service_input.next().next();
+                var partner_id = time_input.data('partner-id');
+                var service_id = time_input.data('service-id');
+                var time = time_input.val();
+
+                services.push({
+                    'partner_id': partner_id,
+                    'service_id': service_id,
+                    'time': time
                 });
-                if (partner_id) {
-                    partners.push({
-                        'ticket_id': '$ticket_id',
-                        'partner_id': partner_id,
-                        'services': services
-                    });
-                }
             }
-
         });
+        var_dump(services);
 
-        if (errors) {
-            return;
-        }
 
         $.ajax({
             type: 'POST',
-            url: '$url',
-            data: {'data': partners},
+            url: '<?php echo $url?>',
+            data: {'data': services},
             // TODO fucking govnocode with redirects, use ajax or yii forms
             // Make action as api, it shouldn return the page
             success: function (data) {
-                document.location.href = '$view_url'
+                document.location.href = '<?php echo $view_url; ?>';
             },
             error: function (data) {
-                alert('Не удалось назначить партнеров')
+                alert('Не удалось назначить партнеров');
             },
             dataType: 'json'
         });
 
     }
 
+    function timerOnChange() {
+        var input = $(this);
+        var sc = '.service-checker-' + input.data('partner-id') + '-' + input.data('service-id');
+        if (input.val() != '') {
+            $(sc).attr('checked', true);
+        } else {
+            $(sc).attr('checked', false);
+        }
+    }
 
-    $('body').on('click', '.show-services', showActiveServices);
+    $(document).ready(function () {
+        $('body').on('click', '.show-services', showActiveServices);
+        $('body').on('keyup', '.timer', timerOnChange);
+    });
 
     function var_dump(object) {
         console.log(object);
@@ -99,17 +101,6 @@
     'id' => 'ticket-form',
     'enableAjaxValidation' => false,
 )); ?>
-
-
-
-<?php
-
-$url = Yii::app()->request->requestUri;
-$view_url = str_replace('partnerAssign', 'view', $url);
-$url = str_replace('partnerAssign', 'a_partnerAssign', $url);;
-$ticket_id = $model->id;
-
-?>
 
 
 
@@ -154,12 +145,12 @@ function makeServiceCheckBox($services, $checked, $partner_id)
 {
     $result = '';
     foreach ($services as $service) {
-        $result .= '<input type="checkbox"'
-            . ($checked ? 'checked="checked"' : '')
-            . ' class="service-checker" data-id="'
+        $result .= '<input type="checkbox" disabled'
+//            . ($checked ? 'checked="checked"' : '')
+            . ' class="service-checker service-checker-' . $partner_id . '-' . $service->id . '" data-id="'
             . $service->id . '">';
         $result .= '<span class="label">' . $service->title . '</span>';
-        $result .= '&nbsp<input type="text" class="timer timer-' . $partner_id . '" data-id="' . $service->id . '" style="width:40px;"> минут';
+        $result .= '&nbsp<input type="text" class="timer timer-' . $partner_id . '" data-service-id="' . $service->id . '" data-partner-id="' . $partner_id . '" style="width:40px;"> минут';
 
         $result .= '<br>';
     }
@@ -186,14 +177,14 @@ if (!empty($partners['available'])) {
         'rowCssClassExpression' => '',
 //    'selectionChanged'=>'function(id){ location.href = "'.$this->createUrl('partnerAssign').'/id/"+$.fn.yiiGridView.getSelection(id);}',
         'columns' => array(
-            array(
-                'name' => 'selected',
-                'header' => '',
-                'type' => 'raw',
-                'value' => function ($data) {
-                        return '<input type="checkbox" class="partner" data-id="' . $data['id'] . '">';
-                    },
-            ),
+//            array(
+//                'name' => 'selected',
+//                'header' => '',
+//                'type' => 'raw',
+//                'value' => function ($data) {
+//                        return '<input type="checkbox" disabled class="partner" data-id="' . $data['id'] . '">';
+//                    },
+//            ),
 
             array('name' => 'PartnerTitle', 'header' => 'Партнер'),
             array('name' => 'PartnerPhone', 'header' => 'Контактный телефон партнера'),
