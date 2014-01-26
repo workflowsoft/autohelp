@@ -54,6 +54,7 @@ class Ticket extends CActiveRecord
 		return array(
 			'partner2tickets' => array(self::HAS_MANY, 'Partner2ticket', 'ticket_id'),
 			'user' => array(self::BELONGS_TO, 'User', 'user_id'),
+			'order' => array(self::BELONGS_TO, 'Order', 'order_id'),
 		);
 	}
 
@@ -97,6 +98,7 @@ class Ticket extends CActiveRecord
 		$criteria->compare('user_id',$this->user_id,true);
 		$criteria->compare('last_status_change',$this->last_status_change,true);
 		$criteria->compare('payment_without_card',$this->payment_without_card);
+        $criteria->with = array('order');
 
 		return new CActiveDataProvider($this, array(
 			'criteria'=>$criteria,
@@ -112,6 +114,7 @@ class Ticket extends CActiveRecord
         if($status == TicketStatus::DRAFT || $status == TicketStatus::ASSIGNING) {
             $criteria->compare('user_id',UserIdentity::getCurrentUserId());
         }
+        $criteria->with = array('order');
 
         return new CActiveDataProvider($this, array(
             'criteria'=>$criteria,

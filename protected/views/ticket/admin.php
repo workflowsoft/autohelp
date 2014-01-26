@@ -96,5 +96,14 @@ $this->widget('bootstrap.widgets.TbGridView', array(
     'columns' => array(
         'id',
         'comment',
+        array(
+            'value'=>'$data->order->last_name . " " . $data->order->first_name. " " . $data->order->middle_name',//This is the concatenated column
+            'header'=>'ФИО клиента',
+        ),
+        array(
+            'value'=>'$data->order->phone',
+            'header'=>'Номер телефона клиента',
+        ),
+
     ),
 )); ?>

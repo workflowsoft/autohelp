@@ -237,7 +237,7 @@ class TicketController extends Controller
         ));
     }
 
-
+/*
     public function actiona_PartnerAssign()
     {
         if (isset($_POST['data'])) {
@@ -275,7 +275,7 @@ class TicketController extends Controller
         echo CJSON::encode(array('success' => true));
     }
 
-
+/*
     public function actiona_saveChecked($id)
     {
         if (!isset($_POST['success'])) {
@@ -332,7 +332,7 @@ class TicketController extends Controller
             echo CJSON::encode(array('success' => false));
         }
     }
-
+*/
 
     /**
      * adds minutes to current time
@@ -465,7 +465,7 @@ class TicketController extends Controller
      */
     public function loadModel($id)
     {
-        $model = Ticket::model()->findByPk($id);
+        $model = Ticket::model()->with('order')->findByPk($id);
         if ($model === null)
             throw new CHttpException(404, 'The requested page does not exist.');
         return $model;
