@@ -18,8 +18,7 @@ echo $form->checkboxRow($model, 'payment_without_card', array('disabled' => true
 
 if (!empty($services)) {
     foreach ($services as $key => $service) {
-        $checked = in_array($service->id, $active_services) ? 'checked="checked"' : '';
-        echo '<input name="Service[' . $service->id . ']" id="Service_id_' . $service->id . '" value="1" type="checkbox" ' . $checked . '>';
+        echo '<input name="Service[' . $service->id . ']" id="Service_id_' . $service->id . '" value="1" type="checkbox">';
 
         echo '&nbsp';
         $this->widget('bootstrap.widgets.TbLabel', array(
