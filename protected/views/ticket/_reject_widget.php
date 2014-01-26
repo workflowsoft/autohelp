@@ -1,8 +1,5 @@
 <script type="text/javascript">
     function showRejectPromt(reject_comment) {
-//        window.event.cancelBubble = true;
-//        var reject_comment = prompt("Введите комментарий отказа");
-
         if (reject_comment) {
             $.ajax({
                 type: 'POST',
@@ -28,7 +25,7 @@
 
     }
 </script>
-<?
+<?php
 $this->widget(
     'bootstrap.widgets.TbButton',
     array(
