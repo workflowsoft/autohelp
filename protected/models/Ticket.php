@@ -35,7 +35,8 @@ class Ticket extends CActiveRecord
 		return array(
 			array('payment_without_card', 'numerical', 'integerOnly'=>true),
 			array('status', 'length', 'max'=>11),
-			array('comment', 'length', 'max'=>256),
+			array('comment', 'length', 'max'=>2048),
+			array('comment', 'required'),
 			array('user_id', 'length', 'max'=>10),
 			array('last_status_change', 'safe'),
 			// The following rule is used by search().

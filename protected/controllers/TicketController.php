@@ -123,7 +123,7 @@ class TicketController extends Controller
         }
 
         //если для этого ордера уже существуюет тикет, редирект на него
-        $old_ticket = Ticket::model()->find('order_id=:order_id and status not in ("'.TicketStatus::REJECTED.'","'.TicketStatus::DONE.'")', array(':order_id' => $order_id));
+        $old_ticket = Ticket::model()->find('order_id=:order_id and status not in ("' . TicketStatus::REJECTED . '","' . TicketStatus::DONE . '")', array(':order_id' => $order_id));
         if ($old_ticket && empty($ticket_id)) {
             $this->redirect(array('/ticket/view', 'id' => $old_ticket->id));
         }
@@ -137,33 +137,39 @@ class TicketController extends Controller
                 throw new CHttpException(400, 'We can save only drafts');
             }
             $ticket->attributes = $_POST['Ticket'];
-            $ticket->order_id = $order_id;
-            $ticket->payment_without_card = (int)!$order->isActivated();
-            $ticket->status = TicketStatus::NEW_TICKET;
-            $ticket->user_id = null;
-            if ($ticket->save()) {
-                if (isset($_POST['Service'])) {
-                    foreach ($_POST['Service'] as $key => $service) {
-                        if (!empty($service)) {
-                            $relation = new Ticket2service();
-                            $relation->ticket_id = $ticket->id;
-                            $relation->service_id = $key;
+            if ($ticket->validate()) {
+                $ticket->order_id = $order_id;
+                $ticket->payment_without_card = (int)!$order->isActivated();
+                $ticket->status = TicketStatus::NEW_TICKET;
+                $ticket->user_id = null;
+                if ($ticket->save()) {
+                    if (isset($_POST['Service'])) {
+                        foreach ($_POST['Service'] as $key => $service) {
+                            if (!empty($service)) {
+                                $relation = new Ticket2service();
+                                $relation->ticket_id = $ticket->id;
+                                $relation->service_id = $key;
 
-                            $relation->save();
+                                $relation->save();
+                            }
+
                         }
-
                     }
-                }
 
+                } else {
+                    throw new CHttpException(400, var_export($ticket->getErrors(), true));
+                }
+                $this->redirect(array('view', 'id' => $ticket->id));
             } else {
-                throw new CHttpException(400, var_export($ticket->getErrors(), true));
+                $validate_errors = true;
             }
-            $this->redirect(array('view', 'id' => $ticket->id));
         }
 
 
         if (!empty($ticket_id)) {
-            $ticket = new Ticket;
+            if (!$validate_errors) {
+                $ticket = new Ticket;
+            }
             $ticket->payment_without_card = !$order->isActivated();
             $this->render('create', array(
                 'ticket' => $ticket,
@@ -174,9 +180,12 @@ class TicketController extends Controller
             // first status is draft
             $ticket = new Ticket;
             $ticket->status = TicketStatus::DRAFT;
+            $ticket->comment = 'Заполните поле комментарий!';
             $ticket->user_id = UserIdentity::getCurrentUserId();
             $ticket->order_id = $order_id;
-            $ticket->save();
+            if (!$ticket->save()) {
+                throw new CHttpException(400, var_export($ticket->getErrors(), true));
+            };
             $this->redirect(array('create', 'order_id' => $order_id, 'ticket_id' => $ticket->id));
         }
 
@@ -197,28 +206,30 @@ class TicketController extends Controller
 
         if (isset($_POST['Ticket'])) {
             $ticket->attributes = $_POST['Ticket'];
-            if ($_POST['save_new']) {
-                $ticket->status = TicketStatus::NEW_TICKET;
-            }
-            if ($ticket->save()) {
-                Ticket2service::model()->deleteAll('ticket_id=:tid', array(':tid' => $ticket->id));
-                if (isset($_POST['Service'])) {
-                    foreach ($_POST['Service'] as $key => $service) {
-                        if (!empty($service)) {
-                            $relation = new Ticket2service();
-                            $relation->ticket_id = $ticket->id;
-                            $relation->service_id = $key;
-
-                            $relation->save();
-                        }
-
-                    }
+            if ($ticket->validate()) {
+                if ($_POST['save_new']) {
+                    $ticket->status = TicketStatus::NEW_TICKET;
                 }
+                if ($ticket->save()) {
+                    Ticket2service::model()->deleteAll('ticket_id=:tid', array(':tid' => $ticket->id));
+                    if (isset($_POST['Service'])) {
+                        foreach ($_POST['Service'] as $key => $service) {
+                            if (!empty($service)) {
+                                $relation = new Ticket2service();
+                                $relation->ticket_id = $ticket->id;
+                                $relation->service_id = $key;
 
-            } else {
-                throw new CHttpException(400, var_export($ticket->getErrors(), true));
+                                $relation->save();
+                            }
+
+                        }
+                    }
+
+                } else {
+                    throw new CHttpException(400, var_export($ticket->getErrors(), true));
+                }
+                $this->redirect(array('view', 'id' => $ticket->id));
             }
-            $this->redirect(array('view', 'id' => $ticket->id));
         }
 
         //get acrive services
@@ -236,103 +247,6 @@ class TicketController extends Controller
             'active_services' => $active_services,
         ));
     }
-
-/*
-    public function actiona_PartnerAssign()
-    {
-        if (isset($_POST['data'])) {
-            $data = $_POST['data'];
-            foreach ($data as $item) {
-                if (!empty($item['partner_id']) && !empty($item['ticket_id'])) {
-                    $ticket = Ticket::model()->findByPk($item['ticket_id']);
-                    $ticket->status = TicketStatus::ASSIGNED;
-                    $ticket->save();
-                    if (!empty($item['services'])) {
-                        foreach ($item['services'] as $service) {
-                            $ticket2service = new Ticket2service;
-                            $ticket2service->ticket_id = $item['ticket_id'];
-                            $ticket2service->service_id = $service['id'];
-                            $ticket2service->save();
-
-                            $partner2ticket = new Partner2ticket;
-                            $param = array(
-                                ':pid' => $item['partner_id'],
-                                ':sid' => $service['id'],
-                            );
-                            $partner2service = Partner2service::model()
-                                ->find('partner_id=:pid and service_id=:sid', $param
-                                );
-                            $partner2ticket->partner2service_id = $partner2service->id;
-                            $partner2ticket->ticket_id = $item['ticket_id'];
-                            $partner2ticket->arrival_time = $this->addTime($service['time']);
-                            $partner2ticket->save();
-                        }
-                    }
-                }
-            }
-        }
-
-        echo CJSON::encode(array('success' => true));
-    }
-
-/*
-    public function actiona_saveChecked($id)
-    {
-        if (!isset($_POST['success'])) {
-            echo CJSON::encode(array('success' => false, 'description' => 'No success status'));
-            return;
-        }
-        $success = $_POST['success'];
-
-        if (!$success) {
-            if (empty($_POST['reject_comment'])) {
-                echo CJSON::encode(array('success' => false, 'description' => 'Reject comment mustn\'t be empty'));
-                return;
-            } else {
-                $reject_comment = $_POST['reject_comment'];
-            }
-        }
-
-        //save rejected services
-        if (!empty($_POST['rejected_services'])) {
-            foreach ($_POST['rejected_services'] as $service) {
-                $partner2service = Partner2service::model()->find(
-                    'partner_id=:pid and service_id=:sid',
-                    array(
-                        ':pid' => $service['partner_id'],
-                        ':sid' => $service['service_id'],
-                    )
-                );
-                $partner2ticket = Partner2ticket::model()->find(
-                    'partner2service_id=:p2sid and ticket_id=:tid',
-                    array(
-                        ':p2sid' => $partner2service->id,
-                        ':tid' => $id,
-                    )
-                );
-
-                $partner2ticket->reject_comment = $service['comment'];
-                $partner2ticket->save();
-            }
-        }
-
-
-        $ticket = Ticket::model()->findByPk($id);
-
-        if ($success) {
-            $ticket->status = TicketStatus::DONE;
-        } else {
-            $ticket->status = TicketStatus::REJECTED;
-            $ticket->reject_comment = $reject_comment;
-        }
-        $ticket->user_id = null;
-        if ($ticket->save()) {
-            echo CJSON::encode(array('success' => true));
-        } else {
-            echo CJSON::encode(array('success' => false));
-        }
-    }
-*/
 
     /**
      * adds minutes to current time
