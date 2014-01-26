@@ -51,6 +51,9 @@ class ApiticketController extends Controller
         }
         $data = $_POST['data'];
         foreach ($data as $item) {
+            if(empty($item['time'])){
+                $this->_sendResponse(404, 'Empty time for partner_id=' . $item['partner_id']. ' and service_id=' .$item['service_id']);
+            }
             if (!empty($item['partner_id']) && !empty($item['service_id'])) {
                 $partner2ticket = new Partner2ticket;
                 $param = array(
