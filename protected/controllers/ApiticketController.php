@@ -27,13 +27,44 @@ class ApiticketController extends Controller
     {
         return array(
             array('allow', // allow all users to perform 'index' and 'view' actions
-                'actions' => array('reject', 'partnerassign', 'savechecked'),
+                'actions' => array('reject', 'partnerassign', 'savechecked', 'removeuserlock'),
                 'users' => array('@'),
             ),
             array('deny', // deny all users
                 'users' => array('*'),
             ),
         );
+    }
+
+    public function actionRemoveUserLock($id)
+    {
+        if (empty($id)) {
+            $this->_sendResponse(200, CJSON::encode(array('success' => false, 'message' => 'No ticket id specified')));
+        }
+        $ticket = Ticket::model()->findByPk($id);
+        if (empty($ticket)) {
+            $this->_sendResponse(200, CJSON::encode(array('success' => false, 'message' => 'No ticket found by this id')));
+        }
+
+        if ($ticket->status == TicketStatus::ASSIGNING) {
+            $ticket->status = TicketStatus::NEW_TICKET;
+            $ticket->user_id = null;
+            if(!$ticket->save()){
+                $this->_sendResponse(200, json_encode(array('success' => false, 'message' => $ticket->getErrors()), JSON_UNESCAPED_UNICODE));
+            }
+        } elseif ($ticket->status == TicketStatus::CHECKING) {
+            $ticket->status = TicketStatus::ASSIGNED;
+            $ticket->user_id = null;
+            if(!$ticket->save()){
+                $this->_sendResponse(200, json_encode(array('success' => false, 'message' => $ticket->getErrors()), JSON_UNESCAPED_UNICODE));
+            }
+
+        } else {
+            $this->_sendResponse(200, CJSON::encode(array('success' => false, 'message' => 'Ticket status doesn\'t allow unlock')));
+        }
+
+        $this->_sendResponse(200, CJSON::encode(array('success' => true)));
+
     }
 
 
@@ -51,8 +82,8 @@ class ApiticketController extends Controller
         }
         $data = $_POST['data'];
         foreach ($data as $item) {
-            if(empty($item['time'])){
-                $this->_sendResponse(404, 'Empty time for partner_id=' . $item['partner_id']. ' and service_id=' .$item['service_id']);
+            if (empty($item['time'])) {
+                $this->_sendResponse(404, 'Empty time for partner_id=' . $item['partner_id'] . ' and service_id=' . $item['service_id']);
             }
             if (!empty($item['partner_id']) && !empty($item['service_id'])) {
                 $partner2ticket = new Partner2ticket;
