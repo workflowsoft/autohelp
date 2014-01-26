@@ -8,7 +8,6 @@
     array(
         'model'=>$ticket,
         'services' => $services,
-        'active_services' => $active_services,
         'order' => $order,
     )
 );

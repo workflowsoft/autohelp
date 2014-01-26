@@ -1,7 +1,7 @@
 <script type="text/javascript">
-    function showRejectPromt() {
-        window.event.cancelBubble = true;
-        var reject_comment = prompt("Введите комментарий отказа");
+    function showRejectPromt(reject_comment) {
+//        window.event.cancelBubble = true;
+//        var reject_comment = prompt("Введите комментарий отказа");
 
         if (reject_comment) {
             $.ajax({
@@ -12,23 +12,32 @@
                     if (data['success']) {
                         document.location.href = '/ticket/admin/status/rejected'
                     } else {
-                        alert('При сохранении инцидента возникли ошибки');
+                        bootbox.alert('При сохранении инцидента возникли ошибки');
                     }
                 },
                 error: function (data) {
-                    alert('Не удалось сохранить статус инцидента');
+                    bootbox.alert('Не удалось сохранить статус инцидента');
                 },
                 dataType: 'json'
             });
 
         } else {
-            alert('Не введен комментарий отказа');
+            bootbox.alert("Не введен комментарий отказа")
         }
 
 
     }
 </script>
-<button class="btn btn-danger" onclick="showRejectPromt();return false;">
-    В отказ
-</button>
-
+<?
+$this->widget(
+    'bootstrap.widgets.TbButton',
+    array(
+        'label' => 'Отказ',
+        'type' => 'danger',
+        'htmlOptions' => array(
+            'style' => 'margin-left:3px',
+            'onclick' => 'js:bootbox.prompt("Введите комментарий отказа", showRejectPromt)'
+        ),
+    )
+);
+?>
