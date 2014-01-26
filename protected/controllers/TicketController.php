@@ -123,7 +123,7 @@ class TicketController extends Controller
         }
 
         //если для этого ордера уже существуюет тикет, редирект на него
-        $old_ticket = Ticket::model()->find('order_id=:order_id', array(':order_id' => $order_id));
+        $old_ticket = Ticket::model()->find('order_id=:order_id and status not in ("'.TicketStatus::REJECTED.'","'.TicketStatus::DONE.'")', array(':order_id' => $order_id));
         if ($old_ticket && empty($ticket_id)) {
             $this->redirect(array('/ticket/view', 'id' => $old_ticket->id));
         }

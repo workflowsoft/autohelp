@@ -217,7 +217,7 @@ class OrderController extends Controller
 
         $data_provider = $model->search();
 
-        $sql = 'SELECT order_id, id as `ticket_id` from ticket where order_id > 0';
+        $sql = 'SELECT order_id, id as `ticket_id` from ticket where order_id > 0 and status not in("'.TicketStatus::DONE.'","'.TicketStatus::REJECTED.'")';
         $query_results = Yii::app()->db->createCommand($sql)->queryAll();
         $order2ticket = array();
         foreach ($query_results as $res) {
