@@ -36,6 +36,8 @@ if (!empty($services)) {
 
 <div class="form-actions">
     <?php
+    echo '<input type="hidden" name="save_new" class="save-new-input" value="0">';
+
     $this->widget('bootstrap.widgets.TbButton', array(
         'buttonType' => 'submit',
         'type' => 'primary',
@@ -47,6 +49,9 @@ if (!empty($services)) {
         'buttonType' => 'submit',
         'type' => 'primary',
         'label' => 'Сохранить как новый',
+        'htmlOptions'=>array(
+            'class'=> 'save-new-button',
+        )
     ));
 
     echo $this->renderPartial('_reject_widget', array('ticket_id' => $model->id));
@@ -56,3 +61,15 @@ if (!empty($services)) {
 
 
 <?php $this->endWidget(); ?>
+
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+        $('body').on('click', '.save-new-button', function(){
+            $('.save-new-input').val(1);
+        });
+    });
+
+
+</script>

@@ -197,9 +197,11 @@ class TicketController extends Controller
 
         if (isset($_POST['Ticket'])) {
             $ticket->attributes = $_POST['Ticket'];
-//            $ticket->status = TicketStatus::NEW_TICKET;
+            if ($_POST['save_new']) {
+                $ticket->status = TicketStatus::NEW_TICKET;
+            }
             if ($ticket->save()) {
-                Ticket2service::model()->deleteAll('ticket_id=:tid',array(':tid' => $ticket->id));
+                Ticket2service::model()->deleteAll('ticket_id=:tid', array(':tid' => $ticket->id));
                 if (isset($_POST['Service'])) {
                     foreach ($_POST['Service'] as $key => $service) {
                         if (!empty($service)) {
@@ -223,7 +225,7 @@ class TicketController extends Controller
         $sql = "SELECT service_id FROM ticket2service where ticket_id=" . $ticket->id;
         $services = Yii::app()->db->createCommand($sql)->queryAll();
         $active_services = array();
-        foreach($services as $item) {
+        foreach ($services as $item) {
             $active_services[] = $item['service_id'];
         }
 
@@ -348,7 +350,7 @@ class TicketController extends Controller
     public function actionPartnerAssign($id)
     {
         $ticket = $this->loadModel($id);
-        if ($ticket->status != TicketStatus::ASSIGNING && $ticket->status != TicketStatus::NEW_TICKET){
+        if ($ticket->status != TicketStatus::ASSIGNING && $ticket->status != TicketStatus::NEW_TICKET) {
             throw new CHttpException(400, 'Статус данного инцдента не позволяет назначение');
         }
         if ($ticket->status == TicketStatus::ASSIGNING && UserIdentity::getCurrentUserId() !== $ticket->user_id) {
