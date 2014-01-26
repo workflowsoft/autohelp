@@ -167,7 +167,7 @@ class TicketController extends Controller
 
 
         if (!empty($ticket_id)) {
-            if (!$validate_errors) {
+            if (empty($validate_errors)) {
                 $ticket = new Ticket;
             }
             $ticket->payment_without_card = !$order->isActivated();

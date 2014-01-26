@@ -233,6 +233,7 @@ if (!empty($partners['available'])) {
         ),
     ));
 
+    echo $this->renderPartial('_widget_unlock', array('ticket_id'=>$model->id));
     echo $this->renderPartial('_reject_widget', array('ticket_id'=>$model->id));
     ?>
 </div>

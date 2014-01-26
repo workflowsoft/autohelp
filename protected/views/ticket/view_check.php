@@ -192,17 +192,7 @@ $form = $this->beginWidget('bootstrap.widgets.TbActiveForm', array(
 
     ));
 
-    //    echo '&nbsp';
-    //
-    //    $this->widget('bootstrap.widgets.TbButton', array(
-    //        'type' => 'danger',
-    //        'label' => 'В отказ',
-    //        'htmlOptions' => array(
-    //            'class' => 'save-rejected',
-    //        ),
-    //
-    //    ));
-
+    echo $this->renderPartial('_widget_unlock', array('ticket_id'=>$model->id));
 
     ?>
 </div>

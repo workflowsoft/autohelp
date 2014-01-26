@@ -27,7 +27,7 @@ class ApiticketController extends Controller
     {
         return array(
             array('allow', // allow all users to perform 'index' and 'view' actions
-                'actions' => array('reject', 'partnerassign', 'savechecked', 'removeuserlock'),
+                'actions' => array('reject', 'partnerassign', 'savechecked', 'unlock'),
                 'users' => array('@'),
             ),
             array('deny', // deny all users
@@ -36,7 +36,7 @@ class ApiticketController extends Controller
         );
     }
 
-    public function actionRemoveUserLock($id)
+    public function actionUnlock($id)
     {
         if (empty($id)) {
             $this->_sendResponse(200, CJSON::encode(array('success' => false, 'message' => 'No ticket id specified')));
