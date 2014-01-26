@@ -197,14 +197,41 @@ class TicketController extends Controller
 
         if (isset($_POST['Ticket'])) {
             $ticket->attributes = $_POST['Ticket'];
-            $ticket->status = TicketStatus::NEW_TICKET;
-            if ($ticket->save())
-                $this->redirect(array('view', 'id' => $ticket->id));
+//            $ticket->status = TicketStatus::NEW_TICKET;
+            if ($ticket->save()) {
+                Ticket2service::model()->deleteAll('ticket_id=:tid',array(':tid' => $ticket->id));
+                if (isset($_POST['Service'])) {
+                    foreach ($_POST['Service'] as $key => $service) {
+                        if (!empty($service)) {
+                            $relation = new Ticket2service();
+                            $relation->ticket_id = $ticket->id;
+                            $relation->service_id = $key;
+
+                            $relation->save();
+                        }
+
+                    }
+                }
+
+            } else {
+                throw new CHttpException(400, var_export($ticket->getErrors(), true));
+            }
+            $this->redirect(array('view', 'id' => $ticket->id));
+        }
+
+        //get acrive services
+        $sql = "SELECT service_id FROM ticket2service where ticket_id=" . $ticket->id;
+        $services = Yii::app()->db->createCommand($sql)->queryAll();
+        $active_services = array();
+        foreach($services as $item) {
+            $active_services[] = $item['service_id'];
         }
 
         $this->render('update', array(
-            'model' => $ticket,
+            'ticket' => $ticket,
             'order' => Order::model()->findByPk($ticket->order_id),
+            'services' => new Services(),
+            'active_services' => $active_services,
         ));
     }
 

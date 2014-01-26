@@ -35,10 +35,18 @@ if (!empty($services)) {
 
 
 <div class="form-actions">
-    <?php $this->widget('bootstrap.widgets.TbButton', array(
+    <?php
+    $this->widget('bootstrap.widgets.TbButton', array(
         'buttonType' => 'submit',
         'type' => 'primary',
-        'label' => $model->isNewRecord ? 'Создать' : 'Сохранить',
+        'label' => 'Сохранить',
+    ));
+    echo '&nbsp;';
+
+    $this->widget('bootstrap.widgets.TbButton', array(
+        'buttonType' => 'submit',
+        'type' => 'primary',
+        'label' => 'Сохранить как новый',
     ));
 
     echo $this->renderPartial('_reject_widget', array('ticket_id' => $model->id));
