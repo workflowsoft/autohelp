@@ -86,12 +86,15 @@ insert into `user2role` (`user_id`, `role_id`) select @user_id, id from role;
 
 /* begin dummies*/
 INSERT into `order`(`email`, `phone`) values ('client2@ya.ru','79279876532');
+SET @Order1 = LAST_INSERT_ID();
 INSERT into order2action_tag (`order_id`, `action_tag_id`)
-  select LAST_INSERT_ID() ,action_tag.id from action_tag where action_tag.name = 'call';
+  select @Order1 ,action_tag.id from action_tag where action_tag.name = 'call';
+
 
 INSERT into `order`(`email`, `phone`) values ('client3@ya.ru','79856328545');
+SET @Order2 = LAST_INSERT_ID();
 INSERT into order2action_tag (`order_id`, `action_tag_id`)
-  select LAST_INSERT_ID() ,action_tag.id from action_tag where action_tag.name = 'activate';
+  select @Order2 ,action_tag.id from action_tag where action_tag.name = 'activate';
 
 INSERT into `order`(`email`, `phone`) values ('client6@ya.ru','65432168794');
 INSERT into order2action_tag (`order_id`, `action_tag_id`)
@@ -101,11 +104,11 @@ INSERT into `order`(`email`, `phone`) values ('client12@ya.ru','23216488746');
 INSERT into order2action_tag (`order_id`, `action_tag_id`)
   select LAST_INSERT_ID() ,action_tag.id from action_tag where action_tag.name = 'recall';
 
-INSERT  into `ticket`(`status`, `comment`) VALUES ('new', 'ул. Степана разина первый перекресток перед палычем');
+INSERT  into `ticket`(`status`, `comment`, `order_id`) VALUES ('new', 'ул. Степана разина первый перекресток перед палычем', @Order1);
 INSERT `ticket2service`(`ticket_id`,`service_id`)
     SELECT LAST_INSERT_ID(), `id` FROM `service`
       WHERE title in ('Эвакуация','Шиномонтаж','Подогев двигателя','Разблокировка замков');
-INSERT  into `ticket`(`status`, `comment`) VALUES ('new', 'ул. Демократическая, сразу перед кольцом рынка Шапито');
+INSERT  into `ticket`(`status`, `comment`, `order_id`) VALUES ('new', 'ул. Демократическая, сразу перед кольцом рынка Шапито', @Order2);
 SET @secondTicket = LAST_INSERT_ID();
 INSERT `ticket2service`(`ticket_id`,`service_id`)
   SELECT @secondTicket, `id` FROM `service`

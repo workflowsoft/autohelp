@@ -82,7 +82,7 @@ $this->widget('bootstrap.widgets.TbGridView', array(
         'phone',
         array(
             'value' => 'isset($data->card->number) ? $data->card->number : ""',
-            'header' => 'Номер карты',
+            'header' => $model->getAttributeLabel('card_number'),
             'filter' => CHtml::activeTextField($model, 'card_number'),
         ),
         'grn',

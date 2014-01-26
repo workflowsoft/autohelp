@@ -87,7 +87,7 @@ class Order extends CActiveRecord
             array('vin, grn ,card_id, activation_start, activation_end', 'default', 'setOnEmpty' => true, 'value' => null),
 
             //Мы можем всегда массово назначить эти атрибуты
-            array('delivery_coords, activation_range', 'safe'),
+            array('delivery_coords, activation_range, description', 'safe'),
 
             //А еще если мы делаем доставку, обязательно нужно чтобы был адрес дсставки
             array('card_delivery_address', 'required', 'on'=> 'delivery'),
@@ -252,7 +252,7 @@ class Order extends CActiveRecord
 	public function attributeLabels()
 	{
 		return array(
-			'id' => 'Идентиикатор заявки',
+			'id' => 'Заявка',
 			'email' => 'Email',
 			'phone' => 'Телефон',
 			'description' => 'Описание',
@@ -260,12 +260,12 @@ class Order extends CActiveRecord
 			'middle_name' => 'Отчество',
 			'last_name' => 'Фамилия',
 			'vin' => 'VIN',
-			'grn' => 'Гос регистрационный номер',
+			'grn' => 'ГРН',
 			'ts_make' => 'Марка ТС',
 			'ts_model' => 'Модель ТС',
 			'ts_color' => 'Цвет ТС',
 			'card_delivery_address' => 'Адрес доставки',
-			'card_number' => 'Номер карты',
+			'card_number' => 'Карта',
 			'activation_start' => 'Начало действия карты',
 			'activation_end' => 'Окончание действия карты',
 			'delivery_coords' => 'Координаты доставки',
