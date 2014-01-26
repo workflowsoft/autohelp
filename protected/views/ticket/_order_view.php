@@ -20,7 +20,7 @@ $this->widget('bootstrap.widgets.TbDetailView',array(
         'ts_color',
         'card_delivery_address',
         array(
-            'label' => 'Номер карты',
+            'label' => $model->getAttributeLabel('card_number'),
             'type' => 'raw',
             'value' => isset($model->card->number) ? CHtml::encode($model->card->number) : '',
         ),
@@ -32,7 +32,6 @@ $this->widget('bootstrap.widgets.TbDetailView',array(
             'name' => 'activation_end',
             'type' => 'date'
         ),
-        'delivery_street',
         array(
             'name' => 'delivered',
             'type' => 'boolean'
