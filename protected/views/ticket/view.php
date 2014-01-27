@@ -75,8 +75,9 @@ $this->widget('bootstrap.widgets.TbGridView', array(
     ),
 ));
 
-
-echo $this->renderPartial('_reject_widget', array('ticket_id'=>$model->id));
+if(!in_array($model->status, array(TicketStatus::DONE, TicketStatus::REJECTED))) {
+    echo $this->renderPartial('_reject_widget', array('ticket_id'=>$model->id));
+}
 
 ?>
 
