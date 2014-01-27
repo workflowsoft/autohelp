@@ -45,6 +45,9 @@ class ApiticketController extends Controller
         if (empty($ticket)) {
             $this->_sendResponse(200, CJSON::encode(array('success' => false, 'message' => 'No ticket found by this id')));
         }
+        if ($ticket->status != TicketStatus::CHECKING && $ticket->status != TicketStatus::ASSIGNING ) {
+            $this->_sendResponse(200, CJSON::encode(array('success' => false, 'message' => 'Wrong ticket status')));
+        }
 
         if ($ticket->status == TicketStatus::ASSIGNING) {
             $ticket->status = TicketStatus::NEW_TICKET;
@@ -116,6 +119,10 @@ class ApiticketController extends Controller
 
         $ticket = Ticket::model()->findByPk($id);
 
+        if ($ticket->status == TicketStatus::DONE || $ticket->status == TicketStatus::REJECTED ) {
+            $this->_sendResponse(200, CJSON::encode(array('success' => false, 'message' => 'Wrong ticket status')));
+        }
+
         $ticket->status = TicketStatus::REJECTED;
         $ticket->reject_comment = $_POST['reject_comment'];
 
@@ -135,6 +142,11 @@ class ApiticketController extends Controller
         if (empty($id)) {
             $this->_sendResponse(200, CJSON::encode(array('success' => false, 'description' => 'No ticket id')));
         }
+        $ticket = Ticket::model()->findByPk($id);
+        if ($ticket->status != TicketStatus::CHECKING ) {
+            $this->_sendResponse(200, CJSON::encode(array('success' => false, 'message' => 'Wrong ticket status')));
+        }
+
 
         if (!empty($_POST['rejected_services'])) {
             foreach ($_POST['rejected_services'] as $service) {
@@ -159,7 +171,6 @@ class ApiticketController extends Controller
         }
 
 
-        $ticket = Ticket::model()->findByPk($id);
         $ticket->status = TicketStatus::DONE;
         $ticket->user_id = null;
         $response = array();

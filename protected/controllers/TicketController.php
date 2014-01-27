@@ -76,6 +76,14 @@ class TicketController extends Controller
     public function actionCheck($id)
     {
         $ticket = $this->loadModel($id);
+
+        if ($ticket->status != TicketStatus::CHECKING && $ticket->status != TicketStatus::ASSIGNED) {
+            throw new CHttpException(400, 'Статус данного инцдента не позволяет проверку');
+        }
+        if ($ticket->status == TicketStatus::CHECKING && UserIdentity::getCurrentUserId() !== $ticket->user_id) {
+            throw new CHttpException(400, 'Инцидент уже проверяется другим пользователем');
+        }
+
         $ticket->status = TicketStatus::CHECKING;
         $ticket->user_id = UserIdentity::getCurrentUserId();
         $ticket->save();
@@ -114,12 +122,18 @@ class TicketController extends Controller
      */
     public function actionCreate()
     {
-
         $order_id = isset($_REQUEST['order_id']) ? $_REQUEST['order_id'] : null;
         $ticket_id = isset($_REQUEST['ticket_id']) ? $_REQUEST['ticket_id'] : null;
 
         if (empty($order_id)) {
             throw new CHttpException(400, 'Invalid request. Specify order_id');
+        }
+
+        if (!empty($ticket_id)) {
+            $tmp = Ticket::model()->findByPk($ticket_id);
+            if ($tmp->status != TicketStatus::DRAFT) {
+                throw new CHttpException(400, 'Статус данного инцдента не позволяет создание');
+            }
         }
 
         //если для этого ордера уже существуюет тикет, редирект на него
@@ -200,6 +214,9 @@ class TicketController extends Controller
     public function actionUpdate($id)
     {
         $ticket = $this->loadModel($id);
+        if ($ticket->status != TicketStatus::DRAFT) {
+            throw new CHttpException(400, 'Статус данного инцдента не позволяет редактирование');
+        }
 
         // Uncomment the following line if AJAX validation is needed
         // $this->performAjaxValidation($model);
@@ -247,19 +264,6 @@ class TicketController extends Controller
             'active_services' => $active_services,
         ));
     }
-
-    /**
-     * adds minutes to current time
-     * @param int $minutes
-     */
-    private function addTime($minutes)
-    {
-        $time = new DateTime(date('H:i:s'));
-        $interval = new DateInterval('PT' . $minutes . 'M');
-        $time->add($interval);
-        return $time->format('H:i:s');
-    }
-
 
     public function actionPartnerAssign($id)
     {
@@ -329,29 +333,29 @@ class TicketController extends Controller
      * If deletion is successful, the browser will be redirected to the 'admin' page.
      * @param integer $id the ID of the model to be deleted
      */
-    public function actionDelete($id)
-    {
-        if (Yii::app()->request->isPostRequest) {
-            // we only allow deletion via POST request
-            $this->loadModel($id)->delete();
-
-            // if AJAX request (triggered by deletion via admin grid view), we should not redirect the browser
-            if (!isset($_GET['ajax']))
-                $this->redirect(isset($_POST['returnUrl']) ? $_POST['returnUrl'] : array('admin'));
-        } else
-            throw new CHttpException(400, 'Invalid request. Please do not repeat this request again.');
-    }
+//    public function actionDelete($id)
+//    {
+//        if (Yii::app()->request->isPostRequest) {
+//             we only allow deletion via POST request
+//            $this->loadModel($id)->delete();
+//
+//             if AJAX request (triggered by deletion via admin grid view), we should not redirect the browser
+//            if (!isset($_GET['ajax']))
+//                $this->redirect(isset($_POST['returnUrl']) ? $_POST['returnUrl'] : array('admin'));
+//        } else
+//            throw new CHttpException(400, 'Invalid request. Please do not repeat this request again.');
+//    }
 
     /**
      * Lists all models.
      */
-    public function actionIndex()
-    {
-        $dataProvider = new CActiveDataProvider('Ticket');
-        $this->render('index', array(
-            'dataProvider' => $dataProvider,
-        ));
-    }
+//    public function actionIndex()
+//    {
+//        $dataProvider = new CActiveDataProvider('Ticket');
+//        $this->render('index', array(
+//            'dataProvider' => $dataProvider,
+//        ));
+//    }
 
     /**
      * Manages all models.
