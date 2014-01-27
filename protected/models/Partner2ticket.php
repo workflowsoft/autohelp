@@ -102,4 +102,20 @@ class Partner2ticket extends CActiveRecord
 	{
 		return parent::model($className);
 	}
+
+
+    /**
+     * We store Greenwich time, so lets add 4 hours
+     */
+    protected function afterFind()
+    {
+        parent::afterFind();
+        if (!empty($this->arrival_time)) {
+            $time = new DateTime($this->arrival_time);
+            $interval = new DateInterval('PT4H');
+            $time->add($interval);
+            $this->arrival_time = $time->format('H:i:s');
+        }
+    }
+
 }
