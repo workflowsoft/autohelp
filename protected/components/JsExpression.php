@@ -37,7 +37,7 @@ class JsExpression
 
     public static function encode($value, $options = 0)
     {
-        $expressions = [];
+        $expressions = array();
         $value = static::processData($value, $expressions, uniqid());
         $json = json_encode($value, $options);
         return empty($expressions) ? $json : strtr($json, $expressions);
@@ -57,7 +57,7 @@ class JsExpression
                 $data = get_object_vars($data);
             }
 
-            if ($data === []) {
+            if (is_array($data) && empty($data)) {
                 return new \stdClass();
             }
         }
