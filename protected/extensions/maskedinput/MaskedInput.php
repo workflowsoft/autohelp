@@ -129,7 +129,7 @@ class MaskedInput extends CInputWidget
 	 */
 	protected function getClientOptions()
 	{
-		$options = [];
+		$options = array();
 		if ($this->placeholder !== null) {
 			$options['placeholder'] = $this->placeholder;
 		}
