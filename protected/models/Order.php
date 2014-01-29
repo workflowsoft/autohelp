@@ -324,8 +324,15 @@ class Order extends CActiveRecord
             $criteria->addCondition('card.number LIKE "'.$this->card_number.'%"');
         }
 
+        $sort = new CSort();
+        $sort->defaultOrder = 'id ASC';
+        $sort->attributes = array(
+            '*',
+        );
+
 		return new CActiveDataProvider($this, array(
 			'criteria'=>$criteria,
+            'sort'=> $sort,
 		));
 	}
 
@@ -357,8 +364,15 @@ class Order extends CActiveRecord
             $criteria->addCondition('AT.name = "' . $action_tag .'"');
         }
 
+        $sort = new CSort();
+        $sort->defaultOrder = 'id ASC';
+        $sort->attributes = array(
+            '*',
+        );
+
 		return new CActiveDataProvider($this, array(
 			'criteria'=>$criteria,
+            'sort'=> $sort,
 		));
 	}
 
