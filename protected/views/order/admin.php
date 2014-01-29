@@ -98,16 +98,17 @@ $('.filter').click(function(){
 	'columns'=>array(
 		'id',
         array(
-            'value'=>'isset($data->card->number) ? $data->card->number : ""',
-            'header'=>$model->getAttributeLabel('card_number'),
+            'value' => 'isset($data->card->number) ? $data->card->number : ""',
+            'header' => $model->getAttributeLabel('card_number'),
+            'filter' => CHtml::activeTextField($model, 'card_number'),
         ),
         'email',
         'phone',
+        'vin',
+        'grn',
         array(
             'value'=>'$data->last_name . " " . $data->first_name. " " . $data->middle_name',//This is the concatenated column
             'header'=>'ФИО',
         ),
-        'vin',
-        'grn',
 	),
 )); ?>

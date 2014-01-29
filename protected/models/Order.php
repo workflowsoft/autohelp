@@ -343,6 +343,12 @@ class Order extends CActiveRecord
 		$criteria->compare('t.last_name',$this->last_name,true);
 		$criteria->compare('t.activation_start',NULL,true);
 
+        if ($this->card_number)
+        {
+            $criteria->with = array('card');
+            $criteria->addCondition('card.number LIKE "'.$this->card_number.'%"');
+        }
+
         $criteria->addCondition('t.activation_start is null');
 
         if(!empty($action_tag)) {
