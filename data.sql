@@ -19,51 +19,95 @@ insert into `action_tag` (`name`, `title`, `description`) values('delivery','Д�
 
 
 INSERT into `service` (`title`, `description`) values ('Эвакуация', 'Возможность вызова эвакуатора неограниченное количество раз в любую точку Самары (в дальнейшем – Самарской области) в случае неисправности ТС и невозможности его дальнейшей эксплуатации');
+SET @evaq = LAST_INSERT_ID();
+
+INSERT into `service` (`title`) values ('Расчистка парковочного места');
+SET @park_clean = LAST_INSERT_ID();
+
+INSERT into `service` (`title`) values ('Трезвый водитель');
+SET @trezv = LAST_INSERT_ID();
+
 INSERT into `service` (`title`, `description`) values ('Шиномонтаж', 'Вызов шиномонтажа неограниченное число раз, за исключением перебортовки 4 колес');
+SET @shin = LAST_INSERT_ID();
 INSERT into `service` (`title`, `description`) values ('Подогев двигателя', 'Вызов службы подогрева двигателя при невозможности завестись в зимнее время');
+SET @engine_unfreeze = LAST_INSERT_ID();
 INSERT into `service` (`title`, `description`) values ('Разблокировка замков', 'Вскрытие специалистами автомобиля при его блокировке');
+SET @unlock_auto = LAST_INSERT_ID();
 INSERT into `service` (`title`, `description`) values ('Аварийный комиссар', 'Возможность вызова аварийного комиссара неограниченное число раз');
+SET @comissar = LAST_INSERT_ID();
 INSERT into `service` (`title`, `description`) values ('Скидки на услуги организаций-партнеров', 'От 5% и выше (перебортовка, автомойка, сервис)');
+SET @discount = LAST_INSERT_ID();
 
 
 
 INSERT into `service_group` (`title`) values ('Техническая помощь');
 SET @service_group_id= LAST_INSERT_ID();
 INSERT into `service` (`title`, `description`) values ('Зачистка клемм АКБ', NULL);
-INSERT into `service2group` (`group_id`, `service_id`) values (@service_group_id, LAST_INSERT_ID());
-INSERT into `service` (`title`, `description`) values ('Зачистка батарей сигнализации', 'Замена батареек в брелоке сигнализации и имобилайзера');
-INSERT into `service2group` (`group_id`, `service_id`) values (@service_group_id, LAST_INSERT_ID());
+SET @clemm = LAST_INSERT_ID();
+INSERT into `service2group` (`group_id`, `service_id`) values (@service_group_id, @clemm);
+
+INSERT into `service` (`title`, `description`) values ('Вынуть из сугроба', NULL);
+SET @sugrob = LAST_INSERT_ID();
+INSERT into `service2group` (`group_id`, `service_id`) values (@service_group_id, @sugrob);
+
+INSERT into `service` (`title`, `description`) values ('Прикурить', NULL);
+SET @prikur = LAST_INSERT_ID();
+INSERT into `service2group` (`group_id`, `service_id`) values (@service_group_id, @prikur);
+
+INSERT into `service` (`title`, `description`) values ('Заменить запаску', NULL);
+SET @zapas = LAST_INSERT_ID();
+INSERT into `service2group` (`group_id`, `service_id`) values (@service_group_id, @zapas);
+
+INSERT into `service` (`title`, `description`) values ('Подкачать колеса', NULL);
+SET @podkach = LAST_INSERT_ID();
+INSERT into `service2group` (`group_id`, `service_id`) values (@service_group_id, @podkach);
+
+INSERT into `service` (`title`, `description`) values ('Подвоз топлива', NULL);
+SET @benz = LAST_INSERT_ID();
+INSERT into `service2group` (`group_id`, `service_id`) values (@service_group_id, @benz);
+
+INSERT into `service` (`title`, `description`) values ('Замена батарей сигнализации', 'Замена батареек в брелоке сигнализации и имобилайзера');
+SET @immo_batt = LAST_INSERT_ID();
+INSERT into `service2group` (`group_id`, `service_id`) values (@service_group_id, @immo_batt);
 INSERT into `service` (`title`, `description`) values ('Разморозка замков', 'Размораживание замков автомобиля с использованием специальных жидкостей');
-INSERT into `service2group` (`group_id`, `service_id`) values (@service_group_id, LAST_INSERT_ID());
+SET @lock_unfreeze = LAST_INSERT_ID();
+INSERT into `service2group` (`group_id`, `service_id`) values (@service_group_id, @lock_unfreeze);
 INSERT into `service` (`title`, `description`) values ('Отключение нештатной сигнализации', NULL);
-INSERT into `service2group` (`group_id`, `service_id`) values (@service_group_id, LAST_INSERT_ID());
+SET @alarm_off = LAST_INSERT_ID();
+INSERT into `service2group` (`group_id`, `service_id`) values (@service_group_id, @alarm_off);
 INSERT into `service` (`title`, `description`) values ('Разблокировка АКПП', NULL);
-INSERT into `service2group` (`group_id`, `service_id`) values (@service_group_id, LAST_INSERT_ID());
+SET @trans_unlock = LAST_INSERT_ID();
+INSERT into `service2group` (`group_id`, `service_id`) values (@service_group_id, @trans_unlock);
 INSERT into `service` (`title`, `description`) values ('Отогрев различных частей автомобиля', NULL);
-INSERT into `service2group` (`group_id`, `service_id`) values (@service_group_id, LAST_INSERT_ID());
+SET @defreeze = LAST_INSERT_ID();
+INSERT into `service2group` (`group_id`, `service_id`) values (@service_group_id, @defreeze);
 INSERT into `service` (`title`, `description`) values ('Разблокировка руля', NULL);
+SET @ster_unlock = LAST_INSERT_ID();
 INSERT into `service2group` (`group_id`, `service_id`) values (@service_group_id, LAST_INSERT_ID());
-
-
-
 
 INSERT into `service_group` (`title`) values ('Информационная поддержка');
 SET @service_group_id= LAST_INSERT_ID();
 INSERT into `service` (`title`, `description`) values ('Информация о штраф стоянке', NULL);
-INSERT into `service2group` (`group_id`, `service_id`) values (@service_group_id, LAST_INSERT_ID());
+SET @shtraf = LAST_INSERT_ID();
+INSERT into `service2group` (`group_id`, `service_id`) values (@service_group_id, @shtraf);
 INSERT into `service` (`title`, `description`) values ('Информация о круглосуточных автоуслугах', NULL);
-INSERT into `service2group` (`group_id`, `service_id`) values (@service_group_id, LAST_INSERT_ID());
+SET @autoinfo = LAST_INSERT_ID();
+INSERT into `service2group` (`group_id`, `service_id`) values (@service_group_id, @autoinfo);
 INSERT into `service` (`title`, `description`) values ('Юридическая помощь', NULL);
-INSERT into `service2group` (`group_id`, `service_id`) values (@service_group_id, LAST_INSERT_ID());
+SET @law = LAST_INSERT_ID();
+INSERT into `service2group` (`group_id`, `service_id`) values (@service_group_id, @law);
 INSERT into `service` (`title`, `description`) values ('Помощь в выборе авто', NULL);
-INSERT into `service2group` (`group_id`, `service_id`) values (@service_group_id, LAST_INSERT_ID());
+SET @choose = LAST_INSERT_ID();
+INSERT into `service2group` (`group_id`, `service_id`) values (@service_group_id, @choose);
 INSERT into `service` (`title`, `description`) values ('Подбор страховой компании', NULL);
-INSERT into `service2group` (`group_id`, `service_id`) values (@service_group_id, LAST_INSERT_ID());
+SET @strah = LAST_INSERT_ID();
+INSERT into `service2group` (`group_id`, `service_id`) values (@service_group_id, @strah);
 INSERT into `service` (`title`, `description`) values ('Помощь в получении автокредита', NULL);
-INSERT into `service2group` (`group_id`, `service_id`) values (@service_group_id, LAST_INSERT_ID());
+SET @credit = LAST_INSERT_ID();
+INSERT into `service2group` (`group_id`, `service_id`) values (@service_group_id, @credit);
 INSERT into `service` (`title`, `description`) values ('Помощь при ДТП', NULL);
 INSERT into `service2group` (`group_id`, `service_id`) values (@service_group_id, LAST_INSERT_ID());
-
+SET @dtp = LAST_INSERT_ID();
 
 insert into `role` (`title`, `description`) values ('client', 'Клиент');
 insert into `role` (`title`, `description`) values ('operator_call', 'Обзвон клиентов для уточнения данных по карте');
@@ -83,8 +127,127 @@ insert into `user` (`last_name`, `email`, `password`) values ('Румянцев'
 SET @user_id = LAST_INSERT_ID();
 insert into `user2role` (`user_id`, `role_id`) select @user_id, id from role;
 
+INSERT INTO `partner` (`title`,`phone`) VALUES ('Мы сами', '------------');
+SET @_partner = LAST_INSERT_ID();
+INSERT `partner2service` (`partner_id`,`service_id`) 
+	VALUES (@_partner, @evaq);
+INSERT `partner2service` (`partner_id`,`service_id`) 
+	VALUES (@_partner, @park_clean);
+INSERT `partner2service` (`partner_id`,`service_id`) 
+	VALUES (@_partner, @trezv);
+INSERT `partner2service` (`partner_id`,`service_id`) 
+	VALUES (@_partner, @shin);
+INSERT `partner2service` (`partner_id`,`service_id`) 
+	VALUES (@_partner, @engine_unfreeze);
+INSERT `partner2service` (`partner_id`,`service_id`) 
+	VALUES (@_partner, @unlock_auto);
+INSERT `partner2service` (`partner_id`,`service_id`) 
+	VALUES (@_partner, @comissar);
+INSERT `partner2service` (`partner_id`,`service_id`) 
+	VALUES (@_partner, @clemm);
+INSERT `partner2service` (`partner_id`,`service_id`) 
+	VALUES (@_partner, @sugrob);
+INSERT `partner2service` (`partner_id`,`service_id`) 
+	VALUES (@_partner, @prikur);
+INSERT `partner2service` (`partner_id`,`service_id`) 
+	VALUES (@_partner, @zapas);
+INSERT `partner2service` (`partner_id`,`service_id`) 
+	VALUES (@_partner, @podkach);
+INSERT `partner2service` (`partner_id`,`service_id`) 
+	VALUES (@_partner, @benz);
+INSERT `partner2service` (`partner_id`,`service_id`) 
+	VALUES (@_partner, @immo_batt);
+INSERT `partner2service` (`partner_id`,`service_id`) 
+	VALUES (@_partner, @lock_unfreeze);
+INSERT `partner2service` (`partner_id`,`service_id`) 
+	VALUES (@_partner, @alarm_off);
+INSERT `partner2service` (`partner_id`,`service_id`) 
+	VALUES (@_partner, @trans_unlock);
+INSERT `partner2service` (`partner_id`,`service_id`) 
+	VALUES (@_partner, @defreeze);
+INSERT `partner2service` (`partner_id`,`service_id`) 
+	VALUES (@_partner, @ster_unlock);
+INSERT `partner2service` (`partner_id`,`service_id`) 
+	VALUES (@_partner, @shtraf);
+INSERT `partner2service` (`partner_id`,`service_id`) 
+	VALUES (@_partner, @autoinfo);
+INSERT `partner2service` (`partner_id`,`service_id`) 
+	VALUES (@_partner, @law);
+INSERT `partner2service` (`partner_id`,`service_id`) 
+	VALUES (@_partner, @choose);
+INSERT `partner2service` (`partner_id`,`service_id`) 
+	VALUES (@_partner, @strah);
+INSERT `partner2service` (`partner_id`,`service_id`) 
+	VALUES (@_partner, @credit);
+INSERT `partner2service` (`partner_id`,`service_id`) 
+	VALUES (@_partner, @dtp);
 
+INSERT INTO `partner` (`title`,`phone`) VALUES ('А911 (Николай Геннадьевич Павлихин) [12 эвакуаторов]', '+7-961-3800202');
+SET @_partner = LAST_INSERT_ID();
+INSERT `partner2service` (`partner_id`,`service_id`) VALUES (@_partner, @evaq);
+
+INSERT INTO `partner` (`title`,`phone`) VALUES ('Мастер на все руки (Геннадий) [3 эвакуатора]', '+7-917-9518628');
+SET @_partner = LAST_INSERT_ID();
+INSERT `partner2service` (`partner_id`,`service_id`) VALUES (@_partner, @evaq);
+INSERT `partner2service` (`partner_id`,`service_id`) VALUES (@_partner, @unlock_auto);
+INSERT `partner2service` (`partner_id`,`service_id`) VALUES (@_partner, @shin);
+INSERT `partner2service` (`partner_id`,`service_id`) VALUES (@_partner, @engine_unfreeze);
+
+INSERT INTO `partner` (`title`,`phone`) VALUES ('Техничка (Алексей)', '+7-937-0633996');
+SET @_partner = LAST_INSERT_ID();
+INSERT `partner2service` (`partner_id`,`service_id`) VALUES (@_partner, @sugrob);
+INSERT `partner2service` (`partner_id`,`service_id`) VALUES (@_partner, @prikur);
+INSERT `partner2service` (`partner_id`,`service_id`) VALUES (@_partner, @zapas);
+INSERT `partner2service` (`partner_id`,`service_id`) VALUES (@_partner, @podkach);
+INSERT `partner2service` (`partner_id`,`service_id`) VALUES (@_partner, @benz);
+INSERT `partner2service` (`partner_id`,`service_id`) VALUES (@_partner, @park_clean);
+INSERT `partner2service` (`partner_id`,`service_id`) VALUES (@_partner, @trezv);
+
+INSERT INTO `partner` (`title`,`phone`) VALUES ('Аварийные комиссары (Георгий Геннадьевич)', '+7-927-7322862');
+SET @_partner = LAST_INSERT_ID();
+INSERT `partner2service` (`partner_id`,`service_id`) VALUES (@_partner, @comissar);
+
+INSERT INTO `partner` (`title`,`phone`, `email`) VALUES ('Шиномонтаж на выезд район ЖД (Константин Иванов)', '+7-917-1543214', 'koleso163@list.ru');
+SET @_partner = LAST_INSERT_ID();
+INSERT `partner2service` (`partner_id`,`service_id`) VALUES (@_partner, @shin);
+
+INSERT INTO `partner` (`title`,`phone`) VALUES ('Мобильный шиномонтаж (Екатерина)', '+7-960-8234205');
+SET @_partner = LAST_INSERT_ID();
+INSERT `partner2service` (`partner_id`,`service_id`) VALUES (@_partner, @shin);
+
+INSERT INTO `partner` (`title`,`phone`) VALUES ('Август (Александр) [3 эвакуатора]', '+7-917-1075526');
+SET @_partner = LAST_INSERT_ID();
+INSERT `partner2service` (`partner_id`,`service_id`) VALUES (@_partner, @shin);
+INSERT `partner2service` (`partner_id`,`service_id`) VALUES (@_partner, @evaq);
+INSERT `partner2service` (`partner_id`,`service_id`) VALUES (@_partner, @unlock_auto);
+INSERT `partner2service` (`partner_id`,`service_id`) VALUES (@_partner, @engine_unfreeze);
+
+INSERT INTO `partner` (`title`,`phone`) VALUES ('BEZпокраски (Евгений Петров)', '+7-927-6902673');
+SET @_partner = LAST_INSERT_ID();
+
+INSERT `partner2service` (`partner_id`,`service_id`) 
+	VALUES (@_partner, @discount);
+	
+INSERT INTO `partner` (`title`,`phone`) VALUES ('Auto-Spa (Артем Давыдов) [Физкультурная 105]', '+7-927-0031050');
+SET @_partner = LAST_INSERT_ID();
+
+INSERT `partner2service` (`partner_id`,`service_id`) 
+	VALUES (@_partner, @discount);
+
+INSERT INTO `partner` (`title`,`phone`) VALUES ('Автоуслуги (Рыбакин Валерий)', '+7-846-2765675');
+SET @_partner = LAST_INSERT_ID();
+
+INSERT `partner2service` (`partner_id`,`service_id`) 
+	VALUES (@_partner, @discount);
+	
+INSERT INTO `partner` (`title`,`phone`) VALUES ('Кузовной ремонт в Самаре Fenix Pro Service Aвтомойка и шиномонтаж AutoLuxe (Стрельцов Игорь)', '+7-927-7485891');
+SET @_partner = LAST_INSERT_ID();
+
+INSERT `partner2service` (`partner_id`,`service_id`) 
+	VALUES (@_partner, @discount);
+	
 /* begin dummies*/
+/*
 INSERT into `order`(`email`, `phone`) values ('client2@ya.ru','79279876532');
 SET @Order1 = LAST_INSERT_ID();
 INSERT into order2action_tag (`order_id`, `action_tag_id`)
@@ -133,3 +296,4 @@ INSERT `partner2service` (`partner_id`,`service_id`)
 INSERT `partner2ticket` (`partner2service_id`, `ticket_id`)
     SELECT id, @secondTicket FROM partner2service
     WHERE partner2service.partner_id = @firstPartner
+    */
