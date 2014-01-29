@@ -158,8 +158,18 @@
                     'customRangeLabel' => 'Время активности карты',
                 ),
                 'format' => 'DD.MM.YYYY',
-                'startDate' => date('d.m.Y', strtotime('+1 days')),
-                'endDate' => date('d.m.Y', strtotime('+1 years +1 days')),
+                'startDate' => date('d.m.Y', strtotime(
+                                                isset($model->activation_start)?
+                                                    $model->activation_start:
+                                                    '+1 days'
+                                            )
+                                   ),
+                'endDate' => date('d.m.Y', strtotime(
+                                                isset($model->activation_end)?
+                                                $model->activation_end:
+                                                '+1 years +1 days'
+                                            )
+                                 ),
             ),
             'htmlOptions' => array(
                 'class'=>'span5'

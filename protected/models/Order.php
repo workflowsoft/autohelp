@@ -152,6 +152,12 @@ class Order extends CActiveRecord
             $this->card_number = $this->card->number;
         if ($this->action_tag && count($this->action_tag))
             $this->activeActionTag = $this->action_tag[0]->name;
+        if ($this->activation_start)
+        {
+            $this->activation_range =  date('d.m.Y', strtotime($this->activation_start));
+        }
+        if ($this->activation_end)
+            $this->activation_range = $this->activation_range." - ".date('d.m.Y', strtotime($this->activation_end));
     }
 
     public  function checkActivationDate($attribute,$params)
