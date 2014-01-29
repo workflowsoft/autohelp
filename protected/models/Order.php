@@ -87,7 +87,7 @@ class Order extends CActiveRecord
             array('vin, grn ,card_id, activation_start, activation_end', 'default', 'setOnEmpty' => true, 'value' => null),
 
             //Мы можем всегда массово назначить эти атрибуты
-            array('delivery_coords, activation_range, description', 'safe'),
+            array('delivery_coords, activation_range, description, card_delivery_address', 'safe'),
 
             //А еще если мы делаем доставку, обязательно нужно чтобы был адрес дсставки
             array('card_delivery_address', 'required', 'on'=> 'delivery'),
