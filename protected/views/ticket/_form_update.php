@@ -5,7 +5,12 @@
 
 
 <?php echo $form->errorSummary($model); ?>
-<?php echo $form->textAreaRow($model, 'comment', array('class' => 'span5', 'maxlength' => 256)); ?>
+<?php
+    if($model->comment == 'default') {
+        $model->comment = '';
+    }
+    echo $form->textAreaRow($model, 'comment', array('class' => 'span5', 'maxlength' => 256));
+?>
 <?php
 echo $form->checkboxRow($model, 'payment_without_card', array('disabled' => true));
 ?>

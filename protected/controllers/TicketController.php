@@ -151,64 +151,19 @@ class TicketController extends Controller
 
         $order = Order::model()->findByPk($order_id);
 
-        if (isset($_POST['Ticket']) && isset($ticket_id)) {
-
-            $ticket = Ticket::model()->findByPk($ticket_id);
-            if ($ticket->status != 'draft') {
-                throw new CHttpException(400, 'We can save only drafts');
-            }
-            $ticket->attributes = $_POST['Ticket'];
-            if ($ticket->validate()) {
-                $ticket->order_id = $order_id;
-                $ticket->payment_without_card = (int)!$order->isActivated();
-                $ticket->status = TicketStatus::NEW_TICKET;
-                $ticket->user_id = null;
-                if ($ticket->save()) {
-                    if (isset($_POST['Service'])) {
-                        foreach ($_POST['Service'] as $key => $service) {
-                            if (!empty($service)) {
-                                $relation = new Ticket2service();
-                                $relation->ticket_id = $ticket->id;
-                                $relation->service_id = $key;
-
-                                $relation->save();
-                            }
-
-                        }
-                    }
-
-                } else {
-                    throw new CHttpException(400, var_export($ticket->getErrors(), true));
-                }
-                $this->redirect(array('view', 'id' => $ticket->id));
-            } else {
-                $validate_errors = true;
-            }
-        }
-
-
-        if (!empty($ticket_id)) {
-            if (empty($validate_errors)) {
-                $ticket = new Ticket;
-            }
-            $ticket->payment_without_card = !$order->isActivated();
-            $this->render('create', array(
-                'ticket' => $ticket,
-                'order' => $order,
-                'services' => new Services(),
-            ));
-        } else {
+        if (empty($ticket_id)) {
             // first status is draft
             $ticket = new Ticket;
             $ticket->status = TicketStatus::DRAFT;
-            $ticket->comment = 'Заполните поле комментарий!';
+            $ticket->comment = 'default';
             $ticket->user_id = UserIdentity::getCurrentUserId();
+            $ticket->payment_without_card = (int) !$order->isActivated();
             $ticket->order_id = $order_id;
             if (!$ticket->save()) {
                 throw new CHttpException(400, var_export($ticket->getErrors(), true));
             };
-            $this->redirect(array('create', 'order_id' => $order_id, 'ticket_id' => $ticket->id));
         }
+        $this->redirect(array('update', 'id' => $ticket->id));
 
 
     }
