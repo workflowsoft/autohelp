@@ -39,6 +39,13 @@ $this->widget('bootstrap.widgets.TbDetailView', array(
 ));
 
 
+if(!empty($ticket2service)) {
+    echo '<h4>Список требуемых услуг</h4>';
+    foreach($ticket2service as $service) {
+        echo '<span class="label">'. $service->title.'</span><br>';
+    }
+}
+
 echo '<h4>Назначенные Партнеры</h4>';
 
 $gridDataProvider = new CArrayDataProvider($partners);

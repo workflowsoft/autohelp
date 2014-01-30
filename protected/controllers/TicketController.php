@@ -64,12 +64,19 @@ class TicketController extends Controller
             );
         }
 
+        $result = Ticket2service::model()->findAll('ticket_id=:id', array(':id' => $id));
+        $ticket2service = array();
+        foreach($result as $item) {
+            $ticket2service[] = Service::model()->findByPk($item['service_id']);
+        }
+
 //        throw new CHttpException(400, var_export($partners, true));
 
         $this->render('view', array(
             'model' => $ticket,
             'order' => Order::model()->findByPk($ticket->order_id),
             'partners' => $partners,
+            'ticket2service' => $ticket2service,
         ));
     }
 
