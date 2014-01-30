@@ -15,7 +15,7 @@ Yii::app()->clientScript->registerScript('status', "
     Мои назначения <span class="badge"><?php echo !empty($counters[TicketStatus::ASSIGNING])? $counters[TicketStatus::ASSIGNING] : '';?></span>
 </a>
 <a class="filter filter-checking btn" data-at="checking" href="/ticket/admin/status/checking">
-    Мои проверки <span class="badge"><?php echo empty($counters[TicketStatus::CHECKING])? $counters[TicketStatus::CHECKING] : '';?></span>
+    Мои проверки <span class="badge"><?php echo !empty($counters[TicketStatus::CHECKING])? $counters[TicketStatus::CHECKING] : '';?></span>
 </a>
 
 <br>
