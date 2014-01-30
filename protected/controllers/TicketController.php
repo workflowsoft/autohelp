@@ -362,11 +362,12 @@ class TicketController extends Controller
     public function actionAdmin()
     {
         $status = isset($_REQUEST['status']) ? $_REQUEST['status'] : 'new';
-        $model = new Ticket();
+        $model = new Ticket('search');
         $model->unsetAttributes(); // clear any default values
         if (isset($_GET['Ticket'])) {
             $model->attributes = $_GET['Ticket'];
         }
+        $model->status = $status;
 
         $sql = "select status, count(*) as `count` from ticket where status in ('draft','checking', 'assigning') and user_id = " . UserIdentity::getCurrentUserId() . " group by status";
         $result = Yii::app()->db->createCommand($sql)->queryAll();
@@ -377,6 +378,7 @@ class TicketController extends Controller
 
         $this->render('admin', array(
             'model' => $model,
+            'data_provider' => $model->search(),
             'status' => $status,
             'counters' => $counters,
         ));

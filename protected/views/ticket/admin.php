@@ -78,7 +78,7 @@ $selection_changed = $this->createUrl($selection_changed);
 
 $this->widget('bootstrap.widgets.TbGridView', array(
     'id' => 'ticket-grid',
-    'dataProvider' => $model->searchByStatus($status),
+    'dataProvider' => $data_provider,
     'filter' => $model,
     'selectionChanged' => 'function(id){ location.href = "' . $selection_changed . '/id/"+$.fn.yiiGridView.getSelection(id);}',
 

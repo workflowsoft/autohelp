@@ -65,7 +65,7 @@ class Ticket extends CActiveRecord
 	public function attributeLabels()
 	{
 		return array(
-			'id' => 'Идентификатор ',
+			'id' => 'Идентификатор',
 			'status' => 'Статус',
 			'comment' => 'Комментарий',
 			'user_id' => 'Пользователь',
@@ -93,34 +93,22 @@ class Ticket extends CActiveRecord
 
 		$criteria=new CDbCriteria;
 
-		$criteria->compare('id',$this->id,true);
+		$criteria->compare('t.id',$this->id,true);
 		$criteria->compare('status',$this->status,true);
 		$criteria->compare('comment',$this->comment,true);
-		$criteria->compare('user_id',$this->user_id,true);
 		$criteria->compare('last_status_change',$this->last_status_change,true);
 		$criteria->compare('payment_without_card',$this->payment_without_card);
+        if($this->status == TicketStatus::DRAFT || $this->status == TicketStatus::ASSIGNING || $this->status == TicketStatus::CHECKING) {
+            $criteria->compare('user_id',UserIdentity::getCurrentUserId());
+        }
+
+
         $criteria->with = array('order');
 
 		return new CActiveDataProvider($this, array(
 			'criteria'=>$criteria,
 		));
 	}
-
-
-    public function searchByStatus($status = TicketStatus::NEW_TICKET)
-    {
-        $criteria=new CDbCriteria;
-
-        $criteria->compare('status',$status);
-        if($status == TicketStatus::DRAFT || $status == TicketStatus::ASSIGNING) {
-            $criteria->compare('user_id',UserIdentity::getCurrentUserId());
-        }
-        $criteria->with = array('order');
-
-        return new CActiveDataProvider($this, array(
-            'criteria'=>$criteria,
-        ));
-    }
 
 
     /**
