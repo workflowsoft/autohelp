@@ -222,27 +222,26 @@ class TicketController extends Controller
         // $this->performAjaxValidation($model);
 
         if (isset($_POST['Ticket'])) {
+            Ticket2service::model()->deleteAll('ticket_id=:tid', array(':tid' => $ticket->id));
+            if (isset($_POST['Service'])) {
+                foreach ($_POST['Service'] as $key => $service) {
+                    if (!empty($service)) {
+                        $relation = new Ticket2service();
+                        $relation->ticket_id = $ticket->id;
+                        $relation->service_id = $key;
+
+                        $relation->save();
+                    }
+
+                }
+            }
+
             $ticket->attributes = $_POST['Ticket'];
             if ($ticket->validate()) {
                 if ($_POST['save_new']) {
                     $ticket->status = TicketStatus::NEW_TICKET;
                 }
-                if ($ticket->save()) {
-                    Ticket2service::model()->deleteAll('ticket_id=:tid', array(':tid' => $ticket->id));
-                    if (isset($_POST['Service'])) {
-                        foreach ($_POST['Service'] as $key => $service) {
-                            if (!empty($service)) {
-                                $relation = new Ticket2service();
-                                $relation->ticket_id = $ticket->id;
-                                $relation->service_id = $key;
-
-                                $relation->save();
-                            }
-
-                        }
-                    }
-
-                } else {
+                if (!$ticket->save()) {
                     throw new CHttpException(400, var_export($ticket->getErrors(), true));
                 }
                 $this->redirect(array('view', 'id' => $ticket->id));
@@ -364,15 +363,22 @@ class TicketController extends Controller
     {
         $status = isset($_REQUEST['status']) ? $_REQUEST['status'] : 'new';
         $model = new Ticket();
-//        $data_provider = $model->searchByStatus($status);
         $model->unsetAttributes(); // clear any default values
         if (isset($_GET['Ticket'])) {
             $model->attributes = $_GET['Ticket'];
         }
 
+        $sql = "select status, count(*) as `count` from ticket where status in ('draft','checking', 'assigning') and user_id = " . UserIdentity::getCurrentUserId() . " group by status";
+        $result = Yii::app()->db->createCommand($sql)->queryAll();
+        $counters = array();
+        foreach($result as $counter) {
+            $counters[$counter['status']] = $counter['count'];
+        }
+
         $this->render('admin', array(
             'model' => $model,
             'status' => $status,
+            'counters' => $counters,
         ));
     }
 

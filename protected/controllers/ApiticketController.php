@@ -105,6 +105,7 @@ class ApiticketController extends Controller
         }
 
         $ticket->status = TicketStatus::ASSIGNED;
+        $ticket->user_id = null;
         $ticket->save();
 
         $this->_sendResponse(200, CJSON::encode(array('success' => true)));

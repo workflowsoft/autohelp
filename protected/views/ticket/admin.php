@@ -8,27 +8,16 @@ Yii::app()->clientScript->registerScript('status', "
 
 <h1>Управление инцидентами</h1>
 
-<!--'new', 'assigned', 'done', 'rejected'-->
-<?php $this->widget('bootstrap.widgets.TbButton', array(
-    'type' => '',
-    'label' => 'Мои черновики',
-    'url' => $this->createUrl('/ticket/admin/status/draft'),
-    'htmlOptions' => array('class' => 'filter filter-draft', 'data-at' => 'draft'),
-)); ?>
+<a class="filter filter-draft btn" data-at="draft" href="/ticket/admin/status/draft">
+    Мои черновики <span class="badge"><?php echo !empty($counters[TicketStatus::DRAFT])? $counters[TicketStatus::DRAFT] : '' ;?></span>
+</a>
+<a class="filter filter-assigning btn" data-at="assigning" href="/ticket/admin/status/assigning">
+    Мои назначения <span class="badge"><?php echo !empty($counters[TicketStatus::ASSIGNING])? $counters[TicketStatus::ASSIGNING] : '';?></span>
+</a>
+<a class="filter filter-checking btn" data-at="checking" href="/ticket/admin/status/checking">
+    Мои проверки <span class="badge"><?php echo empty($counters[TicketStatus::CHECKING])? $counters[TicketStatus::CHECKING] : '';?></span>
+</a>
 
-<?php $this->widget('bootstrap.widgets.TbButton', array(
-    'type' => '',
-    'label' => 'Мои назначения',
-    'url' => $this->createUrl('/ticket/admin/status/assigning'),
-    'htmlOptions' => array('class' => 'filter filter-assigning', 'data-at' => 'assigning'),
-)); ?>
-
-<?php $this->widget('bootstrap.widgets.TbButton', array(
-    'type' => '',
-    'label' => 'Мои проверки',
-    'url' => $this->createUrl('/ticket/admin/status/checking'),
-    'htmlOptions' => array('class' => 'filter filter-checking', 'data-at' => 'checking'),
-)); ?>
 <br>
 <?php $this->widget('bootstrap.widgets.TbButton', array(
     'type' => 'info',
