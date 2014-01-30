@@ -1,7 +1,10 @@
 <h1>Редактирование инцидента # <?php echo $ticket->id; ?></h1>
 <?php
-//    echo '<h4>Информация о клиенте</h4>';
-//    echo $this->renderPartial('_order_view', array('model'=>$order));
+$this->menu = array(
+    array('label' => 'Управление инцидентами', 'url' => array('admin')),
+    array('label' => 'Поиск клиентов', 'url' => array('/order/search')),
+    array('label' => 'Редактировать инцормацию о клиенте', 'url' => array('/order/update/' . $order->id)),
+);
 ?>
 
 
