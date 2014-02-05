@@ -119,7 +119,7 @@
                 'model' => $model,
                 'attribute' => 'card_number',
                 'form' => $form,
-                'mask' => 's999999999',
+                'mask' => 's999',
                 'completed' => 'function(){
                                 var cardField = this;
                                 $.get("/api/card/check/"+cardField.val(),
