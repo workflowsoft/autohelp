@@ -1,12 +1,13 @@
 <?php
+
 /**
  * Created by PhpStorm.
  * User: shart
  * Date: 14.01.14
  * Time: 21:05
  */
-
-class TicketStatus {
+class TicketStatus
+{
 
     const DRAFT = 'draft';
     const NEW_TICKET = 'new';
@@ -16,5 +17,21 @@ class TicketStatus {
     const CHECKING = 'checking';
     const DONE = 'done';
     const REJECTED = 'rejected';
+
+
+    public static function isValid($status)
+    {
+        return in_array($status, array(
+            self::DRAFT,
+            self::NEW_TICKET,
+            self::ASSIGNING,
+            self::ASSIGNED,
+            self::IN_PROGRESS,
+            self::CHECKING,
+            self::DONE,
+            self::REJECTED,
+
+        ));
+    }
 
 }

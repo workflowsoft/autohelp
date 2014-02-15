@@ -64,6 +64,10 @@ class ActionTag extends CActiveRecord
 		);
 	}
 
+    public static function isValid($action_tag) {
+        return in_array($action_tag, array('activate','call','cash_on_place','check','delivery','expire','recall'));
+    }
+
 	/**
 	 * Retrieves a list of models based on the current search/filter conditions.
 	 *

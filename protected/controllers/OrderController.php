@@ -99,18 +99,7 @@ class OrderController extends Controller
      */
     public function actionUpdate($id)
     {
-        if (isset($_POST['activate'])) {
-            $at_name = 'activate';
-        } elseif (isset($_POST['recall'])) {
-            $at_name = 'recall';
-        } elseif (isset($_POST['call'])) {
-            $at_name = 'call';
-        } elseif (isset($_POST['check'])) {
-            $at_name = 'check';
-        } elseif (isset($_POST['delivery'])) {
-            $at_name = 'delivery';
-        } else
-            $at_name = null;
+        $at_name = (isset($_REQUEST['action_tag']) && ActionTag::isValid($_REQUEST['action_tag'])) ? $_REQUEST['action_tag'] : 'call';
 
         $model = $this->loadModel($id, $at_name);
 
@@ -192,7 +181,7 @@ class OrderController extends Controller
         if (isset($_GET['Order'])) {
             $model->attributes = $_GET['Order'];
         }
-        $action_tag = isset($_GET['action_tag']) ? $_GET['action_tag'] : 'call';
+        $action_tag = (isset($_REQUEST['action_tag']) && ActionTag::isValid($_REQUEST['action_tag'])) ? $_REQUEST['action_tag'] : 'call';
         $data_provider = $model->searchNotActivated($action_tag);
 
         $this->render('admin', array(

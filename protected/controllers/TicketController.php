@@ -323,7 +323,7 @@ class TicketController extends Controller
      */
     public function actionAdmin()
     {
-        $status = isset($_REQUEST['status']) ? $_REQUEST['status'] : 'new';
+        $status = (isset($_REQUEST['status']) && TicketStatus::isValid($_REQUEST['status'])) ? $_REQUEST['status'] : 'new';
         $model = new Ticket('search');
         $model->unsetAttributes(); // clear any default values
         if (isset($_GET['Ticket'])) {

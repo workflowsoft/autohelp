@@ -9,6 +9,9 @@ $this->menu=array(
 );
 
 Yii::app()->clientScript->registerScript('search', "
+$('.filter-$action_tag').css('border', '3px solid red');
+
+
 $('.search-button').click(function(){
 	$('.search-form').toggle();
 	return false;
@@ -21,65 +24,43 @@ $('.search-form form').submit(function(){
 });
 ");
 ?>
-<?php
-Yii::app()->clientScript->registerScript('filter', "
-
-$('.filter-$action_tag').css('border', '3px solid red');
-$('.filter').click(function(){
-    $('.filter').css('border', '');
-	$(this).css('border', '3px solid red');
-	$.fn.yiiGridView.update('order-grid', {
-		data: 'action_tag=' + $(this).data('at')
-	});
-	return false;
-});
-");
-?>
 
 <h1>Управление заказами</h1>
 
 <?php $this->widget('bootstrap.widgets.TbButton', array(
     'type'=>'info',
     'label'=>'Обзвон',
+    'url' => $this->createUrl('/order/admin/action_tag/call'),
     'htmlOptions'=>array('class'=>'filter filter-call', 'data-at' => 'call'),
 )); ?>
 
 <?php $this->widget('bootstrap.widgets.TbButton', array(
     'type'=>'info',
     'label'=>'Повторный обзвон',
+    'url' => $this->createUrl('/order/admin/action_tag/recall'),
     'htmlOptions'=>array('class'=>'filter filter-recall', 'data-at' => 'recall'),
 )); ?>
 
 <?php $this->widget('bootstrap.widgets.TbButton', array(
     'type'=>'info',
     'label'=>'Доставка карты',
+    'url' => $this->createUrl('/order/admin/action_tag/delivery'),
     'htmlOptions'=>array('class'=>'filter filter-delivery', 'data-at' => 'delivery'),
 )); ?>
 
 <?php $this->widget('bootstrap.widgets.TbButton', array(
     'type'=>'warning',
     'label'=>'Проверка',
+    'url' => $this->createUrl('/order/admin/action_tag/check'),
     'htmlOptions'=>array('class'=>'filter filter-check', 'data-at' => 'check'),
 )); ?>
 
 <?php $this->widget('bootstrap.widgets.TbButton', array(
     'type'=>'success',
     'label'=>'Активация',
+    'url' => $this->createUrl('/order/admin/action_tag/activate'),
     'htmlOptions'=>array('class'=>'filter filter-activate', 'data-at' => 'activate'),
 )); ?>
-
-
-<?php //$this->widget('bootstrap.widgets.TbButton', array(
-//    'type'=>'danger',
-//    'label'=>'Истечение',
-//    'htmlOptions'=>array('class'=>'filter filter-expire', 'data-at' => 'expire'),
-//)); ?>
-<!---->
-<?php //$this->widget('bootstrap.widgets.TbButton', array(
-//    'type'=>'inverse',
-//    'label'=>'Все',
-//    'htmlOptions'=>array('class'=>'filter filter-all', 'data-at' => 'call'),
-//)); ?>
 
 
 
