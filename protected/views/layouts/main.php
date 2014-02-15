@@ -22,7 +22,7 @@
                 array('label'=>'Заказы', 'url'=>array('/order/admin/?action_tag=call'),
                 'items' => array(
                     array('label'=>'Добавить заказ', 'url'=>array('/order/create')),
-                    array('label'=>'Управление заказами', 'url'=>array('/order/admin/?action_tag=call')),
+                    array('label'=>'Управление заказами', 'url'=>array('/order/admin/action_tag/call')),
                 )),
                 array('label'=>'Инциденты', 'url'=>array('/ticket/admin'),
                     'items' => array(
